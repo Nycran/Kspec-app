@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widget xmlns = "http://www.w3.org/ns/widgets"
+        xmlns:gap = "http://phonegap.com/ns/1.0"
+        id = "au.com.simb.Kspec"
+        version = "2.0">
+    <name>K-Spec</name>
+
+    <description>
+        Conduct onsite buidling inspections with K-Spec and produce beautiful reports that your clients will love.
+    </description>
+
+    <author href="http://www.simb.com.au" email="dev3@simb.com.au">
+        SIMB Digital Developers
+    </author>
+
+    <feature name="http://api.phonegap.com/1.0/device" />
+
+    <preference name="phonegap-version" value="cli-6.5.0" />
+    <preference name="orientation" value="landscape" />
+    <preference name="target-device" value="tablet" />
+    <preference name="fullscreen" value="false" />
+    <preference name="webviewbounce" value="false" />
+    <preference name="StatusBarOverlaysWebView" value="false" />
+    <preference name="AutoHideSplashScreen" value="true"/>
+
+    <gap:plugin name="cordova-plugin-battery-status" source="npm"/>
+    <gap:plugin name="cordova-plugin-camera" source="npm"/>
+    <gap:plugin name="cordova-plugin-media-capture" source="npm"/>
+    <gap:plugin name="cordova-plugin-console" source="npm"/>
+    <gap:plugin name="cordova-plugin-contacts" source="npm"/>
+    <gap:plugin name="cordova-plugin-device" source="npm"/>
+    <gap:plugin name="cordova-plugin-device-motion" source="npm"/>
+    <gap:plugin name="cordova-plugin-device-orientation" source="npm"/>
+    <gap:plugin name="cordova-plugin-dialogs" source="npm"/>
+    <gap:plugin name="cordova-plugin-file" source="npm"/>
+    <gap:plugin name="cordova-plugin-file-transfer" source="npm"/>
+    <gap:plugin name="cordova-plugin-geolocation" source="npm"/>
+    <gap:plugin name="cordova-plugin-globalization" source="npm"/>
+    <gap:plugin name="cordova-plugin-inappbrowser" source="npm"/>
+    <gap:plugin name="cordova-plugin-media" source="npm"/>
+    <gap:plugin name="cordova-plugin-network-information" source="npm"/>
+    <gap:plugin name="cordova-plugin-splashscreen" source="npm"/>
+    <gap:plugin name="cordova-plugin-vibration" source="npm"/>
+    <gap:plugin name="cordova-plugin-statusbar" source="npm"/>
+    <gap:plugin name="cordova-plugin-file-opener2" source="npm"/>
+    <gap:plugin name="cordova-plugin-sqlite-2" source="npm"/>
+    
+    <gap:config-file platform="ios" parent="UIStatusBarHidden">
+        <true/>
+    </gap:config-file>
+    
+    <gap:config-file platform="ios" parent="UIViewControllerBasedStatusBarAppearance">
+        <false/>
+    </gap:config-file>
+    <access origin="*" />        
+
+    <icon src="icon.png" />
+    <icon src="res/icon/ios/icon-114.png" gap:platform="ios" width="114" height="114" />
+    <icon src="res/icon/ios/icon-120.png" gap:platform="ios" width="120" height="120" />
+    <icon src="res/icon/ios/icon-144.png" gap:platform="ios" width="144" height="144" />
+    <icon src="res/icon/ios/icon-150.png" gap:platform="ios" width="150" height="150" />
+    <icon src="res/icon/ios/icon-152.png" gap:platform="ios" width="152" height="152" />
+    <icon src="res/icon/ios/icon-180.png" gap:platform="ios" width="180" height="180" />
+    <icon src="res/icon/ios/icon-192.png" gap:platform="ios" width="192" height="192" />
+    <icon src="res/icon/ios/icon-310.png" gap:platform="ios" width="310" height="310" />
+</widget>

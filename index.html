@@ -1,0 +1,1223 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="description" content=" " />
+    <meta name="format-detection" content="telephone=no">
+    <meta http-equiv="CACHE-CONTROL" content="NO-CACHE" />
+    <meta name="viewport" id="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>K-Spec Inspections</title>
+    <link rel="stylesheet" type="text/css" media="screen" href="css/app.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="css/datepicker.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="css/timepicker.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="css/popselector.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="css/imageMarker.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="css/toggleControl.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="css/noteModal.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="css/glDatePicker.flatwhite.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="css/jquery-ui.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="css/select2.min.css" />
+    <!-- Attach the Reveal CSS -->
+    <link rel="stylesheet" href="css/reveal.css">
+    <script src="js/jquery.js"></script>
+    <!-- Then just attach the Reveal plugin -->
+    <script src="js/jquery.reveal.js" type="text/javascript"></script>
+
+    <script type="text/javascript">
+
+        {
+            var hrefCSS = "css/main.css";
+            var chart;
+        }
+        $("<link/>", {
+            rel: "stylesheet",
+            type: "text/css",
+            media: "screen",
+            href: hrefCSS
+        }).appendTo("head");
+        // Functions needed for app
+        /***
+         * getAvailableHeight
+         * Gets the available screen height, taking into account toolbars.
+         */
+        function getAvailableHeight()
+        {
+            var window_height = 0;
+
+            if (typeof (window.innerHeight) == "number")
+                window_height = window.innerHeight;
+            else
+            {
+                if (document.documentElement && document.documentElement.clientHeight)
+                    window_height = document.documentElement.clientHeight;
+                else
+                {
+                    if (document.body && document.body.clientHeight)
+                        window_height = document.body.clientHeight;
+                }
+            }
+
+            return window_height;
+        }
+
+        var screenHeight = getAvailableHeight();
+
+        // PhoneGap is ready
+        function onDeviceReady()
+        {
+            objDBUtils = new DBUtils();
+            if (typeof navigator.notification != 'undefined'){
+                if (typeof navigator.notification.alert != 'undefined')
+                    window.alert = navigator.notification.alert;
+                /*
+                 if (typeof navigator.notification.confirm != 'undefined')
+                 window.confirm = navigator.notification.confirm;
+                 */
+            }
+            if (typeof navigator.splashscreen != 'undefined')
+                navigator.splashscreen.hide();
+            // Override the hardware back button
+            document.addEventListener("backbutton", function()
+            {
+                // If the back button is showing, invoke the handle back method
+                if($("#btnBack").css("display") == "block")
+                {
+                    objApp.handleBackButton();
+                }
+            }, false);
+
+            objDBUtils.createTablesTable();
+
+            if (typeof navigator.contacts != 'undefined'){
+                navigator.contacts.find(["emails", "name"], function(contacts){
+                    for (var i=0; i<contacts.length; i++)
+                    {
+                        objApp.contacts.push({'value':contacts[i].emails[0], 'label':contacts[i].name + '( ' + contacts[i].name +' )'});
+                    }
+                }, function(contactError){
+                    if (contactError.code == 20)
+                        alert('Cannot get contacts. Please allow K-Spec to access your Contacts in Settings.');
+                    else
+                        alert('Cannot get contacts');
+                });
+            }
+        }
+
+    </script>
+
+    <script src="phonegap.js"></script>
+
+    <script type="text/javascript" src="js/json.js"></script>
+    <script type="text/javascript" src="js/jquery.js"></script>
+    <script type="text/javascript" src="js/jquery.validate.min.js"></script>
+    <script type="text/javascript" src="js/jquery.blockUI.js"></script>
+    <script type="text/javascript" src="js/jquery.download.js"></script>
+    <script type="text/javascript" src="js/jquery.base64.js"></script>
+    <script type="text/javascript" src="js/css-beziers.js"></script>
+    <script type="text/javascript" src="js/iscroll.js"></script>
+    <script type="text/javascript" src="js/iscroll5.js"></script>
+    <script type="text/javascript" src="js/touchscroll.js"></script>
+    <script type="text/javascript" src="js/app.js"></script>
+    <script type="text/javascript" src="js/numbermodal.js"></script>
+    <script type="text/javascript" src="js/optionmodal.js"></script>
+    <script type="text/javascript" src="js/database.js"></script>
+    <script type="text/javascript" src="js/login.js"></script>
+    <script type="text/javascript" src="js/users.js"></script>
+    <script type="text/javascript" src="js/builders.js"></script>
+    <script type="text/javascript" src="js/contacts.js"></script>
+    <script type="text/javascript" src="js/sites.js"></script>
+    <script type="text/javascript" src="js/inspections.js"></script>
+    <script type="text/javascript" src="js/sync.js"></script>
+    <script type="text/javascript" src="js/timepicker.js"></script>
+    <script type="text/javascript" src="js/datepicker.js"></script>
+    <script type="text/javascript" src="js/popselector.js"></script>
+    <script type="text/javascript" src="js/simbutils.js"></script>
+    <script type="text/javascript" src="js/dbupgrader.js"></script>
+    <script type="text/javascript" src="js/filters.js"></script>
+    <script type="text/javascript" src="js/fileuploader.js"></script>
+    <script type="text/javascript" src="js/imageMarker.js"></script>
+    <script type="text/javascript" src="js/imageResizer.js"></script>
+    <script type="text/javascript" src="js/toggleControl.js"></script>
+    <script type="text/javascript" src="js/noteModal.js"></script>
+    <script type="text/javascript" src="js/myaccount.js"></script>
+    <script type="text/javascript" src="js/glDatePicker.js"></script>
+    <script type="text/javascript" src="js/maintenance.js"></script>
+    <script type="text/javascript" src="js/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="js/safarimobile-multiline-select.js"></script>
+    <script src="js/select2.min.js" type="text/javascript"></script>
+    <!--
+    <script src="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.js"></script>
+    -->
+    <script type="text/javascript">
+        // Define global objects.
+        var objDBUtils = null;
+        var objApp = null;
+        var objDatePicker = null;
+        var objTimePicker = null;
+        var objPrefs = null;
+        var objUtils = null;
+        var objFilters = null;
+
+        /***
+         * Primary document on-load handler
+         */
+        $(document).ready(function()
+        {
+
+            // Create a new instance of the billbot object
+
+            objApp = new App();
+            objDatePicker = new Datepicker();
+            objTimePicker = new Timepicker();
+            objUtils = new SIMBUtils();
+            objFilters = new Filters();
+
+            objFilters.init();
+            // objDBUtils.dropAllTables(0);
+            //localStorage.setItem("sync_email", "");
+            //localStorage.setItem("sync_password", "");
+
+            // If this is a phonegap build, attach the device ready event
+            if(objApp.phonegapBuild)
+            {
+                document.addEventListener("deviceready", onDeviceReady, false);
+            }
+            else
+            {
+                objDBUtils = new DBUtils();
+                // Not phonegap - proceed as normal
+                // Ensure all required database tables are present.
+                objDBUtils.createTablesTable();
+            }
+
+            $.validator.addMethod("auDate", function(value, element)
+            {
+                // put your own logic here, this is just a (crappy) example
+                return value.match(/^\d\d?\/\d\d?\/\d\d\d\d$/);
+            }, "Please enter a date in the format dd/mm/yyyy");
+
+            $('#username').val(localStorage.getItem('login_email'));
+            $('#pword').val(localStorage.getItem('login_password'));
+            if (localStorage.getItem('remember_me') == 1)
+                $("#remember_me").val('1');
+        });
+    </script>
+    <link rel="stylesheet" href="../../BitBucket/minim-v2/public/css/style.css">
+    <link rel="stylesheet" href="../../1my_team/batdongsan247/wp-content/themes/fullestate/css/style.css">
+    <!--
+    <link rel="stylesheet" href="css/main1366x768.css">
+    -->
+</head>
+<body>
+<div id="version">Version 2.0</div>
+<div id="spinner"><img src="images/spinner.gif" border="0" width="64" height="64" alt="Loading..."></div>
+<!-- login screen -->
+<div class="wrapper home hidden" id="login_screen">
+    <div id="header">
+        <h1 class="f37">K-Spec Inspections</h1>
+    </div>
+    <div class="center">
+        <img class="mbottom30" width="320" src="images/logo.png" />
+        <h2 class="f37 sanpro-bold spacing25">User Login</h2>
+    </div>
+    <form action="#" method="post" id="frmLogin">
+        <fieldset class="center">
+            <p class="f26">Please Login Below</p>
+            <label class="aleft" for="username">Username</label>
+            <input type="email" name="username" id="username" value="" class="required" />
+            <label class="aleft" for="pword">Password</label>
+            <input type="password" name="pword" id="pword" value="" class="required" />
+            <br/><br/>
+            <button type="submit" class="btn-bg-w200 submit">Login</button>
+        </fieldset>
+    </form>
+</div> <!--! end of login screen wrapper -->
+<div class="wrapper hidden" id="forgotpass_screen">
+    <div id="header">
+        <div class="left">
+            <h1>K-Spec Inspections</h1>
+        </div>
+    </div>
+
+    <div id="subheader">
+        <div class="left">
+            <h1>Reset Your Password</h1>
+        </div>
+    </div>
+
+    <form action="#" method="post" id="frmForgetPass">
+        <div id="frm">
+            <fieldset class="thefs">
+                <div  id="retrievepass">
+                    <label for="username_fp">Email Address</label>
+                    <input type="email" name="username_fp" id="username_fp" value="" class="required" />
+
+                    <label for="pword_pf">Password</label>
+                    <input type="password" name="pword_pf" id="pword_pf" value="" class="required" />
+
+                    <label for="rpword_pf">Repeat New Password</label>
+                    <input type="password" name="rpword_pf" id="rpword_pf" value="" class="required" />
+
+                    <input type="submit" class="submit" value="Reset Password" />
+                </div>
+                <div id="passverification" class="hidden">
+                    <label for="verifypasscode">Please enter verification code below</label>
+                    <input type="text" name="verification_code" id="verification_code" value="" />
+                    <input type="hidden" name="thecode" id="thecode" value=""/>
+                    <a id="resetmypass" class="button" href="#"  style="width: 160px; padding: 15px 20px">Reset My Password</a>
+                </div>
+            </fieldset>
+            <div class="clear"></div>
+            <a id="backtoLog" class="button" href="#">&laquo; Back to Login</a>
+        </div>
+        <div id="logo">
+            <img src="images/BluePrintLogo.png" />
+        </div>
+    </form>
+
+    <footer><span>&copy; K-Spec, 2013</span></footer>
+
+</div>
+<!-- login screen -->
+<div class="wrapper start_screen hidden" id="start_screen">
+    <div id="header">
+        <h1 class="f37">K-Spec Inspections</h1>
+    </div>
+    <div class="center">
+        <br/>
+        <img class="mbottom30" width="400" src="images/logo.png" />
+        <br/><br/>
+        <button id="btnNewInspection" type="button" class="btn-bg-w400 submit">Start New Inspection</button>
+        <br/><br/>
+        <button id="btnCompleteReinspection" type="button" class="btn-bg-w400 submit">Complete Re-Inspection</button>
+        <br/><br/>
+        <button id="btnViewInspections" type="button" class="btn-bg-w400 submit">View All Inspections</button>
+    </div>
+</div> <!--! end of login screen wrapper -->
+<!-- creating user screen -->
+<div class="twocolumn hidden" id="create_user_screen">
+    <div id="header">
+        <div class="left">
+            <h1>K-Spec Inspections</h1>
+        </div>
+    </div>
+
+    <div id="subheader">
+        <div class="left">
+            <h1>Create A User Account</h1>
+        </div>
+    </div>
+
+    <form action="#" method="post" id="frmCreateUser">
+        <div>
+            <div id="error_msg_new_user" style="color: red; display: none; padding: 10px 0 0 100px">
+                <span></span>
+            </div>
+
+            <fieldset class="thefs">
+                <legend class="theleg">Your Details</legend>
+                <label for="n_first_name">First Name <span class="required">*</span></label>
+                <input type="text" name="n_first_name" id="n_first_name" value="" class="required" tabindex="10" />
+                <label for="n_last_name">Last Name <span class="required">*</span></label>
+                <input type="text" name="n_last_name" id="n_last_name" value="" class="required" tabindex="20" />
+                <label for="n_mobile">Mobile <span class="required">*</span></label>
+                <input type="text" name="n_mobile" id="n_mobile" value="" class="required" tabindex="30" />
+            </fieldset>
+
+            <fieldset class="thefs">
+                <legend class="theleg">Your Details</legend>
+                <label for="n_email">Email Address <span class="required">*</span></label>
+                <input type="text" name="n_email" id="n_email" value="" class="required" tabindex="40" />
+                <label for="n_password">Nominate A Password <span class="required">*</span></label>
+                <input type="password" name="n_password" id="n_password" value="" class="required" tabindex="50" />
+                <label for="n_repassword">Repeat Your Password <span class="required">*</span></label>
+                <input type="password" name="n_repassword" id="n_repassword" value="" class="required" tabindex="60" equalto="#n_password" />
+            </fieldset>
+            <div id="createAccbtns">
+                <input type="submit" class="submit" value="Create My Account &raquo;" tabindex="200" id="createAccbtn"/>
+                <a id="btnBack" class="button" href="#">&laquo; Back to Login</a>
+            </div>
+
+        </div>
+    </form>
+    <footer><span>&copy; K-Spec, 2014</span></footer>
+</div> <!--! end of create user screen -->
+
+<!-- inspection listing screen -->
+<div id="main" class="hidden">
+    <div id="header">
+        <div class="left">
+            <h1>K-Spec Inspection</h1>
+        </div>
+    </div>
+
+    <div id="subheader">
+        <div class="left">
+            <h1>Heading Goes Here</h1>
+        </div>
+        <div class="right">
+            <h1 class="hidden">Extra Heading Goes Here</h1>
+        </div>
+    </div>
+
+    <div id="content">
+        <div id="sync" class="sync hidden panel center">
+            <form id="frmSync" name="frmSync">
+                <p class="f26">To sync your inspection data with the K-Spec server, please click the "SYNC DATA" button below.</p><p><br /></p>
+                <div class="custom-checkbox-with-tick large-green">
+                    <input type="checkbox" id="refresh_sync" name="refresh_sync" value="1" />
+                    <label for="refresh_sync" class="sanpro-semibold f26">Reset My Data</label>
+                </div>
+                <br/>
+                <button type="button" class="btn-bg-w200 submit">Sync Data</button>
+                <!--
+                <br/><br/>
+                <p class="f26">Use "SMART SYNC" to get data in recent 2 weeks.</p><p><br /></p>
+                <button type="button" id="smartSync" class="btn-bg-w200">Smart Sync</button>
+                -->
+            </form>
+            <div id="accountMessage"><div id="general"></div></div>
+        </div> <!--! end sync screen wrapper -->
+
+
+        <!-- inspection details screen -->
+        <div id="inspection" class="hidden panel twocolumn inspectionDetails">
+            <form action="#" method="post" id="frmInspectionDetails">
+                <fieldset class="thefs">
+                    <table>
+                        <tr>
+                            <td style="vertical-align:top"><label for="report_type">Report Type</label></td>
+                            <td>
+                                <select name="report_type2" id="report_type2" class="ignore">
+                                    <option value="Builder inspection">Builder Inspection</option>
+                                    <option value="Client inspection">Client Inspection</option>
+                                    <option value="Handovers.com">Handovers.com</option>
+                                </select>
+                                <div>
+                                    <input type="hidden" value="" name="report_type" id="report_type" />
+                                    <select class="report_type_options ignore" id="builder_report_type" name="builder_report_type" >
+                                        <option class="handovers-child" value="">--Select</option>
+                                        <option class="builder-child" value="Builder: Slab inspections">Slab Inspection</option>
+                                        <option class="builder-child" value="Builder: Frame inspections">Frame Inspection</option>
+                                        <option class="builder-child" value="Builder: Pre-plaster and lock up inspections">Pre-plaster and lock up Inspection</option>
+                                        <option class="builder-child" value="Builder: Waterproofing inspections">Waterproofing Inspection</option>
+                                        <option class="builder-child" value="Builder: Pre-paint/fixing inspections">Pre-paint/fixing Inspection</option>
+                                        <option class="builder-child" value="Builder: PCI/Final inspections">QA Inspection</option>
+                                        <option class="builder-child" value="Builder: Maintenance inspections">Maintenance Inspection</option>
+                                        <option class="builder-child" value="Builder: Brick inspections">Brick Inspection</option>
+                                    </select>
+
+                                    <select class="report_type_options ignore" id="client_report_type" name="client_report_type" style="display: none;">
+                                        <option class="handovers-child" value="">--Select</option>
+                                        <option class="client-child" value="Client: Slab inspections">Slab Inspection</option>
+                                        <option class="client-child" value="Client: Frame inspections">Frame Inspection</option>
+                                        <option class="client-child" value="Client: Pre-plaster and lock up inspections">Pre-plaster and lock up Inspection</option>
+                                        <option class="client-child" value="Client: Waterproofing inspections">Waterproofing Inspection</option>
+                                        <option class="client-child" value="Client: Pre-paint/fixing inspections">Pre-paint/fixing Inspection</option>
+                                        <option class="client-child" value="Client: PCI/Final inspections">PCI/Final Inspection</option>
+                                        <option class="client-child" value="Client: Maintenance inspections">Maintenance Inspections</option>
+                                        <option class="client-child" value="Client: Brick inspections">Brick Inspection</option>
+                                    </select>
+
+                                    <select class="report_type_options ignore" id="handover_report_type" name="handover_report_type" style="display: none;">
+                                        <option class="handovers-child" value="">--Select</option>
+                                        <option class="handovers-child" value="Handovers">Handovers</option>
+                                    </select>
+
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><label for="builder_id">Select a Builder</label></td>
+                            <td>
+                                <select class="selector" id="builder_id" title="Select a Builder">
+                                    <option value="">Builder</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><label for="inspection_date">Inspection Date</label></td>
+                            <td><input type="text" name="inspection_date" id="inspection_date" readonly="readonly" value="" class="required" />     </td>
+                        </tr>
+                        <tr>
+                            <td><label for="client_info">Client name/<br/>Investment group</label></td>
+                            <td><input type="text" name="client_info" id="client_info" value="" class="" />     </td>
+                        </tr>
+                    </table>
+                </fieldset>
+                <fieldset class="thefs">
+                    <table>
+                        <tr>
+                            <td><label for="lot_no">Lot No</label></td>
+                            <td><input type="text" name="lot_no" id="lot_no" value="" class="" tabindex="5" /></td>
+                        </tr>
+                        <tr>
+                            <td><label for="address">Address</label></td>
+                            <td><input type="text" name="address" id="address" value="" class="" tabindex="5" /></td>
+                        </tr>
+                        <tr>
+                            <td><label for="suburb">Suburb</label></td>
+                            <td><input type="text" name="suburb" id="suburb" value="" class="" tabindex="6" /></td>
+                        </tr>
+                        <!-- <tr>
+                        	<td><label for="postcode">Postcode</label></td>
+                        	<td><input type="text" name="postcode" id="postcode" value="" class="number" tabindex="7" minlength="4" maxlength="4" /></td>
+                        </tr> -->
+                        <tr>
+                            <td><label for="state">State</label></td>
+                            <td>
+                                <select class="selector" id="state" title="Select a State" autocomplete="off">
+                                    <option value="">Choose</option>
+                                    <option value="VIC">VIC</option>
+                                    <option value="NSW">NSW</option>
+                                    <option value="ACT">ACT</option>
+                                    <option value="QLD">QLD</option>
+                                    <option value="NT">NT</option>
+                                    <option value="WA">WA</option>
+                                    <option value="SA">SA</option>
+                                    <option value="TAS">TAS</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><label for="weather">Weather</label>  </td>
+                            <td><textarea id="weather" name="weather"></textarea></td>
+                        </tr>
+                    </table>
+                </fieldset>
+
+                <input type="hidden" id="inspection_start" name="inspection_start" value="" />
+                <input type="hidden" id="created_by" name="created_by" value="" />
+                <input type="hidden" id="finalised" name="finalised" value="0" />
+                <input type="hidden" id="failed" name="failed" value="1" />
+                <input type="hidden" id="initials" name="initials" value="" />
+                <textarea id="notes" name="notes" class="hidden"></textarea>
+            </form>
+
+            <div id="controlBtns" class="bottomBtns">
+                <div class="btnContainer left btnEditNotes" id="btnEditNotes">
+                    <a href="#" class="btnNotes "></a>
+                    <span>Notes</span>
+                </div>
+
+                <a id="btnCapturePhoto" data-reveal-id="photoWrapper" class="right step1-capture-btn" href="#"></a>
+                <div class="btnContainer right">
+                    <a id="btnStep1Next" class="mtop20 right rightmargin btn-bg-w81" href="#">Next</a>
+                </div>
+            </div>
+        </div> <!--! end of inspection details screen wrapper -->
+
+        <!-- inspection step 2 screen -->
+        <div id="inspectionStep2" class="inspectionDetails hidden panel">
+            <a id="btnAddDefect" class="button leftmargin" href="#">Add Another Issue</a>
+            <form action="#" method="post" id="frmDefectDetails" class="clear">
+                <fieldset class="thefs">
+                    <table>
+                        <tr>
+                            <td><label for="popLocation">Location</label></td>
+                            <td>
+                                <ul class="selector ignore" id="popLocation" title="Select a Location">
+                                    <li title="">Choose</li>
+                                </ul>
+                                <input type="hidden" id="location" name="location" value="" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><label for="observation">Observation</label>  </td>
+                            <td><textarea id="observation" name="observation"></textarea></td>
+                        </tr>
+                        <tr id="action_wrapper">
+                            <td><label for="popAction">Action</label></td>
+                            <td>
+                                <ul class="selector ignore" id="popAction" title="Select a Action">
+                                    <li title="">Choose</li>
+                                </ul>
+                                <input type="hidden" id="action" name="action" value="" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>&nbsp;</td>
+                            <td>
+                                <a class="button left" id="searchObservation" href="#">Search</a>
+                            </td>
+                        </tr>
+                    </table>
+                </fieldset>
+
+                <fieldset id="observationFS" class="thefs">
+                    <legend>Observation Suggestions</legend>
+
+                    <div id="observationWrapper" style="height: 350px; overflow-y: auto;">
+                        <table class="listing" id="observation_suggestion" style="table-layout: fixed; width: 405px;"></table>
+                    </div>
+                </fieldset>
+
+                <input type="hidden" id="inspection_id" name="inspection_id" value="" />
+                <input type="hidden" id="created_by" name="created_by" value="" />
+                <input type="hidden" id="seq_no" name="seq_no" value="" />
+                <input type="hidden" id="hash" name="hash" value="" />
+            </form>
+
+            <div id="controlBtns" class="bottomBtns" >
+                <a id="btnCapturePhoto" data-reveal-id="photoWrapper" class="right" href="#"></a>
+                <div class="btnContainer left">
+                    <a id="btnStep2Back" class="mtop20 left gotoStep1 btn-bg-w81" href="#">Back</a>
+                </div>
+                <div class="btnContainer right">
+                    <a id="btnStep2Next" class="mtop20 right rightmargin btn-bg-w81" href="#">Next</a>
+                </div>
+                <div class="btnContainer left btnEditNotes" id="btnEditNotes">
+                    <a href="#" class="btnNotes "></a>
+                    <span>Notes</span>
+                </div>
+
+            </div>
+        </div> <!--! end of inspection step 2 screen wrapper -->
+
+        <!-- inspection step 3 screen -->
+        <div id="inspectionStep3" class="inspectionDetails hidden panel">
+            <a id="btnStep3AddAnotherIssue" class="button left leftmargin gotoStep2" href="#">Add Another Issue</a>
+            <a id="btnStep3DeleteInspection" class="button warning left leftmargin" href="#">Delete Inspection</a>
+            <div id="searchItemsContainer"><input type="text" id="keywords" placeholder="Enter your keywords" /></div>
+            <table id="tblDefectListingHeader" class="listing">
+                <thead>
+                <tr>
+                    <th class="delete"></th>
+                    <th class="tagID">Tag Id</th>
+                    <th class="location">Location</th>
+                    <th class="observation">Observation</th>
+                    <th class="action">Action</th>
+                </tr>
+                </thead>
+            </table>
+
+            <div id="defectScrollWrapper" class="scrollWrapper"></div>
+
+            <div class="bottomBtns">
+
+                <div class="btnContainer left hidden reinspectOnly">
+                    <a href="#" id="btnPassed" class="passed"></a>
+                    <span>Passed</span>
+                </div>
+
+                <div class="btnContainer left hidden reinspectOnly">
+                    <a href="#" id="btnFailed" class="failed"></a>
+                    <span>Failed</span>
+                </div>
+
+                <div class="btnContainer left" id="btnFinishedWrapper">
+                    <a href="#" id="finished" class="finished"></a>
+                    <span>Finalised</span>
+                </div>
+
+                <div class="btnContainer left" id="btnPreviewWrapper">
+                    <a href="#" id="preview" class="preview"></a>
+                    <span>Preview</span>
+                </div>
+
+                <div class="btnContainer left btnEditNotes" id="btnEditNotes">
+                    <a href="#" class="btnNotes "></a>
+                    <span>Notes</span>
+                </div>
+
+                <div class="btnContainer left " id="btnStep3Email">
+                    <a href="#" id="preview" class="email sendEmailButton" data-reveal-id="emailReportWrapper"></a>
+                    <span>Email</span>
+                </div>
+
+                <div class="btnContainer left btnReinspect" id="btnReinspect">
+                    <a href="#" class="btnReinspect "></a>
+                    <span>Reinspect</span>
+                </div>
+
+                <div class="btnContainer left btnViewChart" id="btnViewChart">
+                    <a href="#" class="btnViewChart" data-reveal-id="inspectionChartWrapper"></a>
+                    <span>Chart</span>
+                </div>
+
+                <a id="btnReportPhotos" class="button left hidden" href="javascript:void(0);">Set Report Photos</a>
+                <a id="btnSendReport" class="button left hidden" href="javascript:void(0);">SEND BPI</a>
+
+                <div class="btnContainer right">
+                    <a id="btnStep3Next" class="right rightmargin mtop20 btn-bg-w81" href="#">Exit</a>
+                </div>
+            </div>
+            <div style="clear: both;"></div>
+
+
+            <div id="controlBtns">
+                <a id="btnCapturePhoto" data-reveal-id="photoWrapper" class="right reveal" href="#"></a>
+            </div>
+
+        </div> <!--! end of inspection step 3 screen wrapper -->
+
+        <!-- Photo list-->
+
+        <div id="photoWrapper" class="reveal-modal inspectionDetails">
+            <div style="background-color: #eee; border-radius: 5px 5px 0 0; height: 30px; font-weight: bold; padding-left: 5px;">Inspection photos</div>
+            <div id="addPhoto-wrapper">
+                <a href="#" id="addPhoto-btn">Take photo</a>
+                <a href="#" id="addPhotoFromGallery">Take photo from gallery</a>
+            </div>
+            <div id="photoList"></div>
+            <a class="close-reveal-modal" style="font-size: 40px; color: red;">&#215;</a>
+            <div id="controlBtns">
+                <a id="btnDone" class="button right rightmargin close-reveal-modal" href="#">Done</a>
+            </div>
+        </div>
+
+        <!-- inspection step 4 screen -->
+        <div id="inspectionStep4" class="inspectionDetails hidden panel">
+            <form action="#" id="frmInspectionDetails" method="post">
+                <input type="hidden" name="min_roof_tiles" id="min_roof_tiles" value="1"/>
+                <input type="hidden" name="min_ridge_tiles" id="min_ridge_tiles"  value="1"/>
+                <input type="hidden" name="touch_up_paint" id="touch_up_paint"  value="1"/>
+                <input type="hidden" name="min_flooring_tiles" id="min_flooring_tiles"  value="1"/>
+                <input type="hidden" name="grout_samples" id="grout_samples"  value="1"/>
+
+                <table class="listing">
+                    <thead>
+                    <tr>
+                        <th class="tagID" style="width: 50%">Materials to be left on site</th>
+                        <th class="location" style="width: 25%">Yes</th>
+                        <th class="observation" style="width: 25%">No</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    <tr>
+                        <td>Minimum of 12 roof tiles</td>
+                        <td><a id="btnMinRoofTilesYes" class="left yesno_enabled" href="javascript:void(0);">Yes</a></td>
+                        <td><a id="btnMinRoofTilesNo" class="left yesno_disabled" href="javascript:void(0);">No</a></td>
+                    </tr>
+                    <tr>
+                        <td>Minimum of 4 ridge tiles</td>
+                        <td><a id="btnMinRidgeTilesYes" class="left yesno_enabled" href="javascript:void(0);">Yes</a></td>
+                        <td><a id="btnMinRidgeTilesNo" class="left yesno_disabled" href="javascript:void(0);">No</a></td>
+                    </tr>
+                    <tr>
+                        <td>Touch up paint one of each colour including external (labelled)</td>
+                        <td><a id="btnTouchUpPaintYes" class="left yesno_enabled" href="javascript:void(0);">Yes</a></td>
+                        <td><a id="btnTouchUpPaintNo" class="left yesno_disabled" href="javascript:void(0);">No</a></td>
+                    </tr>
+                    <tr>
+                        <td>Minimum of 6 flooring tiles</td>
+                        <td><a id="btnMinFlooringTilesYes" class="left yesno_enabled" href="javascript:void(0);">Yes</a></td>
+                        <td><a id="btnMinFlooringTilesNo" class="left yesno_disabled" href="javascript:void(0);">No</a></td>
+                    </tr>
+                    <tr>
+                        <td>Grout samples in plastic container</td>
+                        <td><a id="btnGroutSamplesYes" class="left yesno_enabled" href="javascript:void(0);">Yes</a></td>
+                        <td><a id="btnGroutSamplesNo" class="left yesno_disabled" href="javascript:void(0);">No</a></td>
+                    </tr>
+                    <tr>
+                        <td>Barrel Code to key locks on entry door & garage door</td>
+                        <td colspan="2" style="border-top:1px solid;"><input type="text" name="barrel_code" id="barrel_code" style="width: 97%; margin: 5px 0;"/></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </form>
+
+            <div class="bottomBtns">
+                <div class="btnContainer left">
+                    <a id="btnStep4Back" class="gotoStep3 mtop20 left btn-bg-w81" href="#">Back</a>
+                </div>
+
+                <div class="btnContainer left">
+                    <a href="#" id="finished" class="finished"></a>
+                    <span>Finalised</span>
+                </div>
+                <div class="btnContainer left">
+                    <a href="#" id="preview" class="preview"></a>
+                    <span>Preview</span>
+                </div>
+
+                <div class="btnContainer left " id="btnStep3Email">
+                    <a href="#" id="preview" class="email sendEmailButton" data-reveal-id="emailReportWrapper"></a>
+                    <span>Email</span>
+                </div>
+
+                <a id="btnSendReport2" class="button left" href="javascript:void(0);">SEND BPI</a>
+
+                <div class="btnContainer right">
+                    <a id="btnStep4Next" class="mtop20 right rightmargin btn-bg-w81" href="#">Next</a>
+                </div>
+            </div>
+
+        </div> <!--! end of inspection step 4 screen wrapper -->
+
+        <!-- inspection step 5 screen -->
+        <div id="inspectionStep5" class="inspectionDetails hidden panel">
+            <form action="#" id="frmRateDetails" method="post">
+                <input type="hidden" name="certificated" id="certificated"  value="0"/>
+                <table id="tblRateListingHeader" class="listing">
+                    <thead>
+                    <tr>
+                        <th class="category">Category</th>
+                        <th class="rate">Rate out of 5</th>
+                    </tr>
+                    </thead>
+                </table>
+
+                <div id="rateScrollWrapper" class="scrollWrapper">
+
+                    <table id="tblRateListing" class="listing">
+                        <tr>
+                            <td>Brickwork</td>
+                            <td><select name="" id="brickwork" class="ratingSelect">
+                                <option value="1" selected>1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                            </select></td>
+                        </tr>
+                        <tr>
+                            <td>Paint Quality</td>
+                            <td><select name="" id="paint_quality" class="ratingSelect">
+                                <option value="1" selected>1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                            </select></td>
+                        </tr>
+                        <tr>
+                            <td>Plaster Quality</td>
+                            <td><select name="" id="plaster_quality" class="ratingSelect">
+                                <option value="1" selected>1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                            </select></td>
+                        </tr>
+                        <tr>
+                            <td>Interior Quality</td>
+                            <td><select name="" id="interior_quality" class="ratingSelect">
+                                <option value="1" selected>1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                            </select></td>
+                        </tr>
+                        <tr>
+                            <td>Exterior Quality</td>
+                            <td><select name="" id="exterior_quality" class="ratingSelect">
+                                <option value="1" selected>1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                            </select></td>
+                        </tr>
+                        <tr>
+                            <td>TOTAL</td>
+                            <td id="total"></td>
+                        </tr>
+                    </table>
+                </div>
+            </form>
+
+            <div class="bottomBtns">
+                <div class="btnContainer left">
+                    <a id="btnStep5Back" class="gotoStep4 mtop20 left btn-bg-w81" href="#">Back</a>
+                </div>
+
+                <div class="btnContainer left">
+                    <a href="#" id="finished" class="finished"></a>
+                    <span>Finalised</span>
+                </div>
+                <div class="btnContainer left">
+                    <a href="#" id="preview" class="preview"></a>
+                    <span>Preview</span>
+                </div>
+
+                <div class="btnContainer left " id="btnStep3Email">
+                    <a href="#" id="preview" class="email sendEmailButton" data-reveal-id="emailReportWrapper"></a>
+                    <span>Email</span>
+                </div>
+
+                <div class="btnContainer left" style="width: auto;">
+                    <a id="btnCertificated" style="margin-top: 25px;" class="button" href="javascript:void(0);">Certificated</a>
+                    <a id="btnUncertificated" style="background: #ff4539;margin-top: 25px;" class="button hidden" href="javascript:void(0);">Uncertificated</a>
+                </div>
+
+                <a id="btnSendReport3" class="button left" href="javascript:void(0);">SEND BPI</a>
+
+                <div class="btnContainer right">
+                    <a id="btnStep5Next" class="mtop20 right rightmargin btn-bg-w81" href="#">Exit</a>
+                </div>
+            </div>
+
+        </div> <!--! end of inspection step 5 screen wrapper -->
+
+        <!-- inspection step 4 screen -->
+        <div id="reportPhotos" class="hidden panel">
+            <form action="#" id="frmReportPhotos" method="post">
+                <table id="tblReportPhotos" class="listing">
+                    <thead>
+                    <tr>
+                        <th>Photo</th>
+                        <th>Is Cover Photo</th>
+                        <th>On Back Page</th>
+                    </tr>
+                    </thead>
+                </table>
+
+                <div id="reportPhotoList" class="scrollWrapper"></div>
+            </form>
+
+            <div class="bottomBtns">
+                <div class="btnContainer left">
+                    <a id="btnReportPhotosBack" class="button left gotoStep3" href="#">Back</a>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- inspection listing screen -->
+        <div id="inspectionList" class="hidden panel">
+            <button id="addInspection" type="button" class="btn-green-bg-51x81">Add</button>
+            <div class="builderFilters">
+                <select name="is_finalised" id="is_finalised">
+                    <option value="">All</option>
+                    <option value="1">Is Finalised</option>
+                    <option value="0">Not Finalised</option>
+                </select>
+                <div class="searchByBuilder">
+                    <select name="builder_id" id="il_builder_id">
+                        <option value="">Builder</option>
+                    </select>
+                </div>
+                <div class="searchBuilderContainer">
+                    <div id="inspectionSearchContainer">
+                        <img class="search-icon" src="images/search-icon.png" />
+                        <input id="inspectionSearch" type="text" name="keywords" value="" placeholder="Search this list" />
+                    </div>
+                    <button id="doInspectionSearch" type="button" class="btn-bg-w100">Search</button>
+                </div>
+            </div>
+            <table id="tblInspectionListingHeader" class="listing">
+                <thead>
+                <tr>
+                    <th class="i.inspection_start">Date</th>
+                    <th class="i.address">Address</th>
+                    <th class="b.name">Builder</th>
+                    <th class="i.report_type">Report Type</th>
+                    <th>Re Inspec.</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+            </table>
+
+            <div id="inspectionScrollWrapper" class="scrollWrapper"></div>
+
+            <div id="historyReinspection" class="reveal-modal">
+                <h2>Choose an inspection</h2>
+
+                <a href="javascript:void(0);" class="close-reveal-modal right">
+                    <img src="images/delete-icon.png" border="0" width="30" height="30" />
+                </a>
+
+                <table style="width: 500px; height: auto; margin: 10px 20px 20px 20px;">
+                    <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Type</th>
+                        <th>Status</th>
+                        <th style="width: 60px;">Action</th>
+                    </tr>
+                    </thead>
+                    <tbody><!-- Listing will load here --></tbody>
+                </table>
+
+            </div><!-- End history reinspection screen -->
+
+        </div> <!--! end of inspection listing wrapper -->
+
+        <!--reinspection screen -->
+        <div id="reinspection" class="inspectionDetails hidden panel">
+            <form action="#" id="frmReinspection" name="frmReinspection">
+                <table id="tblReinspectionHeader" class="listing">
+                    <thead>
+                    <tr>
+                        <th class="tagID">Tag Id</th>
+                        <th class="location">Location</th>
+                        <th class="observation">Observation</th>
+                        <th class="action">Action</th>
+                        <th class="rectified">Rectified</th>
+                    </tr>
+                    </thead>
+                </table>
+                <div id="reinspectionScrollWrapper" class="scrollWrapper"></div>
+                <div class="infomation">
+                    <div style="float: left; width: 70%; overflow-y: auto; height: 60px;">
+                        <p>Please click a tag/item in the list above to begin the reinspection.</p>
+                    </div>
+                    <select name="rectified" id="rectified" style="display: none">
+                        <option value="Not Rectified">Not Rectified</option>
+                        <option value="Rectified">Rectified</option>
+                        <option value="Improvement Made">Improvement Made</option>
+                        <option value="On Order">On Order</option>
+                        <option value="Approved By CM">Approved By CM</option>
+                        <option value="NA">NA</option>
+                    </select>
+                </div>
+                <input type="hidden" name="failed" value="" class="ignore" />
+                <input type="hidden" name="finalised" value="0" class="ignore" />
+            </form>
+
+            <div style="clear: both;"></div>
+
+            <div class="bottomBtns">
+                <div id="reinspectionPassed" class="btnContainer left">
+                    <a href="#" class="passed"></a>
+                    <span>Passed</span>
+                </div>
+                <div id="reinspectionFailed" class="btnContainer left">
+                    <a href="#" class="failed"></a>
+                    <span>Failed</span>
+                </div>
+
+                <div class="btnContainer left">
+                    <a href="#" id="preview" class="preview"></a>
+                    <span>Preview</span>
+                </div>
+                <div class="btnContainer left">
+                    <a href="#" id="Reinspectweather" class="weather" data-reveal-id="reinspectionWeatherWrapper"></a>
+                    <span>Weather</span>
+                </div>
+
+                <div class="btnContainer left btnEditNotes" id="btnEditNotes">
+                    <a href="#" class="btnNotes " id="btnReinspectNotes"></a>
+                    <span>Notes</span>
+                </div>
+                <div class="btnContainer left " id="btnStep3Email">
+                    <a href="#" id="preview" class="email sendEmailButton" data-reveal-id="emailReportWrapper"></a>
+                    <span>Email</span>
+                </div>
+                <div class="btnContainer left">
+                    <a id="btnReinspectDelete" class="mtop20 right rightmargin btn-red-bg-w81" href="#">Delete</a>
+                </div>
+                <div class="btnContainer left">
+                    <a id="btnSendReinspectReport" class="button mtop20 right " href="javascript:void(0);">SEND BPI</a>
+                </div>
+
+                <div class="btnContainer right">
+                    <!-- <a id="btnStep3Email" class="button right rightmargin" href="#">Email</a> -->
+                    <a id="btnStep3Next" class="mtop20 right rightmargin btn-bg-w81" href="#">Done</a>
+                </div>
+            </div>
+            <div style="clear: both;"></div>
+
+            <div id="controlBtns">
+                <a id="btnCapturePhoto" data-reveal-id="photoWrapper" class="right reveal" href="#"></a>
+            </div>
+        </div>
+
+        <!-- Builder listing screen -->
+        <div id="buildersList" class="hidden panel">
+            <button id="btnAddBuilder" type="button" class="btn-bg-w200">Add New</button>
+            <button id="doSearch" type="button" class="btn-bg-w100">Search</button>
+            <div id="builderSearchContainer">
+                <img class="search-icon" src="images/search-icon.png" />
+                <input id="builderSearch" type="text" name="keywords" value="" placeholder="Search this list" />
+            </div>
+            <div class="clear"></div><br/>
+            <table id="tblBuilderListingHeader" class="listing">
+                <thead>
+                <tr>
+                    <th id="tbhead-builders" class="name">Builder</th>
+                    <th id="tbhead-add" class="address">Address</th>
+                    <th id="tbhead-phone" class="phone">Phone</th>
+                </tr>
+                </thead>
+            </table>
+
+            <div id="builderScrollWrapper" class="scrollWrapper">
+
+            </div>
+        </div> <!--! end of builder listing -->
+
+        <!-- Buidler detail screen -->
+        <div id="builderDetails" class="hidden panel twocolumn">
+            <form id="frmBuilderDetails" action="#" method="post">
+                <fieldset class="thefs">
+                    <label for="name">Builder Name *</label>
+                    <input type="text" name="name" id="name" value="" class="required" tabindex="1" />
+                    <label for="contact">Contact Name</label>
+                    <input type="text" name="contact" id="contact" value="" class="" tabindex="2" />
+                    <label for="phone">Phone</label>
+                    <input type="text" name="phone" id="phone" value="" class="" tabindex="3" />
+                    <label for="email">E-mail</label>
+                    <input type="text" name="email" id="email" value="" class="email" tabindex="4" />
+                </fieldset>
+                <fieldset class="thefs">
+                    <label for="address">Address</label>
+                    <input type="text" name="address" id="address" value="" class="" tabindex="5" />
+                    <label for="city">Suburb</label>
+                    <input type="text" name="city" id="city" value="" class="" tabindex="6" />
+                    <label for="postcode">Postcode</label>
+                    <input type="text" name="postcode" id="postcode" value="" class="number" tabindex="7" minlength="4" maxlength="4" />
+                    <label for="state">State</label>
+                    <select class="selector" id="state" title="Select a State" autocomplete="off">
+                        <option value="">Choose</option>
+                        <option value="VIC">VIC</option>
+                        <option value="NSW">NSW</option>
+                        <option value="ACT">ACT</option>
+                        <option value="QLD">QLD</option>
+                        <option value="NT">NT</option>
+                        <option value="WA">WA</option>
+                        <option value="SA">SA</option>
+                        <option value="TAS">TAS</option>
+                    </select>
+                </fieldset>
+                <div class="clear"></div><br />
+                <div class="aright">
+                    <button id="btnSaveBuilder" type="button" class="btn-bg-w200">Save</button>
+                </div>
+                <input type="hidden" id="created_by" name="created_by" value="" />
+            </form>
+
+        </div> <!--! end of builder detail screen -->
+
+    </div><!-- end content div -->
+
+    <form class="search">
+        <input type="text" name="keywords" value="" placeholder="Search this list" />
+    </form>
+
+    <footer>
+        <ul>
+            <li><a id="navHome" href="#">Home</a></li>
+            <li><a id="navNewInspection" href="#">New Inspection</a></li>
+            <li><a id="navInspections" href="#">Inspections</a></li>
+            <li><a id="navBuilders" href="#">Builders</a></li>
+            <li><a id="navSync" class="active" href="#">Sync</a></li>
+            <li><a id="navLogout" href="#">Logout</a></li>
+        </ul>
+    </footer><!-- end global footer -->
+</div>
+
+<div id="emailReportWrapper" class="reveal-modal">
+    <a class="close-reveal-modal" style="font-size: 40px; color: red;">&#215;</a>
+    <!--
+    <div class="left">
+        <label>Add Recipients From Address Book</label>
+
+        <div class="left" style="width: 370px;" id="emailListWrapper">
+            <ul id="emailList" title="Select Email">
+
+            </ul>
+        </div>
+
+        <div class="clear"></div>
+
+        <form id="frmEmailAdressBooks" name="frmEmailAdressBook" action="#" method="post">
+            <fieldset>
+
+                <div class="clear"></div>
+
+                <label for="newEmail">Add new email address:</label>
+                <input type="text" id="newEmail" name="newEmail" value="" style="width: 300px; margin-bottom: 20px;"/>
+
+
+                <div class="clear"></div>
+                <input type="submit" value="Add" />
+            </fieldset>
+        </form>
+    </div>
+    -->
+    <div >
+        <form id="frmEmailTo" name="frmEmailTo" action="#" method="post">
+            <fieldset>
+                <legend>Email Report To</legend>
+
+                <ul id="list_email">
+                    <li><input type="checkbox" id="emailToOffice" value="1"  /> <label for="emailToMe">Office</label></li>
+                    <li><input type="checkbox" id="emailToBuilder" value="1" /> <label for="emailToBuilder">Builder</label></li>
+                </ul>
+
+                <div class="clear"></div>
+
+                <label for="emailTo">Recipients</label>
+                <textarea style="display: none;" id="emailTo" name="emailTo"></textarea>
+
+                <select id="recipients" name="" multiple=""></select>
+
+                <ul>
+                    <li><input type="checkbox" id="attach_inspection_images" value="0" /> <label for="attach_inspection_images">Attach Inspection Images</label></li>
+                </ul>
+
+                <div class="clear"></div>
+                <input type="hidden"id="chart_image" name="chart_image" />
+                <input type="submit" value="Send &gt;&gt;" />
+            </fieldset>
+        </form>
+    </div>
+</div>
+
+<div id="reinspectionWeatherWrapper" class="reveal-modal">
+    <a class="close-reveal-modal" style="font-size: 40px; color: red;">&#215;</a>
+    <fieldset>
+        <legend><label for="reinspectWeather">Weather</label></legend>
+        <input type="text"  id="reinspectWeatherInput" name="reinspectWeather" value="" />
+        <div class="clear"></div>
+        <a id="btnRWSave" class="left" href="#">Save</a>
+    </fieldset>
+</div>
+
+<div id="inspectionChartWrapper" class="reveal-modal">
+    <a class="close-reveal-modal" style="font-size: 40px; color: red;">&#215;</a>
+    <div id="piechart" ></div>
+</div>
+
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+    google.charts.load('current', {'packages':['corechart']});
+    google.charts.setOnLoadCallback(drawChart);
+    var current_inspection_id = 0;
+    var inspection_charts = [];
+    var inspections_ids = [];
+    function drawChart() {
+
+        var data = google.visualization.arrayToDataTable([
+            ['Location', 'Quantity'],
+            ['General',     1]
+        ]);
+
+        var options = {
+            title: '',
+            width: '100%',
+            height: '100%',
+            pieSliceText: 'percentage',
+            is3D: true,
+        };
+
+        chart = new google.visualization.PieChart(document.getElementById('piechart'));
+        // Wait for the chart to finish drawing before calling the getImageURI() method.
+        google.visualization.events.addListener(chart, 'ready', function () {
+            var image_data = chart.getImageURI();
+            $("#chart_image").attr('value', image_data);
+            if (current_inspection_id && inspections_ids.indexOf(current_inspection_id) == -1){
+                inspections_ids.push(current_inspection_id);
+                inspection_charts.push(image_data);
+            }
+        });
+        chart.draw(data, options);
+    }
+    function removeChartFromQueue(inspection_id){
+        var i = inspections_ids.indexOf(inspection_id);
+        if (i != -1){
+            inspections_ids.splice(i, 1);
+            if (typeof inspection_charts[i] != 'undefined'){
+                inspection_charts.splice(i, 1);
+            }
+        }
+    }
+</script>
+
+</body>
+</html>
