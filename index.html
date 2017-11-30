@@ -1201,9 +1201,14 @@
         google.visualization.events.addListener(chart, 'ready', function () {
             var image_data = chart.getImageURI();
             $("#chart_image").attr('value', image_data);
-            if (current_inspection_id && inspections_ids.indexOf(current_inspection_id) == -1){
-                inspections_ids.push(current_inspection_id);
-                inspection_charts.push(image_data);
+            if (current_inspection_id){
+                var i = inspections_ids.indexOf(current_inspection_id);
+                if (i == -1){
+                    inspections_ids.push(current_inspection_id);
+                    inspection_charts.push(image_data);
+                }else{
+                    inspection_charts[i] = image_data;
+                }
             }
         });
         chart.draw(data, options);

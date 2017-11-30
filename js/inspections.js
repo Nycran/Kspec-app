@@ -79,7 +79,7 @@ var Inspections = function()
         
         // Ensure all keys are cleared
         objApp.clearKeys();
-        this.inspection = false;
+        self.inspection = false;
         
         objDBUtils.orderBy = "name";
         $("#inspectionList .bottomBtns").find("a").removeClass("active");
@@ -990,62 +990,62 @@ var Inspections = function()
             }, "");
 
         }
-        else if(this.inspection) {
-            if(this.inspection.min_roof_tiles == 1) {
+        else if(self.inspection) {
+            if(self.inspection.min_roof_tiles == 1) {
                 $("#btnMinRoofTilesYes").removeClass("yesno_disabled").addClass("yesno_enabled");
                 $("#btnMinRoofTilesNo").removeClass("yesno_enabled").addClass("yesno_disabled");
                 $("#min_roof_tiles").val("1");
-            } else if(this.inspection.min_roof_tiles == 0) {
+            } else if(self.inspection.min_roof_tiles == 0) {
                 $("#btnMinRoofTilesYes").removeClass("yesno_enabled").addClass("yesno_disabled");
                 $("#btnMinRoofTilesNo").removeClass("yesno_disabled").addClass("yesno_enabled");
                 $("#min_roof_tiles").val("0");
             }
 
-            if(this.inspection.min_ridge_tiles == 1) {
+            if(self.inspection.min_ridge_tiles == 1) {
                 $("#btnMinRidgeTilesYes").removeClass("yesno_disabled").addClass("yesno_enabled");
                 $("#btnMinRidgeTilesNo").removeClass("yesno_enabled").addClass("yesno_disabled");
                 $("#min_ridge_tiles").val("1");
-            } else if(this.inspection.min_ridge_tiles == 0) {
+            } else if(self.inspection.min_ridge_tiles == 0) {
                 $("#btnMinRidgeTilesYes").removeClass("yesno_enabled").addClass("yesno_disabled");
                 $("#btnMinRidgeTilesNo").removeClass("yesno_disabled").addClass("yesno_enabled");
                 $("#min_ridge_tiles").val("0");
             }
 
-            if(this.inspection.touch_up_paint == 1) {
+            if(self.inspection.touch_up_paint == 1) {
                 $("#btnTouchUpPaintYes").removeClass("yesno_disabled").addClass("yesno_enabled");
                 $("#btnTouchUpPaintNo").removeClass("yesno_enabled").addClass("yesno_disabled");
                 $("#touch_up_paint").val("1");
-            } else if(this.inspection.touch_up_paint == 0) {
+            } else if(self.inspection.touch_up_paint == 0) {
                 $("#btnTouchUpPaintYes").removeClass("yesno_enabled").addClass("yesno_disabled");
                 $("#btnTouchUpPaintNo").removeClass("yesno_disabled").addClass("yesno_enabled");
                 $("#touch_up_paint").val("0");
             }
 
-            if(this.inspection.min_flooring_tiles == 1) {
+            if(self.inspection.min_flooring_tiles == 1) {
                 $("#btnMinFlooringTilesYes").removeClass("yesno_disabled").addClass("yesno_enabled");
                 $("#btnMinFlooringTilesNo").removeClass("yesno_enabled").addClass("yesno_disabled");
                 $("#min_flooring_tiles").val("1");
-            } else if(this.inspection.min_flooring_tiles == 0) {
+            } else if(self.inspection.min_flooring_tiles == 0) {
                 $("#btnMinFlooringTilesYes").removeClass("yesno_enabled").addClass("yesno_disabled");
                 $("#btnMinFlooringTilesNo").removeClass("yesno_disabled").addClass("yesno_enabled");
                 $("#min_flooring_tiles").val("0");
             }
 
-            if(this.inspection.grout_samples == 1) {
+            if(self.inspection.grout_samples == 1) {
                 $("#btnGroutSamplesYes").removeClass("yesno_disabled").addClass("yesno_enabled");
                 $("#btnGroutSamplesNo").removeClass("yesno_enabled").addClass("yesno_disabled");
                 $("#grout_samples").val("1");
-            } else if(this.inspection.grout_samples == 0) {
+            } else if(self.inspection.grout_samples == 0) {
                 $("#btnGroutSamplesYes").removeClass("yesno_enabled").addClass("yesno_disabled");
                 $("#btnGroutSamplesNo").removeClass("yesno_disabled").addClass("yesno_enabled");
                 $("#grout_samples").val("0");
             }
-            $("#barrel_code").val(this.inspection.barrel_code);
+            $("#barrel_code").val(self.inspection.barrel_code);
 
         } 
         
         /*
-        if(this.inspection.report_type == "Fix / Plaster Inspection") {
+        if(self.inspection.report_type == "Fix / Plaster Inspection") {
             $('#inspectionStep4 > .bottomBtns > .btnContainer.right > a#btnStep4Next').html('Exit');
         } else {
             $('#inspectionStep4 > .bottomBtns > .btnContainer.right > a#btnStep4Next').html('Next &rsaquo;&rsaquo;');
@@ -1069,25 +1069,25 @@ var Inspections = function()
 
         objApp.clearMain();
 
-        if(this.inspection) {
-            if(!objApp.empty(this.inspection.brickwork)) {
-                $("#brickwork").val(this.inspection.brickwork);
+        if(self.inspection) {
+            if(!objApp.empty(self.inspection.brickwork)) {
+                $("#brickwork").val(self.inspection.brickwork);
             }
 
-            if(!objApp.empty(this.inspection.paint_quality)) {
-                $("#paint_quality").val(this.inspection.paint_quality);
+            if(!objApp.empty(self.inspection.paint_quality)) {
+                $("#paint_quality").val(self.inspection.paint_quality);
             }
 
-            if(!objApp.empty(this.inspection.plaster_quality)) {
-                $("#plaster_quality").val(this.inspection.plaster_quality);
+            if(!objApp.empty(self.inspection.plaster_quality)) {
+                $("#plaster_quality").val(self.inspection.plaster_quality);
             }
 
-            if(!objApp.empty(this.inspection.interior_quality)) {
-                $("#interior_quality").val(this.inspection.interior_quality);
+            if(!objApp.empty(self.inspection.interior_quality)) {
+                $("#interior_quality").val(self.inspection.interior_quality);
             }
 
-            if(!objApp.empty(this.inspection.exterior_quality)) {
-                $("#exterior_quality").val(this.inspection.exterior_quality);
+            if(!objApp.empty(self.inspection.exterior_quality)) {
+                $("#exterior_quality").val(self.inspection.exterior_quality);
             }
 
             var brickwork = parseInt($('#inspectionStep5 #brickwork').val());
@@ -1573,6 +1573,57 @@ var Inspections = function()
 		$("#inspection #created_by").val(inspection.created_by);
 
         $("#inspectionStep4 #emailTo").val("");
+
+        if(inspection.min_roof_tiles == 1) {
+            $("#btnMinRoofTilesYes").removeClass("yesno_disabled").addClass("yesno_enabled");
+            $("#btnMinRoofTilesNo").removeClass("yesno_enabled").addClass("yesno_disabled");
+            $("#min_roof_tiles").val("1");
+        } else if(inspection.min_roof_tiles == 0) {
+            $("#btnMinRoofTilesYes").removeClass("yesno_enabled").addClass("yesno_disabled");
+            $("#btnMinRoofTilesNo").removeClass("yesno_disabled").addClass("yesno_enabled");
+            $("#min_roof_tiles").val("0");
+        }
+
+        if(inspection.min_ridge_tiles == 1) {
+            $("#btnMinRidgeTilesYes").removeClass("yesno_disabled").addClass("yesno_enabled");
+            $("#btnMinRidgeTilesNo").removeClass("yesno_enabled").addClass("yesno_disabled");
+            $("#min_ridge_tiles").val("1");
+        } else if(inspection.min_ridge_tiles == 0) {
+            $("#btnMinRidgeTilesYes").removeClass("yesno_enabled").addClass("yesno_disabled");
+            $("#btnMinRidgeTilesNo").removeClass("yesno_disabled").addClass("yesno_enabled");
+            $("#min_ridge_tiles").val("0");
+        }
+
+        if(inspection.touch_up_paint == 1) {
+            $("#btnTouchUpPaintYes").removeClass("yesno_disabled").addClass("yesno_enabled");
+            $("#btnTouchUpPaintNo").removeClass("yesno_enabled").addClass("yesno_disabled");
+            $("#touch_up_paint").val("1");
+        } else if(inspection.touch_up_paint == 0) {
+            $("#btnTouchUpPaintYes").removeClass("yesno_enabled").addClass("yesno_disabled");
+            $("#btnTouchUpPaintNo").removeClass("yesno_disabled").addClass("yesno_enabled");
+            $("#touch_up_paint").val("0");
+        }
+
+        if(inspection.min_flooring_tiles == 1) {
+            $("#btnMinFlooringTilesYes").removeClass("yesno_disabled").addClass("yesno_enabled");
+            $("#btnMinFlooringTilesNo").removeClass("yesno_enabled").addClass("yesno_disabled");
+            $("#min_flooring_tiles").val("1");
+        } else if(inspection.min_flooring_tiles == 0) {
+            $("#btnMinFlooringTilesYes").removeClass("yesno_enabled").addClass("yesno_disabled");
+            $("#btnMinFlooringTilesNo").removeClass("yesno_disabled").addClass("yesno_enabled");
+            $("#min_flooring_tiles").val("0");
+        }
+
+        if(inspection.grout_samples == 1) {
+            $("#btnGroutSamplesYes").removeClass("yesno_disabled").addClass("yesno_enabled");
+            $("#btnGroutSamplesNo").removeClass("yesno_enabled").addClass("yesno_disabled");
+            $("#grout_samples").val("1");
+        } else if(inspection.grout_samples == 0) {
+            $("#btnGroutSamplesYes").removeClass("yesno_enabled").addClass("yesno_disabled");
+            $("#btnGroutSamplesNo").removeClass("yesno_disabled").addClass("yesno_enabled");
+            $("#grout_samples").val("0");
+        }
+        $("#barrel_code").val(inspection.barrel_code);
 
 		// Show the inspection screen.
 		$("#inspection").removeClass("hidden");
@@ -2674,6 +2725,8 @@ var Inspections = function()
 
         $("#btnMinRoofTilesYes").bind(objApp.touchEvent, function(e)
         {
+            if (self.finalised == 1)
+                return false;
             $("#btnMinRoofTilesYes").removeClass("yesno_disabled").addClass("yesno_enabled");
             $("#btnMinRoofTilesNo").removeClass("yesno_enabled").addClass("yesno_disabled");
             $("#min_roof_tiles").val("1");
@@ -3288,7 +3341,7 @@ var Inspections = function()
                         alert(data.message);
                         return;
                     }
-                    alert("The report was sent successfully to dropbox");
+                    alert("The report was sent successfully to google drive");
                 }, "").fail(function() {
                     unblockElement('body');
                     alert( "Unknown error" );
@@ -3321,7 +3374,7 @@ var Inspections = function()
                         alert(data.message);
                         return;
                     }
-                    alert("The report was sent successfully to dropbox");
+                    alert("The report was sent successfully to google drive");
                 }, "").fail(function() {
                     unblockElement('body');
                     alert( "Unknown error" );

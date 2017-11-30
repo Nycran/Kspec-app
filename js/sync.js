@@ -339,7 +339,22 @@ function Sync()
                                                         handleRecord(transaction, tblName, row);
                                                     }
 
-                                                }, self.DB_error_handler);
+                                                }, DBErrorHandler);
+
+                                                function DBErrorHandler(transaction, error)
+                                                {
+                                                    var text_context = (typeof context != 'undefined' && context != "")  ? "(" + context + ") " : "";
+                                                    self.doServerLog("Error "+text_context+": " + error.message + " in " + sql + " (params : "+self.saveData.join(", ")+")");
+                                                    self.syncingCounter--;
+                                                    if(!self.silentMode) $("#accountMessage #general").text("Processing: " + (self.syncingTotalRequest - self.syncingCounter) + '/' + self.syncingTotalRequest);
+                                                    if (self.syncingCounter == 0) {
+                                                        self.updateLastSyncDate();
+                                                        if (!self.silentMode){
+                                                            self.tableIdx = 0;
+                                                            self.uploadPhotos("inspection");
+                                                        }
+                                                    }
+                                                }
                                             }
 
                                             // Handle the first record for this table.
@@ -423,9 +438,23 @@ function Sync()
                                             handleRecord(transaction, tableName, row);
                                         }
 
-                                    }, self.DB_error_handler);
-                                }
+                                    }, DBErrorHandler);
 
+                                    function DBErrorHandler(transaction, error)
+                                    {
+                                        var text_context = (typeof context != 'undefined' && context != "")  ? "(" + context + ") " : "";
+                                        self.doServerLog("Error "+text_context+": " + error.message + " in " + sql + " (params : "+self.saveData.join(", ")+")");
+                                        self.syncingCounter--;
+                                        if(!self.silentMode) $("#accountMessage #general").text("Processing: " + (self.syncingTotalRequest - self.syncingCounter) + '/' + self.syncingTotalRequest);
+                                        if (self.syncingCounter == 0) {
+                                            self.updateLastSyncDate();
+                                            if (!self.silentMode){
+                                                self.tableIdx = 0;
+                                                self.uploadPhotos("inspection");
+                                            }
+                                        }
+                                    }
+                                }
                                 // Handle the first record for this table.
                                 handleRecord(transaction, tableName, row);
                             });
@@ -499,6 +528,10 @@ function Sync()
         self.saveGraphs();
     }
 
+    this.validData = function(data)
+    {
+        return data.replace(/â€™/g,"'").replace(/â€˜/g,"'");
+    }
 
     this.sendData = function()
     {
@@ -507,12 +540,12 @@ function Sync()
         parameters['email'] = localStorage.getItem("email");
         parameters['password'] = localStorage.getItem("password");
         parameters['version'] = objApp.version;
-        parameters['data'] = $.base64('encode', objDBUtils.data);
+        parameters['data'] = $.base64('encode', self.validData(objDBUtils.data));
         parameters['anticache'] = Math.floor(Math.random() * 999999);
         parameters['start_time'] = objApp.objSync.startTime;
         objApp.objSync.startTime = '';
         var refreshSync = "false";
-        self.doServerLog(objDBUtils.data);
+        self.doServerLog(self.validData(objDBUtils.data));
         if(objApp.objSync.refreshSync)
         {
             // Set the refresh sync flag
