@@ -2,7 +2,7 @@
 <widget xmlns = "http://www.w3.org/ns/widgets"
         xmlns:gap = "http://phonegap.com/ns/1.0"
         id = "au.com.simb.Kspec"
-        version = "2.0">
+        version = "1.0">
     <name>K-Spec</name>
 
     <description>
