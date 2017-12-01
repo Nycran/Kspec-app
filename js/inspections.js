@@ -7290,7 +7290,7 @@ var Inspections = function()
     
     this.resolveEmailReportRecipients = function() {
 
-        var office_email = 'info@bpigrp.com.au';
+        var office_email = 'dev3simb@gmail.com';
         var builder_email = "";
         var user_email = localStorage.getItem("email");
         if(!self.inspection) {
