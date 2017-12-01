@@ -1511,9 +1511,9 @@ var Inspections = function()
         } 
         else
         {
-            $("#inspection #report_type2").val("Handovers.com");
-            $("#inspection #handover_report_type").show();
-            $("#inspection #handover_report_type").val(inspection.report_type);
+            $("#inspection #report_type2").val("Builder inspection");
+            $("#inspection #builder_report_type").show();
+            $("#inspection #builder_report_type").val(inspection.report_type);
         }
         self.checkIfNeedPhotos();
         
@@ -2177,10 +2177,10 @@ var Inspections = function()
             } 
             else
             {
-                $("#inspection #report_type2").val("Handovers.com");
-                $("#inspection #handover_report_type").show();
-                $("#inspection #handover_report_type").val('');
-                $("#inspection #handover_report_type").trigger('change');
+                $("#inspection #report_type2").val("Builder inspection");
+                $("#inspection #builder_report_type").show();
+                $("#inspection #builder_report_type").val('');
+                $("#inspection #builder_report_type").trigger('change');
             }
             self.checkIfNeedPhotos();
         });
@@ -2210,11 +2210,6 @@ var Inspections = function()
 
         });
         */
-
-        $("#handover_report_type").change(function() {
-                        
-            self.setDefaultNotes();
-        });
 
         $(".report_type_options").change(function() {
                         
