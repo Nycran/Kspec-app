@@ -1626,6 +1626,17 @@ aside textarea
     min-height: 320px;
 }
 
+#frmInstalldItems{margin-left: 10px;}
+#frmInstalldItems > table.listing{width: 980px;}
+#frmInstalldItems #installedItemsScrollWrapper > table{width: 980px;}
+
+.inspectionDetails #installedItemsScrollWrapper{
+    height: 390px;
+    overflow-x: hidden;
+    max-height: 390px;
+    min-height: 390px;
+}
+
 .inspectionDetails ul.gallery{
     height: auto;
     overflow: auto;

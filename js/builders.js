@@ -165,7 +165,7 @@ var Builders = function()
 			    var row = items.rows.item(r);
 				
 			    // Derive the location of the builder.
-			    var location = row.address +", "+ row.city +", "+ row.state; 
+			    var location = (row.address?row.address +", ":"")+ (row.city?row.city +", ":"") + row.state;
 			    html += '<tr rel="' + row.id + '">';
 			    html += '<td rel="' + row.id + '"><div rel="' + row.id + '" class="delete"></div><span class="view">' + row.name + '</span></td>';
 			    html += '<td rel="' + row.id + '">' + location + '</td>';

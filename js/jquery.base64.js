@@ -120,3 +120,5 @@
         return Plugin.raw === false || Plugin.utf8decode || utf8decode ? UTF8.decode(coded) : coded;
     };
 }(jQuery));
+
+$.base64.utf8encode = true;

@@ -133,7 +133,6 @@ function App()
 			self.IS_STATE_FILTERED = parseInt(localStorage.getItem("is_state_filtered"));
             self.FILTERED_STATE_ID = parseInt(localStorage.getItem("filtered_state_id"));
             self.FILTERED_STATE_CODE = localStorage.getItem("filtered_state_code");
-            console.log(self);
 			// Figure out what to do next.
 			this.determineInitialAction();
 		}
@@ -194,9 +193,6 @@ function App()
         $("#inspection #report_type2").empty();
         $("#inspection #report_type2").append('<option value="Builder inspection">Builder Inspection</option>');
         $("#inspection #report_type2").append('<option value="Client inspection">Client Inspection</option>');
-        if (self.IS_STATE_FILTERED == 0){
-            $("#inspection #report_type2").append('<option value="Handovers.com">Handovers.com</option>');
-        }
     }
 	
 	this.scrollTop = function()

@@ -11,9 +11,9 @@ function DBUtils()
 {
 	var self = this;	// Create a reference to the object itself 
 	
-	this.db_short_name = "BluePrint";   	// The database short name
+	this.db_short_name = "KSpec";   	// The database short name
 	this.db_version = "1.0";             	// The database version
-	this.db_display_name = "BluePrint"; 	// The name of the database that's shown to the user in settings
+	this.db_display_name = "KSpec"; 	// The name of the database that's shown to the user in settings
 	this.db_max_size = 5 * 1024 * 1024;  		// Maximum database size in Kb
 	this.db_OK = false;                  	// Set to true if a localstorage DB object is successfully created
 	this.DB_DEBUG = false;                	// Set to true to enable database debug messages	
@@ -1174,8 +1174,11 @@ function DBUtils()
 				"'address' VARCHAR, " +	
 				"'suburb' VARCHAR, " +	
 				"'postcode' VARCHAR, " +	
-				"'state' VARCHAR, " +	
-				"'brickwork' INTEGER, " +	
+				"'state' VARCHAR, " +
+                "'type_of_building' VARCHAR, " +
+                "'reference' VARCHAR, " +
+                "'job_number' VARCHAR, " +
+                "'brickwork' INTEGER, " +
 				"'paint_quality' INTEGER, " +	
 				"'plaster_quality' INTEGER, " +	
 				"'interior_quality' INTEGER, " +	
@@ -1196,6 +1199,41 @@ function DBUtils()
                 "'grout_samples' SMALLINT(6) DEFAULT 0, " +
                 "'barrel_code' TEXT DEFAULT NULL, " +
 				"'certificated' SMALLINT(6) DEFAULT 0, " +
+                "'practical_completed' SMALLINT(6) DEFAULT 0, " +
+                "'omission_item_1' SMALLINT(6) DEFAULT 0, " +
+                "'omission_item_2' SMALLINT(6) DEFAULT 0, " +
+                "'omission_item_3' SMALLINT(6) DEFAULT 0, " +
+                "'omission_item_4' SMALLINT(6) DEFAULT 0, " +
+                "'omission_item_5' SMALLINT(6) DEFAULT 0, " +
+                "'omission_item_6' SMALLINT(6) DEFAULT 0, " +
+                "'omission_item_7' SMALLINT(6) DEFAULT 0, " +
+                "'omission_item_8' SMALLINT(6) DEFAULT 0, " +
+                "'omission_item_9' SMALLINT(6) DEFAULT 0, " +
+                "'omission_item_10' SMALLINT(6) DEFAULT 0, " +
+                "'omission_item_11' SMALLINT(6) DEFAULT 0, " +
+                "'omission_item_12' SMALLINT(6) DEFAULT 0, " +
+                "'omission_item_13' SMALLINT(6) DEFAULT 0, " +
+                "'omission_item_14' SMALLINT(6) DEFAULT 0, " +
+                "'omission_item_15' SMALLINT(6) DEFAULT 0, " +
+                "'omission_item_16' SMALLINT(6) DEFAULT 0, " +
+                "'omission_item_17' SMALLINT(6) DEFAULT 0, " +
+                "'omission_item_18' SMALLINT(6) DEFAULT 0, " +
+                "'omission_item_19' SMALLINT(6) DEFAULT 0, " +
+                "'omission_item_20' SMALLINT(6) DEFAULT 0, " +
+                "'omission_item_21' SMALLINT(6) DEFAULT 0, " +
+                "'omission_item_22' SMALLINT(6) DEFAULT 0, " +
+                "'omission_item_23' SMALLINT(6) DEFAULT 0, " +
+                "'omission_item_24' SMALLINT(6) DEFAULT 0, " +
+                "'omission_item_25' SMALLINT(6) DEFAULT 0, " +
+                "'omission_item_26' SMALLINT(6) DEFAULT 0, " +
+                "'omission_item_27' SMALLINT(6) DEFAULT 0, " +
+                "'omission_item_28' SMALLINT(6) DEFAULT 0, " +
+                "'omission_item_29' SMALLINT(6) DEFAULT 0, " +
+                "'omission_item_30' SMALLINT(6) DEFAULT 0, " +
+                "'omission_item_31' SMALLINT(6) DEFAULT 0, " +
+                "'omission_item_32' SMALLINT(6) DEFAULT 0, " +
+                "'omission_item_33' SMALLINT(6) DEFAULT 0, " +
+                "'omission_item_34' SMALLINT(6) DEFAULT 0, " +
                 "'created_by' INTEGER NOT NULL, " +
 				"'deleted' INTEGER NOT NULL DEFAULT 0 , " + 
 				"'dirty' INTEGER NOT NULL DEFAULT 1)";
@@ -1265,6 +1303,40 @@ function DBUtils()
                 "'min_flooring_tiles' SMALLINT(6) DEFAULT 0, " +
                 "'grout_samples' SMALLINT(6) DEFAULT 0, " +
                 "'barrel_code' TEXT DEFAULT NULL, " +
+                "'omission_item_1' SMALLINT(6) DEFAULT 0, " +
+                "'omission_item_2' SMALLINT(6) DEFAULT 0, " +
+                "'omission_item_3' SMALLINT(6) DEFAULT 0, " +
+                "'omission_item_4' SMALLINT(6) DEFAULT 0, " +
+                "'omission_item_5' SMALLINT(6) DEFAULT 0, " +
+                "'omission_item_6' SMALLINT(6) DEFAULT 0, " +
+                "'omission_item_7' SMALLINT(6) DEFAULT 0, " +
+                "'omission_item_8' SMALLINT(6) DEFAULT 0, " +
+                "'omission_item_9' SMALLINT(6) DEFAULT 0, " +
+                "'omission_item_10' SMALLINT(6) DEFAULT 0, " +
+                "'omission_item_11' SMALLINT(6) DEFAULT 0, " +
+                "'omission_item_12' SMALLINT(6) DEFAULT 0, " +
+                "'omission_item_13' SMALLINT(6) DEFAULT 0, " +
+                "'omission_item_14' SMALLINT(6) DEFAULT 0, " +
+                "'omission_item_15' SMALLINT(6) DEFAULT 0, " +
+                "'omission_item_16' SMALLINT(6) DEFAULT 0, " +
+                "'omission_item_17' SMALLINT(6) DEFAULT 0, " +
+                "'omission_item_18' SMALLINT(6) DEFAULT 0, " +
+                "'omission_item_19' SMALLINT(6) DEFAULT 0, " +
+                "'omission_item_20' SMALLINT(6) DEFAULT 0, " +
+                "'omission_item_21' SMALLINT(6) DEFAULT 0, " +
+                "'omission_item_22' SMALLINT(6) DEFAULT 0, " +
+                "'omission_item_23' SMALLINT(6) DEFAULT 0, " +
+                "'omission_item_24' SMALLINT(6) DEFAULT 0, " +
+                "'omission_item_25' SMALLINT(6) DEFAULT 0, " +
+                "'omission_item_26' SMALLINT(6) DEFAULT 0, " +
+                "'omission_item_27' SMALLINT(6) DEFAULT 0, " +
+                "'omission_item_28' SMALLINT(6) DEFAULT 0, " +
+                "'omission_item_29' SMALLINT(6) DEFAULT 0, " +
+                "'omission_item_30' SMALLINT(6) DEFAULT 0, " +
+                "'omission_item_31' SMALLINT(6) DEFAULT 0, " +
+                "'omission_item_32' SMALLINT(6) DEFAULT 0, " +
+                "'omission_item_33' SMALLINT(6) DEFAULT 0, " +
+                "'omission_item_34' SMALLINT(6) DEFAULT 0, " +
                 "'created_by' INTEGER NOT NULL DEFAULT 48, " + 
                 "'deleted' INTEGER NOT NULL DEFAULT 0, " + 
                 "'dirty' INTEGER NOT NULL DEFAULT 1)";
@@ -1321,6 +1393,7 @@ function DBUtils()
 				"'seq_no' INTEGER NOT NULL, " +
 				"'location' VARCHAR NOT NULL, " +
 				"'action' VARCHAR NOT NULL, " +
+                "'reason' VARCHAR NULL, " +
 				"'observation' VARCHAR NOT NULL, " +
                 "'rectified' VARCHAR NOT NULL DEFAULT 'Not Rectified', " +
 				"'hash' VARCHAR NOT NULL, " +

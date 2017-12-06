@@ -49,6 +49,7 @@ var Inspections = function()
     this.inspection = false;
     this.keySortArray = false;
     this.MAX_REPORT_PHOTOS = 12;
+    this.TOTAL_OMISSIONS_ITEMS = 34;
 	
 	this.current_table = "inspectionitemphotos";
 	this.current_key = "inspection_id";
@@ -172,9 +173,9 @@ var Inspections = function()
 		$("#tblInspectionListingHeader th .triangle").remove();
         
         // Kill iScroll if it already exists
-        if(this.scroller) {
-            this.scroller.destroy();
-            this.scroller = null;
+        if(self.scroller) {
+            self.scroller.destroy();
+            self.scroller = null;
         }
 
         // Remove previously bound events
@@ -295,8 +296,10 @@ var Inspections = function()
 			    html += '<td>' + row.lot_no + ' ' + row.address + ' ' + row.suburb + '</td>';
 			    html += '<td>' + row.name + '</td>';
                 var report_type = row.report_type.replace('inspections', 'inspection');
+                /*
                 if (report_type == 'Builder: PCI/Final inspection')
                     report_type = 'QA Inspection';
+                    */
 			    html += '<td>' + report_type + '</td>';
                 html += '<td>' + row.num_reinspections + '</td>';
                 
@@ -533,13 +536,17 @@ var Inspections = function()
                                 + currentdate.getDate();
 
                 var reinspection_id = objDBUtils.makeInsertKey(objApp.sync_prefix);
-                var values = [reinspection_id, inspection_id, curdate, 1, 1,self.reinspectionNotes,
-                row.min_roof_tiles, row.min_ridge_tiles, row.touch_up_paint, row.min_flooring_tiles, row.grout_samples,
-                row.barrel_code];
+                var values = [reinspection_id, inspection_id, curdate, 1, 1,self.reinspectionNotes];
+                for(var i = 1; i <= self.TOTAL_OMISSIONS_ITEMS; i++)
+                    values.push(row['omission_item_' + i]);
                 
-                sql = "INSERT INTO reinspections(id, inspection_id, reinspection_date, failed, most_recent,notes, " +
-                    "min_roof_tiles, min_ridge_tiles, touch_up_paint, min_flooring_tiles, grout_samples, barrel_code) " +
-                    "VALUES(?,?,?,?,?,?,?,?,?,?,?,?)";
+                sql = "INSERT INTO reinspections(id, inspection_id, reinspection_date, failed, most_recent, notes ";
+                for(var i = 1; i <= self.TOTAL_OMISSIONS_ITEMS; i++)
+                    sql += ', omission_item_' + i;
+                sql += ') VALUES(?,?,?,?,?,?';
+                for(var i = 1; i <= self.TOTAL_OMISSIONS_ITEMS; i++)
+                    sql += ',?';
+                sql += ')';
 
                 objDBUtils.execute(sql, values, function(){
                     
@@ -752,9 +759,8 @@ var Inspections = function()
             objApp.setSubHeading("Create a New Inspection");
             
             $("div.btnEditNotes").show();
-            
-            //if(($("#inspection #report_type").val() == "Builder: PCI/Final inspections") || (objApp.keys.report_type == "Builder: PCI/Final inspections")) {
-            if(( objApp.keys.report_type == "Quality Inspection") || (objApp.keys.report_type == "Builder: PCI/Final inspections")) {
+
+            if(objApp.keys.report_type == "Builder: Quality Inspection") {
                 
                 objApp.setSubExtraHeading("Step 1 of 5", true);
             } /*else if (($("#inspection #report_type").val() == "Fix / Plaster Inspection") || (objApp.keys.report_type == "Fix / Plaster Inspection")) {
@@ -774,7 +780,7 @@ var Inspections = function()
         objApp.setSubHeading("Add Issues");
         $("div.btnEditNotes").show();
         
-        if(( objApp.keys.report_type == "Quality Inspection") || (objApp.keys.report_type == "Builder: PCI/Final inspections")) {
+        if(objApp.keys.report_type == "Builder: Quality Inspection") {
             objApp.setSubExtraHeading("Step 2 of 5", true);
         } /*else if(($("#inspection #report_type").val() == "Fix / Plaster Inspection") || (objApp.keys.report_type == "Fix / Plaster Inspection")) {    
             objApp.setSubExtraHeading("Step 2 of 4", true);
@@ -836,12 +842,12 @@ var Inspections = function()
             self.inspection = inspection;
 
             var inspection_property = "Lot " + inspection.lot_no + ", " + inspection.address + ", " + inspection.suburb;
-            
+            console.log(inspection.report_type);
             objApp.setSubHeading("Review Inspection @ " + inspection_property);  
             
             // If this a 5 step inspection, hide the finalisation buttons on step 3
             //if((inspection.report_type == "Builder: PCI/Final inspections") || (inspection.report_type == "Fix / Plaster Inspection")) {
-            if(inspection.report_type == "Quality Inspection" || inspection.report_type == "Builder: PCI/Final inspections") {
+            if(inspection.report_type == "Builder: Quality Inspection" ) {
                 $("#btnFinishedWrapper").hide();
                 $("#btnSendReport").addClass('hidden');
             } else {
@@ -849,12 +855,12 @@ var Inspections = function()
                 $("#btnSendReport").removeClass('hidden');
             }
             
-            if((inspection.report_type == "Quality Inspection" || inspection.report_type == "Builder: PCI/Final inspections") && objApp.keys.reinspection_id == "") {
+            if((inspection.report_type == "Builder: Quality Inspection") && objApp.keys.reinspection_id == "") {
                 objApp.setSubExtraHeading("Step 3 of 5", true);
                 $('#inspectionStep3 > .bottomBtns > a#btnStep3Email').hide();
                 $('#inspectionStep3 > .bottomBtns > .btnContainer.right > a#btnStep3Next').html('Next');
                 $('#inspectionStep4 > .bottomBtns > .btnContainer.right > a#btnStep4Next').html('Next');
-            }  else if( (inspection.report_type == "Quality Inspection" || inspection.report_type == "Builder: PCI/Final inspections") && objApp.keys.reinspection_id != "") {
+            }  else if( (inspection.report_type == "Builder: Quality Inspection") && objApp.keys.reinspection_id != "") {
                 objApp.setSubExtraHeading("Step 3 of 4", true);
                 $('#inspectionStep3 > .bottomBtns > a#btnStep3Email').hide();
                 $('#inspectionStep3 > .bottomBtns > .btnContainer.right > a#btnStep3Next').html('Next');
@@ -914,17 +920,28 @@ var Inspections = function()
     this.showStep4 = function()
     {
         self.setStep(4);
-        
+
+
+        if ($('#frmInspectionDetails #builder_id option[value="'+self.inspection.builder_id+'"]').html() == 'Coral Homes'){
+            $('.coral_homes').show();
+        }else{
+            $('.coral_homes').hide();
+        }
 
         // Set the main heading
         var inspection_property = "Lot " + self.inspection.lot_no + ", " + self.inspection.address + ", " + self.inspection.suburb;
-        objApp.setSubHeading("Materials to be left on site");
-        
+        objApp.setSubHeading("OMISSIONS (items installed at time of the inspection)");
+
         //if((self.inspection.report_type == "Builder: PCI/Final inspections" && objApp.keys.reinspection_id != "") || self.inspection.report_type == "Fix / Plaster Inspection") {
-        if( (self.inspection.report_type == "Quality Inspection" || self.inspection.report_type == "Builder: PCI/Final inspections") && objApp.keys.reinspection_id != "") {
+        if( (self.inspection.report_type == "Builder: Quality Inspection") && objApp.keys.reinspection_id != "") {
             objApp.setSubExtraHeading("Step 4 of 4", true);
         } else {
             objApp.setSubExtraHeading("Step 4 of 5", true);
+        }
+
+        if(objUtils.isMobileDevice())
+        {
+            self.scroller = new IScroll5('#installedItemsScrollWrapper', { click: true, hScrollbar: false, vScrollbar: false, scrollbarClass: 'myScrollbarSm'});
         }
 
         objApp.clearMain();
@@ -936,121 +953,13 @@ var Inspections = function()
                     alert("Couldn't load the reinspection record!");
                     return;
                 }
-
-                if(reinspection.min_roof_tiles == 1) {
-                    $("#btnMinRoofTilesYes").removeClass("yesno_disabled").addClass("yesno_enabled");
-                    $("#btnMinRoofTilesNo").removeClass("yesno_enabled").addClass("yesno_disabled");
-                    $("#min_roof_tiles").val("1");
-                } else if(reinspection.min_roof_tiles == 0) {
-                    $("#btnMinRoofTilesYes").removeClass("yesno_enabled").addClass("yesno_disabled");
-                    $("#btnMinRoofTilesNo").removeClass("yesno_disabled").addClass("yesno_enabled");
-                    $("#min_roof_tiles").val("0");
-                }
-
-                if(reinspection.min_ridge_tiles == 1) {
-                    $("#btnMinRidgeTilesYes").removeClass("yesno_disabled").addClass("yesno_enabled");
-                    $("#btnMinRidgeTilesNo").removeClass("yesno_enabled").addClass("yesno_disabled");
-                    $("#min_ridge_tiles").val("1");
-                } else if(reinspection.min_ridge_tiles == 0) {
-                    $("#btnMinRidgeTilesYes").removeClass("yesno_enabled").addClass("yesno_disabled");
-                    $("#btnMinRidgeTilesNo").removeClass("yesno_disabled").addClass("yesno_enabled");
-                    $("#min_ridge_tiles").val("0");
-                }
-
-                if(reinspection.touch_up_paint == 1) {
-                    $("#btnTouchUpPaintYes").removeClass("yesno_disabled").addClass("yesno_enabled");
-                    $("#btnTouchUpPaintNo").removeClass("yesno_enabled").addClass("yesno_disabled");
-                    $("#touch_up_paint").val("1");
-                } else if(reinspection.touch_up_paint == 0) {
-                    $("#btnTouchUpPaintYes").removeClass("yesno_enabled").addClass("yesno_disabled");
-                    $("#btnTouchUpPaintNo").removeClass("yesno_disabled").addClass("yesno_enabled");
-                    $("#touch_up_paint").val("0");
-                }
-
-                if(reinspection.min_flooring_tiles == 1) {
-                    $("#btnMinFlooringTilesYes").removeClass("yesno_disabled").addClass("yesno_enabled");
-                    $("#btnMinFlooringTilesNo").removeClass("yesno_enabled").addClass("yesno_disabled");
-                    $("#min_flooring_tiles").val("1");
-                } else if(reinspection.min_flooring_tiles == 0) {
-                    $("#btnMinFlooringTilesYes").removeClass("yesno_enabled").addClass("yesno_disabled");
-                    $("#btnMinFlooringTilesNo").removeClass("yesno_disabled").addClass("yesno_enabled");
-                    $("#min_flooring_tiles").val("0");
-                }
-
-                if(reinspection.grout_samples == 1) {
-                    $("#btnGroutSamplesYes").removeClass("yesno_disabled").addClass("yesno_enabled");
-                    $("#btnGroutSamplesNo").removeClass("yesno_enabled").addClass("yesno_disabled");
-                    $("#grout_samples").val("1");
-                } else if(reinspection.grout_samples == 0) {
-                    $("#btnGroutSamplesYes").removeClass("yesno_enabled").addClass("yesno_disabled");
-                    $("#btnGroutSamplesNo").removeClass("yesno_disabled").addClass("yesno_enabled");
-                    $("#grout_samples").val("0");
-                }
-                $("#barrel_code").val(reinspection.barrel_code);
+                self.setValueOMissionsItems(reinspection);
             }, "");
-
         }
         else if(self.inspection) {
-            if(self.inspection.min_roof_tiles == 1) {
-                $("#btnMinRoofTilesYes").removeClass("yesno_disabled").addClass("yesno_enabled");
-                $("#btnMinRoofTilesNo").removeClass("yesno_enabled").addClass("yesno_disabled");
-                $("#min_roof_tiles").val("1");
-            } else if(self.inspection.min_roof_tiles == 0) {
-                $("#btnMinRoofTilesYes").removeClass("yesno_enabled").addClass("yesno_disabled");
-                $("#btnMinRoofTilesNo").removeClass("yesno_disabled").addClass("yesno_enabled");
-                $("#min_roof_tiles").val("0");
-            }
-
-            if(self.inspection.min_ridge_tiles == 1) {
-                $("#btnMinRidgeTilesYes").removeClass("yesno_disabled").addClass("yesno_enabled");
-                $("#btnMinRidgeTilesNo").removeClass("yesno_enabled").addClass("yesno_disabled");
-                $("#min_ridge_tiles").val("1");
-            } else if(self.inspection.min_ridge_tiles == 0) {
-                $("#btnMinRidgeTilesYes").removeClass("yesno_enabled").addClass("yesno_disabled");
-                $("#btnMinRidgeTilesNo").removeClass("yesno_disabled").addClass("yesno_enabled");
-                $("#min_ridge_tiles").val("0");
-            }
-
-            if(self.inspection.touch_up_paint == 1) {
-                $("#btnTouchUpPaintYes").removeClass("yesno_disabled").addClass("yesno_enabled");
-                $("#btnTouchUpPaintNo").removeClass("yesno_enabled").addClass("yesno_disabled");
-                $("#touch_up_paint").val("1");
-            } else if(self.inspection.touch_up_paint == 0) {
-                $("#btnTouchUpPaintYes").removeClass("yesno_enabled").addClass("yesno_disabled");
-                $("#btnTouchUpPaintNo").removeClass("yesno_disabled").addClass("yesno_enabled");
-                $("#touch_up_paint").val("0");
-            }
-
-            if(self.inspection.min_flooring_tiles == 1) {
-                $("#btnMinFlooringTilesYes").removeClass("yesno_disabled").addClass("yesno_enabled");
-                $("#btnMinFlooringTilesNo").removeClass("yesno_enabled").addClass("yesno_disabled");
-                $("#min_flooring_tiles").val("1");
-            } else if(self.inspection.min_flooring_tiles == 0) {
-                $("#btnMinFlooringTilesYes").removeClass("yesno_enabled").addClass("yesno_disabled");
-                $("#btnMinFlooringTilesNo").removeClass("yesno_disabled").addClass("yesno_enabled");
-                $("#min_flooring_tiles").val("0");
-            }
-
-            if(self.inspection.grout_samples == 1) {
-                $("#btnGroutSamplesYes").removeClass("yesno_disabled").addClass("yesno_enabled");
-                $("#btnGroutSamplesNo").removeClass("yesno_enabled").addClass("yesno_disabled");
-                $("#grout_samples").val("1");
-            } else if(self.inspection.grout_samples == 0) {
-                $("#btnGroutSamplesYes").removeClass("yesno_enabled").addClass("yesno_disabled");
-                $("#btnGroutSamplesNo").removeClass("yesno_disabled").addClass("yesno_enabled");
-                $("#grout_samples").val("0");
-            }
-            $("#barrel_code").val(self.inspection.barrel_code);
-
+            self.setValueOMissionsItems(self.inspection);
         } 
-        
-        /*
-        if(self.inspection.report_type == "Fix / Plaster Inspection") {
-            $('#inspectionStep4 > .bottomBtns > .btnContainer.right > a#btnStep4Next').html('Exit');
-        } else {
-            $('#inspectionStep4 > .bottomBtns > .btnContainer.right > a#btnStep4Next').html('Next &rsaquo;&rsaquo;');
-        }
-        */
+
         $('#inspectionStep4 > .bottomBtns > .btnContainer.right > a#btnStep4Next').html('Next');
         $("#inspectionStep4").removeClass("hidden");
 
@@ -1112,7 +1021,7 @@ var Inspections = function()
         if($("#inspection #notes").val() == "") {
             report_type = $("#inspection #report_type").val();
 
-            if( (report_type == "Quality Inspection") || (report_type == "Builder: PCI/Final inspections") || (report_type == "Fix / Plaster Inspection")) {
+            if( (report_type == "Builder: Quality Inspection") || (report_type == "Fix / Plaster Inspection")) {
                 $("#inspection #notes").val(self.default_notes);
             }
         }
@@ -1574,62 +1483,12 @@ var Inspections = function()
 
         $("#inspectionStep4 #emailTo").val("");
 
-        if(inspection.min_roof_tiles == 1) {
-            $("#btnMinRoofTilesYes").removeClass("yesno_disabled").addClass("yesno_enabled");
-            $("#btnMinRoofTilesNo").removeClass("yesno_enabled").addClass("yesno_disabled");
-            $("#min_roof_tiles").val("1");
-        } else if(inspection.min_roof_tiles == 0) {
-            $("#btnMinRoofTilesYes").removeClass("yesno_enabled").addClass("yesno_disabled");
-            $("#btnMinRoofTilesNo").removeClass("yesno_disabled").addClass("yesno_enabled");
-            $("#min_roof_tiles").val("0");
-        }
-
-        if(inspection.min_ridge_tiles == 1) {
-            $("#btnMinRidgeTilesYes").removeClass("yesno_disabled").addClass("yesno_enabled");
-            $("#btnMinRidgeTilesNo").removeClass("yesno_enabled").addClass("yesno_disabled");
-            $("#min_ridge_tiles").val("1");
-        } else if(inspection.min_ridge_tiles == 0) {
-            $("#btnMinRidgeTilesYes").removeClass("yesno_enabled").addClass("yesno_disabled");
-            $("#btnMinRidgeTilesNo").removeClass("yesno_disabled").addClass("yesno_enabled");
-            $("#min_ridge_tiles").val("0");
-        }
-
-        if(inspection.touch_up_paint == 1) {
-            $("#btnTouchUpPaintYes").removeClass("yesno_disabled").addClass("yesno_enabled");
-            $("#btnTouchUpPaintNo").removeClass("yesno_enabled").addClass("yesno_disabled");
-            $("#touch_up_paint").val("1");
-        } else if(inspection.touch_up_paint == 0) {
-            $("#btnTouchUpPaintYes").removeClass("yesno_enabled").addClass("yesno_disabled");
-            $("#btnTouchUpPaintNo").removeClass("yesno_disabled").addClass("yesno_enabled");
-            $("#touch_up_paint").val("0");
-        }
-
-        if(inspection.min_flooring_tiles == 1) {
-            $("#btnMinFlooringTilesYes").removeClass("yesno_disabled").addClass("yesno_enabled");
-            $("#btnMinFlooringTilesNo").removeClass("yesno_enabled").addClass("yesno_disabled");
-            $("#min_flooring_tiles").val("1");
-        } else if(inspection.min_flooring_tiles == 0) {
-            $("#btnMinFlooringTilesYes").removeClass("yesno_enabled").addClass("yesno_disabled");
-            $("#btnMinFlooringTilesNo").removeClass("yesno_disabled").addClass("yesno_enabled");
-            $("#min_flooring_tiles").val("0");
-        }
-
-        if(inspection.grout_samples == 1) {
-            $("#btnGroutSamplesYes").removeClass("yesno_disabled").addClass("yesno_enabled");
-            $("#btnGroutSamplesNo").removeClass("yesno_enabled").addClass("yesno_disabled");
-            $("#grout_samples").val("1");
-        } else if(inspection.grout_samples == 0) {
-            $("#btnGroutSamplesYes").removeClass("yesno_enabled").addClass("yesno_disabled");
-            $("#btnGroutSamplesNo").removeClass("yesno_disabled").addClass("yesno_enabled");
-            $("#grout_samples").val("0");
-        }
-        $("#barrel_code").val(inspection.barrel_code);
+        self.setValueOMissionsItems(inspection);
 
 		// Show the inspection screen.
 		$("#inspection").removeClass("hidden");
 
 		// Bind events to UI objects
-        console.log("BIND 4")
 		this.unbindEvents();
 
 		// Setup client and site popselectors
@@ -1748,9 +1607,9 @@ var Inspections = function()
         var values = new Array();
         
         // Kill iScroll if it already exists
-        if(this.scroller) {
-            this.scroller.destroy();
-            this.scroller = null;
+        if(self.scroller) {
+            self.scroller.destroy();
+            self.scroller = null;
         }        
 
         objDBUtils.loadRecordsSQL(sql, values, function(param, emails)
@@ -2190,10 +2049,10 @@ var Inspections = function()
         {
             e.preventDefault();
                         
-            if($(this).val() == "Quality Inspection")
+            if($(this).val() == "Builder: Quality Inspection")
             {
                 objApp.setSubExtraHeading("Step 1 of 5", true);
-                objApp.keys.report_type = "Quality Inspection";
+                objApp.keys.report_type = "Builder: Quality Inspection";
             }
             else if($(this).val() == "Builder: PCI/Final inspections")
             {
@@ -2605,7 +2464,7 @@ var Inspections = function()
 			e.preventDefault();
 
             //if((objApp.keys.report_type == 'Builder: PCI/Final inspections') || (objApp.keys.report_type == 'Fix / Plaster Inspection')) {
-            if(objApp.keys.report_type == 'Quality Inspection' || objApp.keys.report_type == 'Builder: PCI/Final inspections') {
+            if(objApp.keys.report_type == 'Builder: Quality Inspection') {
                 self.showStep4();
             }
             else {
@@ -2624,17 +2483,16 @@ var Inspections = function()
         $(".inspectionDetails #btnStep4Back").bind(objApp.touchEvent, function(e)
         {
             if(objApp.keys.reinspection_id != "") {
-                var sql = 'UPDATE reinspections SET min_roof_tiles = ?,min_ridge_tiles =?,touch_up_paint =?,' +
-                    'min_flooring_tiles=?, grout_samples=?, barrel_code=?,  dirty = 1 WHERE id = ?';
-                var min_roof_tiles = $("#min_roof_tiles").val();
-                var min_ridge_tiles = $("#min_ridge_tiles").val();
-                var touch_up_paint = $("#touch_up_paint").val();
-                var min_flooring_tiles = $("#min_flooring_tiles").val();
-                var grout_samples = $("#grout_samples").val();
-                var barrel_code = $("#barrel_code").val();
+                var sql = 'UPDATE reinspections SET ';
+                var values = [];
+                for(var i = 1; i <= self.TOTAL_OMISSIONS_ITEMS; i++) {
+                    sql += 'omission_item_' + i + '= ?,';
+                    values.push($("#omission_item_" + i).val());
+                }
+                sql += ' dirty = 1 WHERE id = ?';
+                values.push(objApp.keys.reinspection_id);
 
-                objDBUtils.execute(sql, [min_roof_tiles,min_ridge_tiles,touch_up_paint,min_flooring_tiles,
-                    grout_samples,barrel_code,objApp.keys.reinspection_id], null);
+                objDBUtils.execute(sql, values, null);
             }
             else {
                 self.checkSaveInspection();
@@ -2644,16 +2502,16 @@ var Inspections = function()
         $(".inspectionDetails #btnStep4Next").bind(objApp.touchEvent, function(e)
         {
             if(objApp.keys.reinspection_id != "") {
-                var sql = 'UPDATE reinspections SET min_roof_tiles = ?,min_ridge_tiles =?,touch_up_paint =?,' +
-                    'min_flooring_tiles=?, grout_samples=?, barrel_code=?,  dirty = 1 WHERE id = ?';
-                var min_roof_tiles = $("#min_roof_tiles").val();
-                var min_ridge_tiles = $("#min_ridge_tiles").val();
-                var touch_up_paint = $("#touch_up_paint").val();
-                var min_flooring_tiles = $("#min_flooring_tiles").val();
-                var grout_samples = $("#grout_samples").val();
-                var barrel_code = $("#barrel_code").val();
-                objDBUtils.execute(sql, [min_roof_tiles,min_ridge_tiles,touch_up_paint,min_flooring_tiles,
-                    grout_samples,barrel_code,objApp.keys.reinspection_id], null);
+                var sql = 'UPDATE reinspections SET ';
+                var values = [];
+                for(var i = 1; i <= self.TOTAL_OMISSIONS_ITEMS; i++) {
+                    sql += 'omission_item_' + i + '= ?,';
+                    values.push($("#omission_item_" + i).val());
+                }
+                sql += ' dirty = 1 WHERE id = ?';
+                values.push(objApp.keys.reinspection_id);
+
+                objDBUtils.execute(sql, values, null);
             }
             else {
                 self.checkSaveInspection();
@@ -2661,7 +2519,7 @@ var Inspections = function()
 
             e.preventDefault();
 
-            if( (objApp.keys.report_type == 'Quality Inspection' || objApp.keys.report_type == 'Builder: PCI/Final inspections') && objApp.keys.reinspection_id == "") {
+            if( (objApp.keys.report_type == 'Builder: Quality Inspection') && objApp.keys.reinspection_id == "") {
                 self.showStep5();
             }
             else {
@@ -2718,103 +2576,7 @@ var Inspections = function()
             return false;
         });
 
-        $("#btnMinRoofTilesYes").bind(objApp.touchEvent, function(e)
-        {
-            if (self.finalised == 1)
-                return false;
-            $("#btnMinRoofTilesYes").removeClass("yesno_disabled").addClass("yesno_enabled");
-            $("#btnMinRoofTilesNo").removeClass("yesno_enabled").addClass("yesno_disabled");
-            $("#min_roof_tiles").val("1");
-            return false;
-        });
-        $("#btnMinRoofTilesNo").bind(objApp.touchEvent, function(e)
-        {
-            if (self.finalised == 1)
-                return false;
-            $("#btnMinRoofTilesYes").removeClass("yesno_enabled").addClass("yesno_disabled");
-            $("#btnMinRoofTilesNo").removeClass("yesno_disabled").addClass("yesno_enabled");
-            $("#min_roof_tiles").val("0");
-            return false;
-        });
-
-        $("#btnMinRidgeTilesYes").bind(objApp.touchEvent, function(e)
-        {
-            if (self.finalised == 1)
-                return false;
-            $("#btnMinRidgeTilesYes").removeClass("yesno_disabled").addClass("yesno_enabled");
-            $("#btnMinRidgeTilesNo").removeClass("yesno_enabled").addClass("yesno_disabled");
-            $("#min_ridge_tiles").val("1");
-            return false;
-        });
-        $("#btnMinRidgeTilesNo").bind(objApp.touchEvent, function(e)
-        {
-            if (self.finalised == 1)
-                return false;
-            $("#btnMinRidgeTilesYes").removeClass("yesno_enabled").addClass("yesno_disabled");
-            $("#btnMinRidgeTilesNo").removeClass("yesno_disabled").addClass("yesno_enabled");
-            $("#min_ridge_tiles").val("0");
-            return false;
-        });
-
-        $("#btnTouchUpPaintYes").bind(objApp.touchEvent, function(e)
-        {
-            if (self.finalised == 1)
-                return false;
-            $("#btnTouchUpPaintYes").removeClass("yesno_disabled").addClass("yesno_enabled");
-            $("#btnTouchUpPaintNo").removeClass("yesno_enabled").addClass("yesno_disabled");
-            $("#touch_up_paint").val("1");
-            return false;
-        });
-        $("#btnTouchUpPaintNo").bind(objApp.touchEvent, function(e)
-        {
-            if (self.finalised == 1)
-                return false;
-            $("#btnTouchUpPaintYes").removeClass("yesno_enabled").addClass("yesno_disabled");
-            $("#btnTouchUpPaintNo").removeClass("yesno_disabled").addClass("yesno_enabled");
-            $("#touch_up_paint").val("0");
-            return false;
-        });
-
-        $("#btnMinFlooringTilesYes").bind(objApp.touchEvent, function(e)
-        {
-            if (self.finalised == 1)
-                return false;
-            $("#btnMinFlooringTilesYes").removeClass("yesno_disabled").addClass("yesno_enabled");
-            $("#btnMinFlooringTilesNo").removeClass("yesno_enabled").addClass("yesno_disabled");
-            $("#min_flooring_tiles").val("1");
-            return false;
-        });
-        $("#btnMinFlooringTilesNo").bind(objApp.touchEvent, function(e)
-        {
-            if (self.finalised == 1)
-                return false;
-            $("#btnMinFlooringTilesYes").removeClass("yesno_enabled").addClass("yesno_disabled");
-            $("#btnMinFlooringTilesNo").removeClass("yesno_disabled").addClass("yesno_enabled");
-            $("#min_flooring_tiles").val("0");
-            return false;
-        });
-
-        $("#btnGroutSamplesYes").bind(objApp.touchEvent, function(e)
-        {
-            if (self.finalised == 1)
-                return false;
-            $("#btnGroutSamplesYes").removeClass("yesno_disabled").addClass("yesno_enabled");
-            $("#btnGroutSamplesNo").removeClass("yesno_enabled").addClass("yesno_disabled");
-            $("#grout_samples").val("1");
-            return false;
-        });
-        $("#btnGroutSamplesNo").bind(objApp.touchEvent, function(e)
-        {
-            if (self.finalised == 1)
-                return false;
-            $("#btnGroutSamplesYes").removeClass("yesno_enabled").addClass("yesno_disabled");
-            $("#btnGroutSamplesNo").removeClass("yesno_disabled").addClass("yesno_enabled");
-            $("#grout_samples").val("0");
-            return false;
-        });
-
-
-
+        self.bindOMissionsYesNoButtons();
 
         $(".inspectionDetails #tblDefectListingHeader th").bind(objApp.touchEvent, function(e)
 		{
@@ -3442,9 +3204,9 @@ var Inspections = function()
                 html += '</table>';
                 
                 // Kill iScroll if it already exists
-                if(this.scroller) {
-                    this.scroller.destroy();
-                    this.scroller = null;
+                if(self.scroller) {
+                    self.scroller.destroy();
+                    self.scroller = null;
                 }                
 
                 // Inject the HTML
@@ -3974,9 +3736,9 @@ var Inspections = function()
         $("#frmDefectDetails #observation_suggestion tr td").unbind();
         
         // Kill iScroll if it already exists
-        if(this.scroller) {
-            this.scroller.destroy();
-            this.scroller = null;
+        if(self.scroller) {
+            self.scroller.destroy();
+            self.scroller = null;
         }        
         
         objDBUtils.loadSelect("resources", self.filters, "#frmDefectDetails #observation_suggestion", function()
@@ -4282,8 +4044,7 @@ var Inspections = function()
 			// Setup touchScroll if applicable
 			if(objUtils.isMobileDevice())
 			{
-				//var scroller = new TouchScroll(document.querySelector("#photoWrapper #photoList"));
-                var scroller = new IScroll5('#photoList', { click: true, hScrollbar: false, vScrollbar: false, scrollbarClass: 'myScrollbarSm'});
+				self.scroller = new IScroll5('#photoList', { click: true, hScrollbar: false, vScrollbar: false, scrollbarClass: 'myScrollbarSm'});
 			}
 
 			$("#photoWrapper #photoList a").unbind();
@@ -4619,9 +4380,9 @@ var Inspections = function()
 		}
         
         // Kill iScroll if it already exists
-        if(this.scroller) {
-            this.scroller.destroy();
-            this.scroller = null;
+        if(self.scroller) {
+            self.scroller.destroy();
+            self.scroller = null;
         }        
 
         $("#historyModal #historyList").html('');
@@ -5009,8 +4770,7 @@ var Inspections = function()
 			// Setup touchScroll if applicable
 			if(objUtils.isMobileDevice())
 			{
-				//var scroller = new TouchScroll(document.querySelector("#photoWrapper #photoList"));
-                var scroller = new IScroll('#photoList', { click: true, hScrollbar: false, vScrollbar: false, scrollbarClass: 'myScrollbarSm'});
+				self.scroller = new IScroll('#photoList', { click: true, hScrollbar: false, vScrollbar: false, scrollbarClass: 'myScrollbarSm'});
 			}
 
 			$("#historyList a").unbind();
@@ -5725,9 +5485,9 @@ var Inspections = function()
 		$("#tblDefectListing a.edit_issue_btn").unbind();
         
         // Kill iScroll if it already exists
-        if(this.scroller) {
-            this.scroller.destroy();
-            this.scroller = null;
+        if(self.scroller) {
+            self.scroller.destroy();
+            self.scroller = null;
         }        
 
 		// Load the inspection items records
@@ -6125,9 +5885,9 @@ var Inspections = function()
         }
         
         // Kill iScroll if it already exists
-        if(this.scroller) {
-            this.scroller.destroy();
-            this.scroller = null;
+        if(self.scroller) {
+            self.scroller.destroy();
+            self.scroller = null;
         }
         $('body').addClass('reinspect');
         objDBUtils.loadRecord("reinspections", reinspection_id, function(param, reinspection) {
@@ -6196,7 +5956,7 @@ var Inspections = function()
                 }
 
                 //if((inspection.report_type == "Builder: PCI/Final inspections" && objApp.keys.reinspection_id != "") || (inspection.report_type == "Fix / Plaster Inspection")) {
-                if( (inspection.report_type == "Quality Inspection" || inspection.report_type == "Builder: PCI/Final inspections") && objApp.keys.reinspection_id != "") {
+                if( (inspection.report_type == "Builder: Quality Inspection") && objApp.keys.reinspection_id != "") {
                     objApp.setSubExtraHeading("Step 3 of 4", true);
                     $('#inspectionStep3 > .bottomBtns > a#btnStep3Email').hide();
                     $('#inspectionStep3 > .bottomBtns > .btnContainer.right > a#btnStep3Next').html('Next');
@@ -7468,6 +7228,45 @@ var Inspections = function()
             $('#btnUncertificated').removeClass('hidden');
             $('#certificated').val(0);
             objApp.objInspection.checkSaveRateInspection();
+        }
+    }
+    
+    this.setValueOMissionsItems = function(obj){
+        for(var i = 1; i <= self.TOTAL_OMISSIONS_ITEMS; i++){
+            if(obj['omission_item_' + i] == 1) {
+                $("#btnO"+i+"Yes").removeClass("yesno_disabled").addClass("yesno_enabled");
+                $("#btnO"+i+"No").removeClass("yesno_enabled").addClass("yesno_disabled");
+                $("#omission_item_" + i).val("1");
+            } else if(obj['omission_item_' + i] == 0) {
+                $("#btnO"+i+"Yes").removeClass("yesno_enabled").addClass("yesno_disabled");
+                $("#btnO"+i+"No").removeClass("yesno_disabled").addClass("yesno_enabled");
+                $("#omission_item_" + i).val("0");
+            }
+        }
+    }
+
+    this.bindOMissionsYesNoButtons = function(){
+        for(var i = 1; i <= self.TOTAL_OMISSIONS_ITEMS; i++) {
+            $("#btnO"+i+"Yes").bind(objApp.touchEvent, function (e) {
+                if (self.finalised == 1)
+                    return false;
+                var id = $(this).attr('id').replace('btnO', '').replace('Yes', '');
+                $(this).removeClass("yesno_disabled").addClass("yesno_enabled");
+                $("#btnO"+id+"No").removeClass("yesno_enabled").addClass("yesno_disabled");
+                $("#omission_item_" + id).val("1");
+                objDBUtils.execute("UPDATE inspections SET omission_item_"+id+" = 1, dirty = 1 WHERE id = ?", [objApp.keys.inspection_id], function(){});
+                return false;
+            });
+            $("#btnO"+i+"No").bind(objApp.touchEvent, function (e) {
+                if (self.finalised == 1)
+                    return false;
+                var id = $(this).attr('id').replace('btnO', '').replace('No', '');
+                $("#btnO"+id+"Yes").removeClass("yesno_enabled").addClass("yesno_disabled");
+                $(this).removeClass("yesno_disabled").addClass("yesno_enabled");
+                $("#omission_item_" + id).val("0");
+                objDBUtils.execute("UPDATE inspections SET omission_item_"+id+" = 0, dirty = 1 WHERE id = ?", [objApp.keys.inspection_id], function(){});
+                return false;
+            });
         }
     }
 };
