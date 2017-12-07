@@ -945,8 +945,13 @@ var Inspections = function()
         //if((self.inspection.report_type == "Builder: PCI/Final inspections" && objApp.keys.reinspection_id != "") || self.inspection.report_type == "Fix / Plaster Inspection") {
         if( self.need5Steps(self.inspection.report_type) && objApp.keys.reinspection_id != "") {
             objApp.setSubExtraHeading("Step 4 of 4", true);
-        } else {
+            $('#inspectionStep4 > .bottomBtns > .btnContainer.right > a#btnStep4Next').html('Exit');
+        } else if(self.need4Steps(self.inspection.report_type) && objApp.keys.reinspection_id == "") {
+            objApp.setSubExtraHeading("Step 4 of 4", true);
+            $('#inspectionStep4 > .bottomBtns > .btnContainer.right > a#btnStep4Next').html('Exit');
+        }else {
             objApp.setSubExtraHeading("Step 4 of 5", true);
+            $('#inspectionStep4 > .bottomBtns > .btnContainer.right > a#btnStep4Next').html('Next');
         }
 
         if(objUtils.isMobileDevice())
@@ -970,7 +975,7 @@ var Inspections = function()
             self.setValueYesNoItems(self.inspection);
         } 
 
-        $('#inspectionStep4 > .bottomBtns > .btnContainer.right > a#btnStep4Next').html('Next');
+
         $("#inspectionStep4").removeClass("hidden");
 
         self.setTableWidths2('tblRateListingHeader', 'tblRateListing', 2, 500);
