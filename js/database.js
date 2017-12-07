@@ -1199,7 +1199,8 @@ function DBUtils()
                 "'grout_samples' SMALLINT(6) DEFAULT 0, " +
                 "'barrel_code' TEXT DEFAULT NULL, " +
 				"'certificated' SMALLINT(6) DEFAULT 0, " +
-                "'practical_completed' SMALLINT(6) DEFAULT 0, " +
+                "'reached_stage' SMALLINT(6) DEFAULT 0, " +
+                "'is_tidy' SMALLINT(6) DEFAULT 0, " +
                 "'omission_item_1' SMALLINT(6) DEFAULT 0, " +
                 "'omission_item_2' SMALLINT(6) DEFAULT 0, " +
                 "'omission_item_3' SMALLINT(6) DEFAULT 0, " +
