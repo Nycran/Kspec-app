@@ -333,7 +333,7 @@ var Login = function()
 			localStorage.setItem("initials", typeof data.initials == 'undefined'?'':data.initials);
 			localStorage.setItem("restricted", data.restricted);
 			localStorage.setItem("password", params["password"]);
-            if (typeof data.state_id != 'undefined' && data.state_id != null && data.state_id != 'null'){
+            if (typeof data.state_id != 'undefined' && data.state_id != null && data.state_id != 'null' && parseInt(data.state_id) != 0){
                 objApp.IS_STATE_FILTERED = 1;
                 objApp.FILTERED_STATE_ID = data.state_id;
                 objApp.FILTERED_STATE_CODE = objApp.STATE_CODES[data.state_id];
