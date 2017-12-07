@@ -1201,6 +1201,10 @@ function DBUtils()
 				"'certificated' SMALLINT(6) DEFAULT 0, " +
                 "'reached_stage' SMALLINT(6) DEFAULT 0, " +
                 "'is_tidy' SMALLINT(6) DEFAULT 0, " +
+                "'setback_front_correct' SMALLINT(6) DEFAULT 0, " +
+                "'setback_sides_correct' SMALLINT(6) DEFAULT 0, " +
+                "'strip_footing_approx_position_correct' SMALLINT(6) DEFAULT 0, " +
+                "'pad_footing_approx_position_correct' SMALLINT(6) DEFAULT 0, " +
                 "'omission_item_1' SMALLINT(6) DEFAULT 0, " +
                 "'omission_item_2' SMALLINT(6) DEFAULT 0, " +
                 "'omission_item_3' SMALLINT(6) DEFAULT 0, " +
@@ -1304,6 +1308,12 @@ function DBUtils()
                 "'min_flooring_tiles' SMALLINT(6) DEFAULT 0, " +
                 "'grout_samples' SMALLINT(6) DEFAULT 0, " +
                 "'barrel_code' TEXT DEFAULT NULL, " +
+                "'reached_stage' SMALLINT(6) DEFAULT 0, " +
+                "'is_tidy' SMALLINT(6) DEFAULT 0, " +
+                "'setback_front_correct' SMALLINT(6) DEFAULT 0, " +
+                "'setback_sides_correct' SMALLINT(6) DEFAULT 0, " +
+                "'strip_footing_approx_position_correct' SMALLINT(6) DEFAULT 0, " +
+                "'pad_footing_approx_position_correct' SMALLINT(6) DEFAULT 0, " +
                 "'omission_item_1' SMALLINT(6) DEFAULT 0, " +
                 "'omission_item_2' SMALLINT(6) DEFAULT 0, " +
                 "'omission_item_3' SMALLINT(6) DEFAULT 0, " +

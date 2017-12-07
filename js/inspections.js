@@ -50,6 +50,7 @@ var Inspections = function()
     this.keySortArray = false;
     this.MAX_REPORT_PHOTOS = 12;
     this.TOTAL_OMISSIONS_ITEMS = 34;
+    this.YES_NO_FIELDS = ['reached_stage', 'is_tidy', 'setback_front_correct', 'setback_sides_correct', 'strip_footing_approx_position_correct', 'pad_footing_approx_position_correct'];
 	
 	this.current_table = "inspectionitemphotos";
 	this.current_key = "inspection_id";
@@ -539,12 +540,15 @@ var Inspections = function()
                 var values = [reinspection_id, inspection_id, curdate, 1, 1,self.reinspectionNotes];
                 for(var i = 1; i <= self.TOTAL_OMISSIONS_ITEMS; i++)
                     values.push(row['omission_item_' + i]);
-                
+                for(var i in self.YES_NO_FIELDS)
+                    values.push(row[self.YES_NO_FIELDS[i]]);
                 sql = "INSERT INTO reinspections(id, inspection_id, reinspection_date, failed, most_recent, notes ";
                 for(var i = 1; i <= self.TOTAL_OMISSIONS_ITEMS; i++)
                     sql += ', omission_item_' + i;
+                for(var i in self.YES_NO_FIELDS)
+                    sql += ', ' + self.YES_NO_FIELDS[i];
                 sql += ') VALUES(?,?,?,?,?,?';
-                for(var i = 1; i <= self.TOTAL_OMISSIONS_ITEMS; i++)
+                for(var i = 1; i <= self.TOTAL_OMISSIONS_ITEMS + self.YES_NO_FIELDS.length; i++)
                     sql += ',?';
                 sql += ')';
 
@@ -854,13 +858,13 @@ var Inspections = function()
                 $("#btnFinishedWrapper").show();
                 $("#btnSendReport").removeClass('hidden');
             }
-            
+
             if(self.need5Steps(inspection.report_type) && objApp.keys.reinspection_id == "") {
                 objApp.setSubExtraHeading("Step 3 of 5", true);
                 $('#inspectionStep3 > .bottomBtns > a#btnStep3Email').hide();
                 $('#inspectionStep3 > .bottomBtns > .btnContainer.right > a#btnStep3Next').html('Next');
                 $('#inspectionStep4 > .bottomBtns > .btnContainer.right > a#btnStep4Next').html('Next');
-            }  else if( self.need4Steps(inspection.report_type)  && objApp.keys.reinspection_id != "") {
+            }  else if( self.need5Steps(inspection.report_type)  && objApp.keys.reinspection_id != "") {
                 objApp.setSubExtraHeading("Step 3 of 4", true);
                 $('#inspectionStep3 > .bottomBtns > a#btnStep3Email').hide();
                 $('#inspectionStep3 > .bottomBtns > .btnContainer.right > a#btnStep3Next').html('Next');
@@ -868,12 +872,12 @@ var Inspections = function()
                 $('#reinspection > .bottomBtns > .btnContainer.right > a#btnStep3Next').html('Next');
                 $('#reinspection > .bottomBtns > .btnContainer.right > a#btnStep4Next').html('Done');
                 
-            } /*else if(inspection.report_type == "Fix / Plaster Inspection" && objApp.keys.reinspection_id == "") {
+            } else if(self.need4Steps(inspection.report_type) && objApp.keys.reinspection_id == "") {
                 objApp.setSubExtraHeading("Step 3 of 4", true);
                 $('#inspectionStep3 > .bottomBtns > a#btnStep3Email').hide();
                 $('#inspectionStep3 > .bottomBtns > .btnContainer.right > a#btnStep3Next').html('Next');
-                $('#inspectionStep4 > .bottomBtns > .btnContainer.right > a#btnStep4Next').html('Next');
-            } else if(inspection.report_type == "Fix / Plaster Inspection" && objApp.keys.reinspection_id != "") {
+                $('#inspectionStep4 > .bottomBtns > .btnContainer.right > a#btnStep4Next').html('Exit');
+            }/* else if(inspection.report_type == "Fix / Plaster Inspection" && objApp.keys.reinspection_id != "") {
                 objApp.setSubExtraHeading("Step 3 of 4", true);
                 $('#inspectionStep3 > .bottomBtns > a#btnStep3Email').hide();
                 $('#inspectionStep3 > .bottomBtns > .btnContainer.right > a#btnStep3Next').html('Next');
@@ -921,16 +925,22 @@ var Inspections = function()
     {
         self.setStep(4);
 
-
-        if ($('#frmInspectionDetails #builder_id option[value="'+self.inspection.builder_id+'"]').html() == 'Coral Homes'){
-            $('.coral_homes').show();
-        }else{
-            $('.coral_homes').hide();
+        if (self.need5Steps(self.inspection.report_type)){
+            $('.builder_need_4_steps').hide();
+            $('.builder_need_5_steps').show();
+            if ($('#frmInspectionDetails #builder_id option[value="'+self.inspection.builder_id+'"]').html() == 'Coral Homes'){
+                $('.coral_homes').show();
+            }else{
+                $('.coral_homes').hide();
+            }
+            objApp.setSubHeading("OMISSIONS (items installed at time of the inspection)");
+        }else if(self.need4Steps(self.inspection.report_type)){
+            $('.builder_need_4_steps').show();
+            $('.builder_need_5_steps').hide();
+            var inspection_property = "Lot " + self.inspection.lot_no + ", " + self.inspection.address + ", " + self.inspection.suburb;
+            objApp.setSubHeading("Inspection @ " + inspection_property);
+            self.showStage(self.inspection.report_type);
         }
-
-        // Set the main heading
-        var inspection_property = "Lot " + self.inspection.lot_no + ", " + self.inspection.address + ", " + self.inspection.suburb;
-        objApp.setSubHeading("OMISSIONS (items installed at time of the inspection)");
 
         //if((self.inspection.report_type == "Builder: PCI/Final inspections" && objApp.keys.reinspection_id != "") || self.inspection.report_type == "Fix / Plaster Inspection") {
         if( self.need5Steps(self.inspection.report_type) && objApp.keys.reinspection_id != "") {
@@ -953,11 +963,11 @@ var Inspections = function()
                     alert("Couldn't load the reinspection record!");
                     return;
                 }
-                self.setValueOMissionsItems(reinspection);
+                self.setValueYesNoItems(reinspection);
             }, "");
         }
         else if(self.inspection) {
-            self.setValueOMissionsItems(self.inspection);
+            self.setValueYesNoItems(self.inspection);
         } 
 
         $('#inspectionStep4 > .bottomBtns > .btnContainer.right > a#btnStep4Next').html('Next');
@@ -1483,7 +1493,7 @@ var Inspections = function()
 
         $("#inspectionStep4 #emailTo").val("");
 
-        self.setValueOMissionsItems(inspection);
+        self.setValueYesNoItems(inspection);
 
 		// Show the inspection screen.
 		$("#inspection").removeClass("hidden");
@@ -2438,7 +2448,7 @@ var Inspections = function()
 			e.preventDefault();
 
             //if((objApp.keys.report_type == 'Builder: PCI/Final inspections') || (objApp.keys.report_type == 'Fix / Plaster Inspection')) {
-            if(self.need5Steps(objApp.keys.report_type)) {
+            if(self.need4Steps(objApp.keys.report_type) || self.need5Steps(objApp.keys.report_type)) {
                 self.showStep4();
             }
             else {
@@ -2463,6 +2473,10 @@ var Inspections = function()
                     sql += 'omission_item_' + i + '= ?,';
                     values.push($("#omission_item_" + i).val());
                 }
+                for(var i in self.YES_NO_FIELDS){
+                    sql += self.YES_NO_FIELDS[i] + '= ?,';
+                    values.push($("#" + self.YES_NO_FIELDS[i]).val());
+                }
                 sql += ' dirty = 1 WHERE id = ?';
                 values.push(objApp.keys.reinspection_id);
 
@@ -2481,6 +2495,10 @@ var Inspections = function()
                 for(var i = 1; i <= self.TOTAL_OMISSIONS_ITEMS; i++) {
                     sql += 'omission_item_' + i + '= ?,';
                     values.push($("#omission_item_" + i).val());
+                }
+                for(var i in self.YES_NO_FIELDS){
+                    sql += self.YES_NO_FIELDS[i] + '= ?,';
+                    values.push($("#" + self.YES_NO_FIELDS[i]).val());
                 }
                 sql += ' dirty = 1 WHERE id = ?';
                 values.push(objApp.keys.reinspection_id);
@@ -2550,7 +2568,7 @@ var Inspections = function()
             return false;
         });
 
-        self.bindOMissionsYesNoButtons();
+        self.bindYesNoButtons();
 
         $(".inspectionDetails #tblDefectListingHeader th").bind(objApp.touchEvent, function(e)
 		{
@@ -7205,7 +7223,7 @@ var Inspections = function()
         }
     }
     
-    this.setValueOMissionsItems = function(obj){
+    this.setValueYesNoItems = function(obj){
         for(var i = 1; i <= self.TOTAL_OMISSIONS_ITEMS; i++){
             if(obj['omission_item_' + i] == 1) {
                 $("#btnO"+i+"Yes").removeClass("yesno_disabled").addClass("yesno_enabled");
@@ -7217,9 +7235,21 @@ var Inspections = function()
                 $("#omission_item_" + i).val("0");
             }
         }
+        for(var i in self.YES_NO_FIELDS){
+            var f = self.YES_NO_FIELDS[i];
+            if(obj[f] == 1) {
+                $("#btn_"+f+"_yes").removeClass("yesno_disabled").addClass("yesno_enabled");
+                $("#btn_"+f+"_no").removeClass("yesno_enabled").addClass("yesno_disabled");
+                $("#" + f).val("1");
+            } else if(obj[f] == 0) {
+                $("#btn_"+f+"_yes").removeClass("yesno_enabled").addClass("yesno_disabled");
+                $("#btn_"+f+"_no").removeClass("yesno_disabled").addClass("yesno_enabled");
+                $("#" + f).val("0");
+            }
+        }
     }
 
-    this.bindOMissionsYesNoButtons = function(){
+    this.bindYesNoButtons = function(){
         for(var i = 1; i <= self.TOTAL_OMISSIONS_ITEMS; i++) {
             $("#btnO"+i+"Yes").bind(objApp.touchEvent, function (e) {
                 if (self.finalised == 1)
@@ -7242,14 +7272,57 @@ var Inspections = function()
                 return false;
             });
         }
+        for(var i in self.YES_NO_FIELDS){
+            var f = self.YES_NO_FIELDS[i];
+            $("#btn_"+f+"_yes").bind(objApp.touchEvent, function (e) {
+                if (self.finalised == 1)
+                    return false;
+                var id = $(this).attr('id').replace('btn_', '').replace('_yes', '');
+                $(this).removeClass("yesno_disabled").addClass("yesno_enabled");
+                $("#btn_"+id+"_no").removeClass("yesno_enabled").addClass("yesno_disabled");
+                $("#" + id).val("1");
+                objDBUtils.execute("UPDATE inspections SET "+id+" = 1, dirty = 1 WHERE id = ?", [objApp.keys.inspection_id], function(){});
+                return false;
+            });
+            $("#btn_"+f+"_no").bind(objApp.touchEvent, function (e) {
+                if (self.finalised == 1)
+                    return false;
+                var id = $(this).attr('id').replace('btn_', '').replace('_no', '');
+                $("#btn_"+id+"_yes").removeClass("yesno_enabled").addClass("yesno_disabled");
+                $(this).removeClass("yesno_disabled").addClass("yesno_enabled");
+                $("#" + id).val("0");
+                objDBUtils.execute("UPDATE inspections SET "+id+" = 0, dirty = 1 WHERE id = ?", [objApp.keys.inspection_id], function(){});
+                return false;
+            });
+        }
     }
 
     this.need4Steps = function(report_type){
-        return false;
+        return report_type == 'Builder: Enclosed inspections' || report_type == 'Builder: Fixing inspections'
+            || report_type == 'Builder: Frame inspections' || report_type == 'Builder: Slab inspections';
     }
 
     this.need5Steps = function(report_type){
         return report_type == 'Builder: Quality inspections' || report_type == 'Builder: PCI/Final inspections';
+    }
+
+    this.showStage = function(report_type){
+        $('.builder_slab').hide();
+        switch(report_type){
+            case 'Builder: Enclosed inspections':
+                $('.stage_name').html("'Enclosed Stage'");
+                break;
+            case 'Builder: Fixing inspections':
+                $('.stage_name').html("''Fixing Stage'");
+                break;
+            case 'Builder: Frame inspections':
+                $('.stage_name').html("''Frame Stage'");
+                break;
+            case 'Builder: Slab inspections':
+                $('.stage_name').html("'Base/Slab Stage'");
+                $('.builder_slab').show();
+                break;
+        }
     }
 };
 

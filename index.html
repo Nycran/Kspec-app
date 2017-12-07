@@ -657,7 +657,49 @@
 
         <!-- inspection step 4 screen -->
         <div id="inspectionStep4" class="inspectionDetails hidden panel">
-            <form action="#" id="frmInstalldItems" method="post">
+            <div class="builder_need_4_steps">
+                <input type="hidden" name="reached_stage" id="reached_stage" value="0"/>
+                <input type="hidden" name="is_tidy" id="is_tidy" value="0"/>
+                <input type="hidden" name="setback_front_correct" id="setback_front_correct" value="0"/>
+                <input type="hidden" name="setback_sides_correct" id="setback_sides_correct" value="0"/>
+                <input type="hidden" name="strip_footing_approx_position_correct" id="strip_footing_approx_position_correct" value="0"/>
+                <input type="hidden" name="pad_footing_approx_position_correct" id="pad_footing_approx_position_correct" value="0"/>
+                <table style="width: 100%;">
+                    <tbody>
+                    <tr>
+                        <td style="width: 60%">Has the property reached <span class="stage_name">stage</span>?</td>
+                        <td style="width: 20%"><a id="btn_reached_stage_yes" class="left yesno_enabled" href="javascript:void(0);">Yes</a></td>
+                        <td style="width: 20%"><a id="btn_reached_stage_no" class="left yesno_disabled" href="javascript:void(0);">No</a></td>
+                    </tr>
+                    <tr>
+                        <td style="width: 60%">Is the site clean and tidy?</td>
+                        <td style="width: 20%"><a id="btn_is_tidy_yes" class="left yesno_enabled" href="javascript:void(0);">Yes</a></td>
+                        <td style="width: 20%"><a id="btn_is_tidy_no" class="left yesno_disabled" href="javascript:void(0);">No</a></td>
+                    </tr>
+                    <tr class="builder_slab" style="display: none;">
+                        <td style="width: 60%">Setback - Front correct</td>
+                        <td style="width: 20%"><a id="btn_setback_front_correct_yes" class="left yesno_enabled" href="javascript:void(0);">Yes</a></td>
+                        <td style="width: 20%"><a id="btn_setback_front_correct_no" class="left yesno_disabled" href="javascript:void(0);">No</a></td>
+                    </tr>
+                    <tr class="builder_slab" style="display: none;">
+                        <td style="width: 60%">Setback - Sides correct</td>
+                        <td style="width: 20%"><a id="btn_setback_sides_correct_yes" class="left yesno_enabled" href="javascript:void(0);">Yes</a></td>
+                        <td style="width: 20%"><a id="btn_setback_sides_correct_no" class="left yesno_disabled" href="javascript:void(0);">No</a></td>
+                    </tr>
+                    <tr class="builder_slab" style="display: none;">
+                        <td style="width: 60%">Strip footing approx position correct</td>
+                        <td style="width: 20%"><a id="btn_strip_footing_approx_position_correct_yes" class="left yesno_enabled" href="javascript:void(0);">Yes</a></td>
+                        <td style="width: 20%"><a id="btn_strip_footing_approx_position_correct_no" class="left yesno_disabled" href="javascript:void(0);">No</a></td>
+                    </tr>
+                    <tr class="builder_slab" style="display: none;">
+                        <td style="width: 60%">Pad footing approx position correct</td>
+                        <td style="width: 20%"><a id="btn_pad_footing_approx_position_correct_yes" class="left yesno_enabled" href="javascript:void(0);">Yes</a></td>
+                        <td style="width: 20%"><a id="btn_pad_footing_approx_position_correct_no" class="left yesno_disabled" href="javascript:void(0);">No</a></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <form class="builder_need_5_steps" action="#" id="frmInstalldItems" method="post">
                 <input type="hidden" name="omission_item_1" id="omission_item_1" value="0"/>
                 <input type="hidden" name="omission_item_2" id="omission_item_2" value="0"/>
                 <input type="hidden" name="omission_item_3" id="omission_item_3" value="0"/>

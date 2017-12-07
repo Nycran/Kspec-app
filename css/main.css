@@ -1630,6 +1630,10 @@ aside textarea
 #frmInstalldItems > table.listing{width: 980px;}
 #frmInstalldItems #installedItemsScrollWrapper > table{width: 980px;}
 
+.builder_need_4_steps table td{
+    border: none !important;
+}
+
 .inspectionDetails #installedItemsScrollWrapper{
     height: 390px;
     overflow-x: hidden;
