@@ -50,7 +50,7 @@ var Inspections = function()
     this.keySortArray = false;
     this.MAX_REPORT_PHOTOS = 12;
     this.TOTAL_OMISSIONS_ITEMS = 34;
-    this.YES_NO_FIELDS = ['reached_stage', 'is_tidy', 'setback_front_correct', 'setback_sides_correct', 'strip_footing_approx_position_correct', 'pad_footing_approx_position_correct'];
+    this.YES_NO_FIELDS = ['reached_stage', 'is_tidy', 'setback_front_correct', 'setback_sides_correct', 'strip_footing_approx_position_correct', 'pad_footing_approx_position_correct', 'approx_room_sizes_correct'];
 	
 	this.current_table = "inspectionitemphotos";
 	this.current_key = "inspection_id";
@@ -7313,6 +7313,7 @@ var Inspections = function()
 
     this.showStage = function(report_type){
         $('.builder_slab').hide();
+        $('.builder_frame').hide();
         switch(report_type){
             case 'Builder: Enclosed inspections':
                 $('.stage_name').html("'Enclosed Stage'");
@@ -7322,6 +7323,7 @@ var Inspections = function()
                 break;
             case 'Builder: Frame inspections':
                 $('.stage_name').html("''Frame Stage'");
+                $('.builder_frame').show();
                 break;
             case 'Builder: Slab inspections':
                 $('.stage_name').html("'Base/Slab Stage'");
