@@ -1205,6 +1205,7 @@ function DBUtils()
                 "'setback_sides_correct' SMALLINT(6) DEFAULT 0, " +
                 "'strip_footing_approx_position_correct' SMALLINT(6) DEFAULT 0, " +
                 "'pad_footing_approx_position_correct' SMALLINT(6) DEFAULT 0, " +
+                "'approx_room_sizes_correct' SMALLINT(6) DEFAULT 0, " +
                 "'omission_item_1' SMALLINT(6) DEFAULT 0, " +
                 "'omission_item_2' SMALLINT(6) DEFAULT 0, " +
                 "'omission_item_3' SMALLINT(6) DEFAULT 0, " +
@@ -1314,6 +1315,7 @@ function DBUtils()
                 "'setback_sides_correct' SMALLINT(6) DEFAULT 0, " +
                 "'strip_footing_approx_position_correct' SMALLINT(6) DEFAULT 0, " +
                 "'pad_footing_approx_position_correct' SMALLINT(6) DEFAULT 0, " +
+                "'approx_room_sizes_correct' SMALLINT(6) DEFAULT 0, " +
                 "'omission_item_1' SMALLINT(6) DEFAULT 0, " +
                 "'omission_item_2' SMALLINT(6) DEFAULT 0, " +
                 "'omission_item_3' SMALLINT(6) DEFAULT 0, " +
