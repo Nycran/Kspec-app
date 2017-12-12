@@ -536,13 +536,13 @@ body.reinspect #btnReinspectDelete{top: 0;}
     width: 380px !important;
 }
 .select2-container--default .select2-selection--single{
-    height: 54px;
+    height: 44px;
     margin: 5px 0;
     border-radius: 0;
     background: #f7f7f7;
 }
 .select2-container--default .select2-selection--single .select2-selection__rendered{
-    line-height: 54px;
+    line-height: 44px;
     padding-left: 15px;
 }
 .select2-container--default .select2-selection--single .select2-selection__arrow{
@@ -974,7 +974,7 @@ input[type="text"], input[type="password"], input[type="email"], input[type="num
     border-radius: 0px;
     font-size: 21px;
     margin: 5px 0 10px;
-    padding: 15px;
+    padding: 10px 15px;
     width: 390px;
     color: #5c5756;
 }
@@ -1630,9 +1630,10 @@ aside textarea
 #frmInstalldItems > table.listing{width: 980px;}
 #frmInstalldItems #installedItemsScrollWrapper > table{width: 980px;}
 
-.builder_need_4_steps table td{
-    border: none !important;
+.builder_need_4_steps table{
+    border: 1px solid #000;
 }
+
 
 .inspectionDetails #installedItemsScrollWrapper{
     height: 390px;
@@ -1839,7 +1840,7 @@ ul.historygallery{
 {
     margin: 5px 0;
     width: 380px;
-    height: 56px;
+    height: 46px;
     font-size: 21px;
     color: #5c5756;
 }
@@ -2384,3 +2385,7 @@ a.yesno_disabled:hover {
 #frmEmailTo ul.select2-selection__rendered li{margin: 5px 5px 5px 0;padding: 0 5px 0 5px;float: left;clear: none;}
 #frmEmailTo .select2-selection--multiple{border-color:#bbbbbb;}
 #frmEmailTo .select2-container{min-width: 800px;}
+
+#tblRateListing tr:first-child td {
+    border-top: 1px solid #000;
+}

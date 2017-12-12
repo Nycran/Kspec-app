@@ -1198,6 +1198,7 @@ function DBUtils()
                 "'min_flooring_tiles' SMALLINT(6) DEFAULT 0, " +
                 "'grout_samples' SMALLINT(6) DEFAULT 0, " +
                 "'barrel_code' TEXT DEFAULT NULL, " +
+                "'arranged_by_supervisor' SMALLINT(6) DEFAULT 0, " +
 				"'certificated' SMALLINT(6) DEFAULT 0, " +
                 "'reached_stage' SMALLINT(6) DEFAULT 0, " +
                 "'is_tidy' SMALLINT(6) DEFAULT 0, " +
@@ -1303,12 +1304,14 @@ function DBUtils()
                 "'most_recent' INTEGER NOT NULL DEFAULT 0, " +
                 "'weather' VARCHAR NULL ," +
                 "'notes' TEXT  NULL, " +
+                "'persons_in_attendance' VARCHAR NULL ," +
                 "'min_roof_tiles' SMALLINT(6) DEFAULT 0, " +
                 "'min_ridge_tiles' SMALLINT(6) DEFAULT 0, " +
                 "'touch_up_paint' SMALLINT(6) DEFAULT 0, " +
                 "'min_flooring_tiles' SMALLINT(6) DEFAULT 0, " +
                 "'grout_samples' SMALLINT(6) DEFAULT 0, " +
                 "'barrel_code' TEXT DEFAULT NULL, " +
+                "'arranged_by_supervisor' SMALLINT(6) DEFAULT 0, " +
                 "'reached_stage' SMALLINT(6) DEFAULT 0, " +
                 "'is_tidy' SMALLINT(6) DEFAULT 0, " +
                 "'setback_front_correct' SMALLINT(6) DEFAULT 0, " +
