@@ -536,13 +536,13 @@ body.reinspect #btnReinspectDelete{top: 0;}
     width: 380px !important;
 }
 .select2-container--default .select2-selection--single{
-    height: 44px;
+    height: 42px;
     margin: 5px 0;
     border-radius: 0;
     background: #f7f7f7;
 }
 .select2-container--default .select2-selection--single .select2-selection__rendered{
-    line-height: 44px;
+    line-height: 42px;
     padding-left: 15px;
 }
 .select2-container--default .select2-selection--single .select2-selection__arrow{
@@ -974,7 +974,7 @@ input[type="text"], input[type="password"], input[type="email"], input[type="num
     border-radius: 0px;
     font-size: 21px;
     margin: 5px 0 10px;
-    padding: 10px 15px;
+    padding: 9px 15px;
     width: 390px;
     color: #5c5756;
 }
@@ -1626,16 +1626,16 @@ aside textarea
     min-height: 320px;
 }
 
-#frmInstalldItems{margin-left: 10px;}
-#frmInstalldItems > table.listing{width: 980px;}
-#frmInstalldItems #installedItemsScrollWrapper > table{width: 980px;}
+#frmInstalldItems, .builder_australasian{margin-left: 10px;}
+#frmInstalldItems > table.listing, .builder_australasian > table.listing{width: 980px;}
+#frmInstalldItems #installedItemsScrollWrapper > table, .builder_australasian #installedItemsScrollWrapper2 > table{width: 980px;}
 
 .builder_need_4_steps table{
     border: 1px solid #000;
 }
 
 
-.inspectionDetails #installedItemsScrollWrapper{
+.inspectionDetails #installedItemsScrollWrapper, .inspectionDetails #installedItemsScrollWrapper2{
     height: 390px;
     overflow-x: hidden;
     max-height: 390px;
@@ -2389,3 +2389,9 @@ a.yesno_disabled:hover {
 #tblRateListing tr:first-child td {
     border-top: 1px solid #000;
 }
+
+#frmInspectionDetails table td{padding: 4px !important; font-size: 18px;}
+#frmInspectionDetails table td input[type="text"],
+#frmInspectionDetails table td input[type="password"],
+#frmInspectionDetails table td input[type="email"], input[type="number"]{font-size: 18px;}
+.twocolumn #frmInspectionDetails select{font-size: 18px;}

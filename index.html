@@ -427,6 +427,14 @@
                             </td>
                         </tr>
                         <tr>
+                            <td><label for="client_info">Type of building</label></td>
+                            <td>
+                                <select class="selector" id="type_of_building" title="Select a Type of Building">
+                                    <option value="Residential">Residential</option>
+                                    <option value="Commercial">Commercial</option>
+                                </select>
+                        </tr>
+                        <tr>
                             <td><label for="inspection_date">Inspection Date</label></td>
                             <td><input type="text" name="inspection_date" id="inspection_date" readonly="readonly" value="" class="required" /></td>
                         </tr>
@@ -477,6 +485,14 @@
                         <tr>
                             <td><label for="weather">Weather</label>  </td>
                             <td><textarea id="weather" name="weather"></textarea></td>
+                        </tr>
+                        <tr>
+                            <td><label for="client_info">K-Spec Reference</label></td>
+                            <td><input type="text" name="reference" id="reference" value="" class="" /></td>
+                        </tr>
+                        <tr class="coral_job_number" style="display: none;">
+                            <td><label for="client_info">Coral Job Number</label></td>
+                            <td><input type="text" name="job_number" id="job_number" value="" class="" /></td>
                         </tr>
                     </table>
                 </fieldset>
@@ -663,54 +679,55 @@
 
         <!-- inspection step 4 screen -->
         <div id="inspectionStep4" class="inspectionDetails hidden panel">
-            <div class="builder_need_4_steps">
+            <div class="builder_need_4_steps" style="display: none;">
                 <input type="hidden" name="reached_stage" id="reached_stage" value="0"/>
                 <input type="hidden" name="is_tidy" id="is_tidy" value="0"/>
                 <input type="hidden" name="setback_front_correct" id="setback_front_correct" value="0"/>
                 <input type="hidden" name="setback_sides_correct" id="setback_sides_correct" value="0"/>
                 <input type="hidden" name="strip_footing_approx_position_correct" id="strip_footing_approx_position_correct" value="0"/>
                 <input type="hidden" name="pad_footing_approx_position_correct" id="pad_footing_approx_position_correct" value="0"/>
+                <input type="hidden" name="approx_room_sizes_correct" id="approx_room_sizes_correct" value="0"/>
                 <table class="listing" style="width: 100%;">
                     <tbody>
                     <tr>
                         <td style="width: 60%">Has the property reached <span class="stage_name">stage</span>?</td>
-                        <td style="width: 20%"><a id="btn_reached_stage_yes" class="left yesno_enabled btn_reached_stage_yes" href="javascript:void(0);">Yes</a></td>
-                        <td style="width: 20%"><a id="btn_reached_stage_no" class="left yesno_disabled btn_reached_stage_no" href="javascript:void(0);">No</a></td>
+                        <td style="width: 20%"><a data-id="reached_stage" class="left yesno_disabled btn_reached_stage_yes" href="javascript:void(0);">Yes</a></td>
+                        <td style="width: 20%"><a data-id="reached_stage" class="left yesno_enabled btn_reached_stage_no" href="javascript:void(0);">No</a></td>
                     </tr>
                     <tr>
                         <td style="width: 60%">Is the site clean and tidy?</td>
-                        <td style="width: 20%"><a id="btn_is_tidy_yes" class="left yesno_enabled btn_is_tidy_yes" href="javascript:void(0);">Yes</a></td>
-                        <td style="width: 20%"><a id="btn_is_tidy_no" class="left yesno_disabled btn_is_tidy_no" href="javascript:void(0);">No</a></td>
+                        <td style="width: 20%"><a data-id="is_tidy" class="left yesno_enabled btn_is_tidy_yes" href="javascript:void(0);">Yes</a></td>
+                        <td style="width: 20%"><a data-id="is_tidy" class="left yesno_disabled btn_is_tidy_no" href="javascript:void(0);">No</a></td>
                     </tr>
                     <tr class="builder_slab" style="display: none;">
                         <td style="width: 60%">Setback - Front correct</td>
-                        <td style="width: 20%"><a id="btn_setback_front_correct_yes" class="left yesno_enabled btn_setback_front_correct_yes" href="javascript:void(0);">Yes</a></td>
-                        <td style="width: 20%"><a id="btn_setback_front_correct_no" class="left yesno_disabled btn_setback_front_correct_no" href="javascript:void(0);">No</a></td>
+                        <td style="width: 20%"><a data-id="setback_front_correct" class="left yesno_enabled btn_setback_front_correct_yes" href="javascript:void(0);">Yes</a></td>
+                        <td style="width: 20%"><a data-id="setback_front_correct" class="left yesno_disabled btn_setback_front_correct_no" href="javascript:void(0);">No</a></td>
                     </tr>
                     <tr class="builder_slab" style="display: none;">
                         <td style="width: 60%">Setback - Sides correct</td>
-                        <td style="width: 20%"><a id="btn_setback_sides_correct_yes" class="left yesno_enabled btn_setback_sides_correct_yes" href="javascript:void(0);">Yes</a></td>
-                        <td style="width: 20%"><a id="btn_setback_sides_correct_no" class="left yesno_disabled btn_setback_sides_correct_no" href="javascript:void(0);">No</a></td>
+                        <td style="width: 20%"><a data-id="setback_sides_correct" class="left yesno_enabled btn_setback_sides_correct_yes" href="javascript:void(0);">Yes</a></td>
+                        <td style="width: 20%"><a data-id="setback_sides_correct" class="left yesno_disabled btn_setback_sides_correct_no" href="javascript:void(0);">No</a></td>
                     </tr>
                     <tr class="builder_slab" style="display: none;">
                         <td style="width: 60%">Strip footing approx position correct</td>
-                        <td style="width: 20%"><a id="btn_strip_footing_approx_position_correct_yes" class="left yesno_enabled btn_strip_footing_approx_position_correct_yes" href="javascript:void(0);">Yes</a></td>
-                        <td style="width: 20%"><a id="btn_strip_footing_approx_position_correct_no" class="left yesno_disabled btn_strip_footing_approx_position_correct_no" href="javascript:void(0);">No</a></td>
+                        <td style="width: 20%"><a data-id="strip_footing_approx_position_correct" class="left yesno_enabled btn_strip_footing_approx_position_correct_yes" href="javascript:void(0);">Yes</a></td>
+                        <td style="width: 20%"><a data-id="strip_footing_approx_position_correct" class="left yesno_disabled btn_strip_footing_approx_position_correct_no" href="javascript:void(0);">No</a></td>
                     </tr>
                     <tr class="builder_slab" style="display: none;">
                         <td style="width: 60%">Pad footing approx position correct</td>
-                        <td style="width: 20%"><a id="btn_pad_footing_approx_position_correct_yes" class="left yesno_enabled btn_pad_footing_approx_position_correct_yes" href="javascript:void(0);">Yes</a></td>
-                        <td style="width: 20%"><a id="btn_pad_footing_approx_position_correct_no" class="left yesno_disabled btn_pad_footing_approx_position_correct_no" href="javascript:void(0);">No</a></td>
+                        <td style="width: 20%"><a data-id="pad_footing_approx_position_correct" class="left yesno_enabled btn_pad_footing_approx_position_correct_yes" href="javascript:void(0);">Yes</a></td>
+                        <td style="width: 20%"><a data-id="pad_footing_approx_position_correct" class="left yesno_disabled btn_pad_footing_approx_position_correct_no" href="javascript:void(0);">No</a></td>
                     </tr>
                     <tr class="builder_frame" style="display: none;">
                         <td style="width: 60%">Approx. room sizes correct</td>
-                        <td style="width: 20%"><a id="btn_approx_room_sizes_correct_yes" class="left yesno_enabled btn_approx_room_sizes_correct_yes" href="javascript:void(0);">Yes</a></td>
-                        <td style="width: 20%"><a id="btn_approx_room_sizes_correct_no" class="left yesno_disabled btn_approx_room_sizes_correct_no" href="javascript:void(0);">No</a></td>
+                        <td style="width: 20%"><a data-id="approx_room_sizes_correct" class="left yesno_enabled btn_approx_room_sizes_correct_yes" href="javascript:void(0);">Yes</a></td>
+                        <td style="width: 20%"><a data-id="approx_room_sizes_correct" class="left yesno_disabled btn_approx_room_sizes_correct_no" href="javascript:void(0);">No</a></td>
                     </tr>
                     </tbody>
                 </table>
             </div>
-            <form class="builder_need_5_steps builder_pci" action="#" id="frmInstalldItems" method="post">
+            <form class="builder_need_5_steps builder_pci" action="#" id="frmInstalldItems" method="post" style="display: none;">
                 <input type="hidden" name="omission_item_1" id="omission_item_1" value="0"/>
                 <input type="hidden" name="omission_item_2" id="omission_item_2" value="0"/>
                 <input type="hidden" name="omission_item_3" id="omission_item_3" value="0"/>
@@ -761,183 +778,291 @@
                         <tbody>
                         <tr class="builder_pci" style="display: none;">
                             <td style="width: 60%">Has the property reached <span class="stage_name">stage</span>?</td>
-                            <td style="width: 20%"><a id="btn_reached_stage_yes" class="left yesno_enabled btn_reached_stage_yes" href="javascript:void(0);">Yes</a></td>
-                            <td style="width: 20%"><a id="btn_reached_stage_no" class="left yesno_disabled btn_reached_stage_no" href="javascript:void(0);">No</a></td>
+                            <td style="width: 20%"><a data-id="reached_stage" class="left yesno_disabled btn_reached_stage_yes" href="javascript:void(0);">Yes</a></td>
+                            <td style="width: 20%"><a data-id="reached_stage" class="left yesno_enabled btn_reached_stage_no" href="javascript:void(0);">No</a></td>
                         </tr>
                         <tr>
                             <td style="width: 60%">Appliances inc. oven, cooktop, rangehood and dishwasher</td>
-                            <td style="width: 20%"><a id="btnO1Yes" class="left yesno_enabled" href="javascript:void(0);">Yes</a></td>
-                            <td style="width: 20%"><a id="btnO1No" class="left yesno_disabled" href="javascript:void(0);">No</a></td>
+                            <td style="width: 20%"><a data-id="btnO1Yes" class="left yesno_enabled" href="javascript:void(0);">Yes</a></td>
+                            <td style="width: 20%"><a data-id="btnO1No" class="left yesno_disabled" href="javascript:void(0);">No</a></td>
                         </tr>
                         <tr>
                             <td>Landscaping (inc turf, boundary fences, fence returns & gates, field gullies, gardens, req. retaining wall etc)</td>
-                            <td><a id="btnO2Yes" class="left yesno_enabled" href="javascript:void(0);">Yes</a></td>
-                            <td><a id="btnO2No" class="left yesno_disabled" href="javascript:void(0);">No</a></td>
+                            <td><a data-id="btnO2Yes" class="left yesno_enabled" href="javascript:void(0);">Yes</a></td>
+                            <td><a data-id="btnO2No" class="left yesno_disabled" href="javascript:void(0);">No</a></td>
                         </tr>
                         <tr>
                             <td>Letter box (inc numbers)</td>
-                            <td><a id="btnO3Yes" class="left yesno_enabled" href="javascript:void(0);">Yes</a></td>
-                            <td><a id="btnO3No" class="left yesno_disabled" href="javascript:void(0);">No</a></td>
+                            <td><a data-id="btnO3Yes" class="left yesno_enabled" href="javascript:void(0);">Yes</a></td>
+                            <td><a data-id="btnO3No" class="left yesno_disabled" href="javascript:void(0);">No</a></td>
                         </tr>
                         <tr>
                             <td>Clothesline</td>
-                            <td><a id="btnO4Yes" class="left yesno_enabled" href="javascript:void(0);">Yes</a></td>
-                            <td><a id="btnO4No" class="left yesno_disabled" href="javascript:void(0);">No</a></td>
+                            <td><a data-id="btnO4Yes" class="left yesno_enabled" href="javascript:void(0);">Yes</a></td>
+                            <td><a data-id="btnO4No" class="left yesno_disabled" href="javascript:void(0);">No</a></td>
                         </tr>
                         <tr>
                             <td>Window coverings / blinds</td>
-                            <td><a id="btnO5Yes" class="left yesno_enabled" href="javascript:void(0);">Yes</a></td>
-                            <td><a id="btnO5No" class="left yesno_disabled" href="javascript:void(0);">No</a></td>
+                            <td><a data-id="btnO5Yes" class="left yesno_enabled" href="javascript:void(0);">Yes</a></td>
+                            <td><a data-id="btnO5No" class="left yesno_disabled" href="javascript:void(0);">No</a></td>
                         </tr>
                         <tr>
                             <td>Flyscreens/ Barrier screen doors</td>
-                            <td><a id="btnO6Yes" class="left yesno_enabled" href="javascript:void(0);">Yes</a></td>
-                            <td><a id="btnO6No" class="left yesno_disabled" href="javascript:void(0);">No</a></td>
+                            <td><a data-id="btnO6Yes" class="left yesno_enabled" href="javascript:void(0);">Yes</a></td>
+                            <td><a data-id="btnO6No" class="left yesno_disabled" href="javascript:void(0);">No</a></td>
                         </tr>
                         <tr>
                             <td>Driveway</td>
-                            <td><a id="btnO7Yes" class="left yesno_enabled" href="javascript:void(0);">Yes</a></td>
-                            <td><a id="btnO7No" class="left yesno_disabled" href="javascript:void(0);">No</a></td>
+                            <td><a data-id="btnO7Yes" class="left yesno_enabled" href="javascript:void(0);">Yes</a></td>
+                            <td><a data-id="btnO7No" class="left yesno_disabled" href="javascript:void(0);">No</a></td>
                         </tr>
                         <tr>
                             <td>External Concreting</td>
-                            <td><a id="btnO8Yes" class="left yesno_enabled" href="javascript:void(0);">Yes</a></td>
-                            <td><a id="btnO8No" class="left yesno_disabled" href="javascript:void(0);">No</a></td>
+                            <td><a data-id="btnO8Yes" class="left yesno_enabled" href="javascript:void(0);">Yes</a></td>
+                            <td><a data-id="btnO8No" class="left yesno_disabled" href="javascript:void(0);">No</a></td>
                         </tr>
                         <tr>
                             <td>Air-conditioner units</td>
-                            <td><a id="btnO9Yes" class="left yesno_enabled" href="javascript:void(0);">Yes</a></td>
-                            <td><a id="btnO9No" class="left yesno_disabled" href="javascript:void(0);">No</a></td>
+                            <td><a data-id="btnO9Yes" class="left yesno_enabled" href="javascript:void(0);">Yes</a></td>
+                            <td><a data-id="btnO9No" class="left yesno_disabled" href="javascript:void(0);">No</a></td>
                         </tr>
                         <tr>
                             <td>Main area floor coverings (inc bedrooms) etc</td>
-                            <td><a id="btnO10Yes" class="left yesno_enabled" href="javascript:void(0);">Yes</a></td>
-                            <td><a id="btnO10No" class="left yesno_disabled" href="javascript:void(0);">No</a></td>
+                            <td><a data-id="btnO10Yes" class="left yesno_enabled" href="javascript:void(0);">Yes</a></td>
+                            <td><a data-id="btnO10No" class="left yesno_disabled" href="javascript:void(0);">No</a></td>
                         </tr>
                         <tr>
                             <td>Power to the property at time of inspection</td>
-                            <td><a id="btnO11Yes" class="left yesno_enabled" href="javascript:void(0);">Yes</a></td>
-                            <td><a id="btnO11No" class="left yesno_disabled" href="javascript:void(0);">No</a></td>
+                            <td><a data-id="btnO11Yes" class="left yesno_enabled" href="javascript:void(0);">Yes</a></td>
+                            <td><a data-id="btnO11No" class="left yesno_disabled" href="javascript:void(0);">No</a></td>
                         </tr>
                         <tr>
                             <td>Water to property at time of inspection</td>
-                            <td><a id="btnO12Yes" class="left yesno_enabled" href="javascript:void(0);">Yes</a></td>
-                            <td><a id="btnO12No" class="left yesno_disabled" href="javascript:void(0);">No</a></td>
+                            <td><a data-id="btnO12Yes" class="left yesno_enabled" href="javascript:void(0);">Yes</a></td>
+                            <td><a data-id="btnO12No" class="left yesno_disabled" href="javascript:void(0);">No</a></td>
                         </tr>
                         <tr>
                             <td>External Telstra/ NBN/ Communication box installed</td>
-                            <td><a id="btnO13Yes" class="left yesno_enabled" href="javascript:void(0);">Yes</a></td>
-                            <td><a id="btnO13No" class="left yesno_disabled" href="javascript:void(0);">No</a></td>
+                            <td><a data-id="btnO13Yes" class="left yesno_enabled" href="javascript:void(0);">Yes</a></td>
+                            <td><a data-id="btnO13No" class="left yesno_disabled" href="javascript:void(0);">No</a></td>
                         </tr>
                         <tr>
                             <td>Final clean required (this may include cleaning garage slab and external concrete)</td>
-                            <td><a id="btnO14Yes" class="left yesno_enabled" href="javascript:void(0);">Yes</a></td>
-                            <td><a id="btnO14No" class="left yesno_disabled" href="javascript:void(0);">No</a></td>
+                            <td><a data-id="btnO14Yes" class="left yesno_enabled" href="javascript:void(0);">Yes</a></td>
+                            <td><a data-id="btnO14No" class="left yesno_disabled" href="javascript:void(0);">No</a></td>
                         </tr>
                         <tr class="coral_homes" style="display: none;">
                             <td>Has ceiling insulation been installed</td>
-                            <td><a id="btnO15Yes" class="left yesno_enabled" href="javascript:void(0);">Yes</a></td>
-                            <td><a id="btnO15No" class="left yesno_disabled" href="javascript:void(0);">No</a></td>
+                            <td><a data-id="btnO15Yes" class="left yesno_enabled" href="javascript:void(0);">Yes</a></td>
+                            <td><a data-id="btnO15No" class="left yesno_disabled" href="javascript:void(0);">No</a></td>
                         </tr>
                         <tr class="coral_homes" style="display: none;">
                             <td>Is slab edge in good condition and to the required 75mm barrier? </td>
-                            <td><a id="btnO16Yes" class="left yesno_enabled" href="javascript:void(0);">Yes</a></td>
-                            <td><a id="btnO16No" class="left yesno_disabled" href="javascript:void(0);">No</a></td>
+                            <td><a data-id="btnO16Yes" class="left yesno_enabled" href="javascript:void(0);">Yes</a></td>
+                            <td><a data-id="btnO16No" class="left yesno_disabled" href="javascript:void(0);">No</a></td>
                         </tr>
                         <tr class="coral_homes" style="display: none;">
                             <td>Is storm water kerb outlets installed and in good condition</td>
-                            <td><a id="btnO17Yes" class="left yesno_enabled" href="javascript:void(0);">Yes</a></td>
-                            <td><a id="btnO17No" class="left yesno_disabled" href="javascript:void(0);">No</a></td>
+                            <td><a data-id="btnO17Yes" class="left yesno_enabled" href="javascript:void(0);">Yes</a></td>
+                            <td><a data-id="btnO17No" class="left yesno_disabled" href="javascript:void(0);">No</a></td>
                         </tr>
                         <tr class="coral_homes" style="display: none;">
                             <td>Is the brickwork quality of a good standard? (i.e: Bed joints consistent, brickwork clean, Mortar colour consistent?)</td>
-                            <td><a id="btnO18Yes" class="left yesno_enabled" href="javascript:void(0);">Yes</a></td>
-                            <td><a id="btnO18No" class="left yesno_disabled" href="javascript:void(0);">No</a></td>
+                            <td><a data-id="btnO18Yes" class="left yesno_enabled" href="javascript:void(0);">Yes</a></td>
+                            <td><a data-id="btnO18No" class="left yesno_disabled" href="javascript:void(0);">No</a></td>
                         </tr>
                         <tr class="coral_homes" style="display: none;">
                             <td>Is the Roof/Fascia/Gutter complete and free of defects?</td>
-                            <td><a id="btnO19Yes" class="left yesno_enabled" href="javascript:void(0);">Yes</a></td>
-                            <td><a id="btnO19No" class="left yesno_disabled" href="javascript:void(0);">No</a></td>
+                            <td><a data-id="btnO19Yes" class="left yesno_enabled" href="javascript:void(0);">Yes</a></td>
+                            <td><a data-id="btnO19No" class="left yesno_disabled" href="javascript:void(0);">No</a></td>
                         </tr>
                         <tr class="coral_homes" style="display: none;">
                             <td>Soil adjacent to dwelling graded away at 1:20 min (50mm1m)?</td>
-                            <td><a id="btnO20Yes" class="left yesno_enabled" href="javascript:void(0);">Yes</a></td>
-                            <td><a id="btnO20No" class="left yesno_disabled" href="javascript:void(0);">No</a></td>
+                            <td><a data-id="btnO20Yes" class="left yesno_enabled" href="javascript:void(0);">Yes</a></td>
+                            <td><a data-id="btnO20No" class="left yesno_disabled" href="javascript:void(0);">No</a></td>
                         </tr>
                         <tr class="coral_homes" style="display: none;">
                             <td>Are brick articulation joints installed as per the Engineer’s requirements?</td>
-                            <td><a id="btnO21Yes" class="left yesno_enabled" href="javascript:void(0);">Yes</a></td>
-                            <td><a id="btnO21No" class="left yesno_disabled" href="javascript:void(0);">No</a></td>
+                            <td><a data-id="btnO21Yes" class="left yesno_enabled" href="javascript:void(0);">Yes</a></td>
+                            <td><a data-id="btnO21No" class="left yesno_disabled" href="javascript:void(0);">No</a></td>
                         </tr>
                         <tr class="coral_homes" style="display: none;">
                             <td>Trenches back filled and any site rubbish removed?</td>
-                            <td><a id="btnO22Yes" class="left yesno_enabled" href="javascript:void(0);">Yes</a></td>
-                            <td><a id="btnO22No" class="left yesno_disabled" href="javascript:void(0);">No</a></td>
+                            <td><a data-id="btnO22Yes" class="left yesno_enabled" href="javascript:void(0);">Yes</a></td>
+                            <td><a data-id="btnO22No" class="left yesno_disabled" href="javascript:void(0);">No</a></td>
                         </tr>
                         <tr class="coral_homes" style="display: none;">
                             <td>Drainage installed behind cut zero boundary walls?</td>
-                            <td><a id="btnO23Yes" class="left yesno_enabled" href="javascript:void(0);">Yes</a></td>
-                            <td><a id="btnO23No" class="left yesno_disabled" href="javascript:void(0);">No</a></td>
+                            <td><a data-id="btnO23Yes" class="left yesno_enabled" href="javascript:void(0);">Yes</a></td>
+                            <td><a data-id="btnO23No" class="left yesno_disabled" href="javascript:void(0);">No</a></td>
                         </tr>
                         <tr class="coral_homes" style="display: none;">
                             <td>Building platform free draining and graded to gully pits?/td>
-                            <td><a id="btnO24Yes" class="left yesno_enabled" href="javascript:void(0);">Yes</a></td>
-                            <td><a id="btnO24No" class="left yesno_disabled" href="javascript:void(0);">No</a></td>
+                            <td><a data-id="btnO24Yes" class="left yesno_enabled" href="javascript:void(0);">Yes</a></td>
+                            <td><a data-id="btnO24No" class="left yesno_disabled" href="javascript:void(0);">No</a></td>
                         </tr>
                         <tr class="coral_homes" style="display: none;">
                             <td>Spoon Drains Installed as per drainage plans?</td>
-                            <td><a id="btnO25Yes" class="left yesno_enabled" href="javascript:void(0);">Yes</a></td>
-                            <td><a id="btnO25No" class="left yesno_disabled" href="javascript:void(0);">No</a></td>
+                            <td><a data-id="btnO25Yes" class="left yesno_enabled" href="javascript:void(0);">Yes</a></td>
+                            <td><a data-id="btnO25No" class="left yesno_disabled" href="javascript:void(0);">No</a></td>
                         </tr>
                         <tr class="coral_homes" style="display: none;">
                             <td>Field gully pits located as per drainage plans and installed to correct heights?</td>
-                            <td><a id="btnO26Yes" class="left yesno_enabled" href="javascript:void(0);">Yes</a></td>
-                            <td><a id="btnO26No" class="left yesno_disabled" href="javascript:void(0);">No</a></td>
+                            <td><a data-id="btnO26Yes" class="left yesno_enabled" href="javascript:void(0);">Yes</a></td>
+                            <td><a data-id="btnO26No" class="left yesno_disabled" href="javascript:void(0);">No</a></td>
                         </tr>
                         <tr class="coral_homes" style="display: none;">
                             <td>Downpipes installed</td>
-                            <td><a id="btnO27Yes" class="left yesno_enabled" href="javascript:void(0);">Yes</a></td>
-                            <td><a id="btnO27No" class="left yesno_disabled" href="javascript:void(0);">No</a></td>
+                            <td><a data-id="btnO27Yes" class="left yesno_enabled" href="javascript:void(0);">Yes</a></td>
+                            <td><a data-id="btnO27No" class="left yesno_disabled" href="javascript:void(0);">No</a></td>
                         </tr>
                         <tr class="coral_homes" style="display: none;">
                             <td>Cut batter angles correct to soil type?</td>
-                            <td><a id="btnO28Yes" class="left yesno_enabled" href="javascript:void(0);">Yes</a></td>
-                            <td><a id="btnO28No" class="left yesno_disabled" href="javascript:void(0);">No</a></td>
+                            <td><a data-id="btnO28Yes" class="left yesno_enabled" href="javascript:void(0);">Yes</a></td>
+                            <td><a data-id="btnO28No" class="left yesno_disabled" href="javascript:void(0);">No</a></td>
                         </tr>
                         <tr class="coral_homes" style="display: none;">
                             <td>Fill batter angels correct to soil type?</td>
-                            <td><a id="btnO29Yes" class="left yesno_enabled" href="javascript:void(0);">Yes</a></td>
-                            <td><a id="btnO29No" class="left yesno_disabled" href="javascript:void(0);">No</a></td>
+                            <td><a data-id="btnO29Yes" class="left yesno_enabled" href="javascript:void(0);">Yes</a></td>
+                            <td><a data-id="btnO29No" class="left yesno_disabled" href="javascript:void(0);">No</a></td>
                         </tr>
                         <tr class="coral_homes" style="display: none;">
                             <td>If the above 2 answer/s are no, are future retaining walls proposed on the supplied site plans? </td>
-                            <td><a id="btnO30Yes" class="left yesno_enabled" href="javascript:void(0);">Yes</a></td>
-                            <td><a id="btnO30No" class="left yesno_disabled" href="javascript:void(0);">No</a></td>
+                            <td><a data-id="btnO30Yes" class="left yesno_enabled" href="javascript:void(0);">Yes</a></td>
+                            <td><a data-id="btnO30No" class="left yesno_disabled" href="javascript:void(0);">No</a></td>
                         </tr>
                         <tr class="coral_homes" style="display: none;">
                             <td>Driveways installed?</td>
-                            <td><a id="btnO31Yes" class="left yesno_enabled" href="javascript:void(0);">Yes</a></td>
-                            <td><a id="btnO31No" class="left yesno_disabled" href="javascript:void(0);">No</a></td>
+                            <td><a data-id="btnO31Yes" class="left yesno_enabled" href="javascript:void(0);">Yes</a></td>
+                            <td><a data-id="btnO31No" class="left yesno_disabled" href="javascript:void(0);">No</a></td>
                         </tr>
                         <tr class="coral_homes" style="display: none;">
                             <td>Are driveways by owners?</td>
-                            <td><a id="btnO32Yes" class="left yesno_enabled" href="javascript:void(0);">Yes</a></td>
-                            <td><a id="btnO32No" class="left yesno_disabled" href="javascript:void(0);">No</a></td>
+                            <td><a data-id="btnO32Yes" class="left yesno_enabled" href="javascript:void(0);">Yes</a></td>
+                            <td><a data-id="btnO32No" class="left yesno_disabled" href="javascript:void(0);">No</a></td>
                         </tr>
                         <tr class="coral_homes" style="display: none;">
                             <td>Grated drains to driveway installed</td>
-                            <td><a id="btnO33Yes" class="left yesno_enabled" href="javascript:void(0);">Yes</a></td>
-                            <td><a id="btnO33No" class="left yesno_disabled" href="javascript:void(0);">No</a></td>
+                            <td><a data-id="btnO33Yes" class="left yesno_enabled" href="javascript:void(0);">Yes</a></td>
+                            <td><a data-id="btnO33No" class="left yesno_disabled" href="javascript:void(0);">No</a></td>
                         </tr>
                         <tr class="coral_homes" style="display: none;">
                             <td>Have photos been taken of EVERY side of the house?</td>
-                            <td><a id="btnO34Yes" class="left yesno_enabled" href="javascript:void(0);">Yes</a></td>
-                            <td><a id="btnO34No" class="left yesno_disabled" href="javascript:void(0);">No</a></td>
+                            <td><a data-id="btnO34Yes" class="left yesno_enabled" href="javascript:void(0);">Yes</a></td>
+                            <td><a data-id="btnO34No" class="left yesno_disabled" href="javascript:void(0);">No</a></td>
                         </tr>
                         </tbody>
                     </table>
                 </div>
             </form>
+
+            <div class="builder_australasian" style="display: none;">
+                <table class="listing">
+                    <thead>
+                    <tr>
+                        <th class="tagID" style="width: 60%">Items</th>
+                        <th class="location" style="width: 20%">Yes</th>
+                        <th class="observation" style="width: 20%">No</th>
+                    </tr>
+                    </thead>
+                </table>
+                <div id="installedItemsScrollWrapper2" class="scrollWrapper">
+                    <table class="listing">
+                        <tbody>
+                        <tr class="builder_pci" style="display: none;">
+                            <td style="width: 60%">Has the property reached <span class="stage_name">stage</span>?</td>
+                            <td style="width: 20%"><a data-id="reached_stage" class="left yesno_disabled btn_reached_stage_yes" href="javascript:void(0);">Yes</a></td>
+                            <td style="width: 20%"><a data-id="reached_stage" class="left yesno_enabled btn_reached_stage_no" href="javascript:void(0);">No</a></td>
+                        </tr>
+                        <tr>
+                            <td style="width: 60%">Appliances inc. oven, cooktop, rangehood and dishwasher</td>
+                            <td style="width: 20%"><a data-id="btnO1Yes" class="left yesno_enabled" href="javascript:void(0);">Yes</a></td>
+                            <td style="width: 20%"><a data-id="btnO1No" class="left yesno_disabled" href="javascript:void(0);">No</a></td>
+                        </tr>
+                        <tr>
+                            <td>Landscaping (inc turf, boundary fences, fence returns & gates, field gullies, gardens, req. retaining wall etc)</td>
+                            <td><a data-id="btnO2Yes" class="left yesno_enabled" href="javascript:void(0);">Yes</a></td>
+                            <td><a data-id="btnO2No" class="left yesno_disabled" href="javascript:void(0);">No</a></td>
+                        </tr>
+                        <tr>
+                            <td>Letter box (inc numbers)</td>
+                            <td><a data-id="btnO3Yes" class="left yesno_enabled" href="javascript:void(0);">Yes</a></td>
+                            <td><a data-id="btnO3No" class="left yesno_disabled" href="javascript:void(0);">No</a></td>
+                        </tr>
+                        <tr>
+                            <td>Clothesline</td>
+                            <td><a data-id="btnO4Yes" class="left yesno_enabled" href="javascript:void(0);">Yes</a></td>
+                            <td><a data-id="btnO4No" class="left yesno_disabled" href="javascript:void(0);">No</a></td>
+                        </tr>
+                        <tr>
+                            <td>Window coverings / blinds</td>
+                            <td><a data-id="btnO5Yes" class="left yesno_enabled" href="javascript:void(0);">Yes</a></td>
+                            <td><a data-id="btnO5No" class="left yesno_disabled" href="javascript:void(0);">No</a></td>
+                        </tr>
+                        <tr>
+                            <td>Flyscreens/ Barrier screen doors</td>
+                            <td><a data-id="btnO6Yes" class="left yesno_enabled" href="javascript:void(0);">Yes</a></td>
+                            <td><a data-id="btnO6No" class="left yesno_disabled" href="javascript:void(0);">No</a></td>
+                        </tr>
+                        <tr>
+                            <td>Driveway</td>
+                            <td><a data-id="btnO7Yes" class="left yesno_enabled" href="javascript:void(0);">Yes</a></td>
+                            <td><a data-id="btnO7No" class="left yesno_disabled" href="javascript:void(0);">No</a></td>
+                        </tr>
+                        <tr>
+                            <td>External Concreting</td>
+                            <td><a data-id="btnO8Yes" class="left yesno_enabled" href="javascript:void(0);">Yes</a></td>
+                            <td><a data-id="btnO8No" class="left yesno_disabled" href="javascript:void(0);">No</a></td>
+                        </tr>
+                        <tr>
+                            <td>Air-conditioner units</td>
+                            <td><a data-id="btnO9Yes" class="left yesno_enabled" href="javascript:void(0);">Yes</a></td>
+                            <td><a data-id="btnO9No" class="left yesno_disabled" href="javascript:void(0);">No</a></td>
+                        </tr>
+                        <tr>
+                            <td>Turn on air-conditioners to test</td>
+                            <td><a data-id="btnO10Yes" class="left yesno_enabled" href="javascript:void(0);">Yes</a></td>
+                            <td><a data-id="btnO10No" class="left yesno_disabled" href="javascript:void(0);">No</a></td>
+                        </tr>
+                        <tr>
+                            <td>Main area floor coverings (inc bedrooms) etc</td>
+                            <td><a data-id="btnO11Yes" class="left yesno_enabled" href="javascript:void(0);">Yes</a></td>
+                            <td><a data-id="btnO11No" class="left yesno_disabled" href="javascript:void(0);">No</a></td>
+                        </tr>
+                        <tr>
+                            <td>Power to the property at time of inspection</td>
+                            <td><a data-id="btnO12Yes" class="left yesno_enabled" href="javascript:void(0);">Yes</a></td>
+                            <td><a data-id="btnO12No" class="left yesno_disabled" href="javascript:void(0);">No</a></td>
+                        </tr>
+                        <tr>
+                            <td>Water to property at time of inspection</td>
+                            <td><a data-id="btnO13Yes" class="left yesno_enabled" href="javascript:void(0);">Yes</a></td>
+                            <td><a data-id="btnO13No" class="left yesno_disabled" href="javascript:void(0);">No</a></td>
+                        </tr>
+                        <tr>
+                            <td>External Telstra/ NBN/ Communication box installed</td>
+                            <td><a data-id="btnO14Yes" class="left yesno_enabled" href="javascript:void(0);">Yes</a></td>
+                            <td><a data-id="btnO14No" class="left yesno_disabled" href="javascript:void(0);">No</a></td>
+                        </tr>
+                        <tr>
+                            <td>Final clean required (this may include cleaning garage slab and external concrete)</td>
+                            <td><a data-id="btnO15Yes" class="left yesno_enabled" href="javascript:void(0);">Yes</a></td>
+                            <td><a data-id="btnO15No" class="left yesno_disabled" href="javascript:void(0);">No</a></td>
+                        </tr>
+                        <tr>
+                            <td>Clothesline with concrete pad (Please take photos)</td>
+                            <td><a data-id="btnO16Yes" class="left yesno_enabled" href="javascript:void(0);">Yes</a></td>
+                            <td><a data-id="btnO16No" class="left yesno_disabled" href="javascript:void(0);">No</a></td>
+                        </tr>
+                        <tr>
+                            <td>Is there a subfloor? If so, is it clean? (Please take photos)</td>
+                            <td><a data-id="btnO17Yes" class="left yesno_enabled" href="javascript:void(0);">Yes</a></td>
+                            <td><a data-id="btnO17No" class="left yesno_disabled" href="javascript:void(0);">No</a></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
 
             <div class="bottomBtns">
                 <div class="btnContainer left">
@@ -972,34 +1097,32 @@
             <form action="#" id="frmRateDetails" method="post">
                 <input type="hidden" name="certificated" id="certificated"  value="0"/>
 
-                <div class="coral_homes">
-                    <input type="hidden" name="arranged_by_supervisor" id="arranged_by_supervisor" value="0"/>
-                    <table id="tblRateListing" class="listing">
-                        <tr>
-                            <td>Inspector Quality Rating out of 10</td>
-                            <td><select name="" id="exterior_quality" class="ratingSelect">
-                                <option value="1" selected>1</option>
-                                <option value="2">2</option>
-                                <option value="3">3</option>
-                                <option value="4">4</option>
-                                <option value="5">5</option>
-                                <option value="6">6</option>
-                                <option value="7">7</option>
-                                <option value="8">8</option>
-                                <option value="9">9</option>
-                                <option value="10">10</option>\
-                            </select></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td>Is further work to be arranged by supervisor to rectify issues?</td>
-                            <td>
-                                <a id="btn_arranged_by_supervisor_yes" class="left yesno_enabled" href="javascript:void(0);">Yes</a>
-                                <a style="margin-left: 10px;" id="btn_arranged_by_supervisor_no" class="left yesno_disabled" href="javascript:void(0);">No</a>
-                            </td>
-                        </tr>
-                    </table>
-                </div>
+                <input type="hidden" name="arranged_by_supervisor" id="arranged_by_supervisor" value="0"/>
+                <table id="tblRateListing" class="listing" style="border: 1px solid #000;">
+                    <tr>
+                        <td>Inspector Quality Rating out of 10</td>
+                        <td><select name="" id="exterior_quality" class="ratingSelect">
+                            <option value="1" selected>1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                            <option value="7">7</option>
+                            <option value="8">8</option>
+                            <option value="9">9</option>
+                            <option value="10">10</option>
+                        </select></td>
+                        <td></td>
+                    </tr>
+                    <tr class="coral_homes">
+                        <td>Is further work to be arranged by supervisor to rectify issues?</td>
+                        <td>
+                            <a id="btn_arranged_by_supervisor_yes" class="left yesno_enabled btn_arranged_by_supervisor_yes" href="javascript:void(0);">Yes</a>
+                            <a style="margin-left: 10px;" id="btn_arranged_by_supervisor_no" class="left yesno_disabled btn_arranged_by_supervisor_no" href="javascript:void(0);">No</a>
+                        </td>
+                    </tr>
+                </table>
             </form>
 
             <div class="bottomBtns">
