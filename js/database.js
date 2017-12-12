@@ -1191,6 +1191,7 @@ function DBUtils()
 				"'failed' INTEGER NOT NULL DEFAULT 1, " +
 				"'client_info' VARCHAR, " +
 				"'notes' TEXT, " +
+                "'persons_in_attendance' VARCHAR NULL ," +
 				"'initials' VARCHAR NOT NULL, " +
                 "'min_roof_tiles' SMALLINT(6) DEFAULT 0, " +
                 "'min_ridge_tiles' SMALLINT(6) DEFAULT 0, " +
@@ -1304,7 +1305,6 @@ function DBUtils()
                 "'most_recent' INTEGER NOT NULL DEFAULT 0, " +
                 "'weather' VARCHAR NULL ," +
                 "'notes' TEXT  NULL, " +
-                "'persons_in_attendance' VARCHAR NULL ," +
                 "'min_roof_tiles' SMALLINT(6) DEFAULT 0, " +
                 "'min_ridge_tiles' SMALLINT(6) DEFAULT 0, " +
                 "'touch_up_paint' SMALLINT(6) DEFAULT 0, " +
