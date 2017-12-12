@@ -7303,7 +7303,7 @@ var Inspections = function()
                 $('.builder_slab').show();
                 break;
             case 'Builder: PCI/Final inspections':
-                $('.stage_name').html("''Practical Completion'");
+                $('.stage_name').html("'Practical Completion'");
                 $('.builder_pci').show();
                 break;
         }
