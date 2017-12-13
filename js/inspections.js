@@ -142,7 +142,7 @@ var Inspections = function()
 		// Do the client search
 		self.doInspectionSearch(selected_il_builder_id);
 
-        this.unbindEvents();
+        self.unbindEvents();
 
         $("#addInspection").bind(objApp.touchEvent, function(e)
         {
@@ -2449,6 +2449,7 @@ var Inspections = function()
 			return false;
 		});
 
+        $(".inspectionDetails #btnStep4Back").unbind(objApp.touchEvent);
         $(".inspectionDetails #btnStep4Back").bind(objApp.touchEvent, function(e)
         {
             if(objApp.keys.reinspection_id != "") {
@@ -2472,6 +2473,7 @@ var Inspections = function()
             }
         });
 
+        $(".inspectionDetails #btnStep4Next").unbind(objApp.touchEvent);
         $(".inspectionDetails #btnStep4Next").bind(objApp.touchEvent, function(e)
         {
             if(objApp.keys.reinspection_id != "") {
@@ -2495,7 +2497,6 @@ var Inspections = function()
             }
 
             e.preventDefault();
-
             if( self.need5Steps(objApp.keys.report_type) && objApp.keys.reinspection_id == "") {
                 self.showStep5();
             }
@@ -7194,7 +7195,8 @@ var Inspections = function()
                 $(".btn_"+id+"_yes").removeClass("yesno_disabled").addClass("yesno_enabled");
                 $(".btn_"+id+"_no").removeClass("yesno_enabled").addClass("yesno_disabled");
                 $("#" + id).val("1");
-                objDBUtils.execute("UPDATE inspections SET "+id+" = 1, dirty = 1 WHERE id = ?", [objApp.keys.inspection_id], function(){});
+                if(objApp.keys.reinspection_id == "")
+                    objDBUtils.execute("UPDATE inspections SET "+id+" = 1, dirty = 1 WHERE id = ?", [objApp.keys.inspection_id], function(){});
                 return false;
             });
             $(".btn_"+f+"_no").bind(objApp.touchEvent, function (e) {
@@ -7204,7 +7206,8 @@ var Inspections = function()
                 $(".btn_"+id+"_yes").removeClass("yesno_enabled").addClass("yesno_disabled");
                 $(".btn_"+id+"_no").removeClass("yesno_disabled").addClass("yesno_enabled");
                 $("#" + id).val("0");
-                objDBUtils.execute("UPDATE inspections SET "+id+" = 0, dirty = 1 WHERE id = ?", [objApp.keys.inspection_id], function(){});
+                if(objApp.keys.reinspection_id == "")
+                    objDBUtils.execute("UPDATE inspections SET "+id+" = 0, dirty = 1 WHERE id = ?", [objApp.keys.inspection_id], function(){});
                 return false;
             });
         }
