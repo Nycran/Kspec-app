@@ -2396,3 +2396,4 @@ a.yesno_disabled:hover {
 #frmInspectionDetails table td input[type="password"],
 #frmInspectionDetails table td input[type="email"], input[type="number"]{font-size: 18px;}
 .twocolumn #frmInspectionDetails select{font-size: 18px;}
+#inspectionStep2 td{padding: 4px !important;}
