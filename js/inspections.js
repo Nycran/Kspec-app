@@ -846,8 +846,7 @@ var Inspections = function()
             self.inspection = inspection;
 
             var inspection_property = "Lot " + inspection.lot_no + ", " + inspection.address + ", " + inspection.suburb;
-            console.log(inspection.report_type);
-            objApp.setSubHeading("Review Inspection @ " + inspection_property);  
+            objApp.setSubHeading("Review Inspection @ " + inspection_property);
             
             // If this a 5 step inspection, hide the finalisation buttons on step 3
             //if((inspection.report_type == "Builder: PCI/Final inspections") || (inspection.report_type == "Fix / Plaster Inspection")) {
@@ -924,24 +923,21 @@ var Inspections = function()
     this.showStep4 = function()
     {
         self.setStep(4);
-
+        $('.builder_need_4_steps').hide();
+        $('.builder_need_5_steps').hide();
+        $('.coral_homes').hide();
         if (self.need5Steps(self.inspection.report_type)){
-            $('.builder_need_4_steps').hide();
             $('.builder_need_5_steps').show();
-            if (self.currentBuilderName()){
+            if (self.currentBuilderName() == 'Coral Homes'){
                 $('.coral_homes').show();
-            }else{
-                $('.coral_homes').hide();
             }
             objApp.setSubHeading("OMISSIONS (items installed at time of the inspection)");
         }else if(self.inspection.report_type == 'Builder: PCI/Final inspections'){
-            $('.builder_need_4_steps').hide();
             var inspection_property = "Lot " + self.inspection.lot_no + ", " + self.inspection.address + ", " + self.inspection.suburb;
             objApp.setSubHeading("Inspection @ " + inspection_property);
             self.showStage(self.inspection.report_type);
         }else if(self.need4Steps(self.inspection.report_type)){
             $('.builder_need_4_steps').show();
-            $('.builder_need_5_steps').hide();
             var inspection_property = "Lot " + self.inspection.lot_no + ", " + self.inspection.address + ", " + self.inspection.suburb;
             objApp.setSubHeading("Inspection @ " + inspection_property);
             self.showStage(self.inspection.report_type);
@@ -1692,6 +1688,11 @@ var Inspections = function()
 	*/
 	this.handleBuilderChanged = function()
 	{
+	    if (self.currentBuilderName() == 'Coral Homes'){
+	        $('.coral_job_number').show();
+        }else{
+            $('.coral_job_number').hide();
+        }
 		// Save the inspection if possible
 		self.checkSaveInspection();
 	}
@@ -1739,7 +1740,6 @@ var Inspections = function()
 
     this.unbindEvents = function()
     {
-        console.log("IN UNBIND EVENTS");
         // Unbind any previously bound events.
 		$("#btnAddDefect").unbind();
 		$("#inspection #inspection_date").unbind();
@@ -2742,7 +2742,6 @@ var Inspections = function()
                             }
 
                             var downloadURL = objApp.apiURL + "reports/print_report/" + report_type + '/' + encodeURIComponent(objApp.keys.inspection_id) + '/' + encodeURIComponent(objApp.keys.reinspection_id) + "?token=" + token;
-                            console.log(downloadURL);
                             if(objApp.phonegapBuild) {
                                 downloadURL = "https://docs.google.com/viewer?url=" + encodeURIComponent(downloadURL) + '&embedded=true';
                                 var ref = window.open(downloadURL, '_blank', 'location=yes');
@@ -3716,7 +3715,6 @@ var Inspections = function()
             $("#frmDefectDetails #observation_suggestion tr td").bind(objApp.touchEvent, function() {
                 var selectedTxt = $(this).text();
                 $('#frmDefectDetails #observation').val(selectedTxt);
-                console.log("Different Binding");
             });            
             
             if(objUtils.isMobileDevice()) {
@@ -5308,7 +5306,7 @@ var Inspections = function()
 			        objDBUtils.setKeyFromLastInsertID("inspection_id");
 			        // objDBUtils.setKeyFromLastInsertID("report_type");
 			    }
-
+                console.log(objApp.keys.inspection_id);
                 // Load the inspection object
                 objDBUtils.loadRecord("inspections", objApp.keys.inspection_id, function(inspection_id, inspection) {
                     if(!inspection) {
@@ -7203,24 +7201,24 @@ var Inspections = function()
     this.setValueYesNoItems = function(obj){
         for(var i = 1; i <= self.TOTAL_OMISSIONS_ITEMS; i++){
             if(obj['omission_item_' + i] == 1) {
-                $("#btnO"+i+"Yes").removeClass("yesno_disabled").addClass("yesno_enabled");
-                $("#btnO"+i+"No").removeClass("yesno_enabled").addClass("yesno_disabled");
+                $('a[data-id="btnO'+i+'Yes"]').removeClass("yesno_disabled").addClass("yesno_enabled");
+                $('a[data-id="btnO'+i+'No"]').removeClass("yesno_enabled").addClass("yesno_disabled");
                 $("#omission_item_" + i).val("1");
             } else if(obj['omission_item_' + i] == 0) {
-                $("#btnO"+i+"Yes").removeClass("yesno_enabled").addClass("yesno_disabled");
-                $("#btnO"+i+"No").removeClass("yesno_disabled").addClass("yesno_enabled");
+                $('a[data-id="btnO'+i+'Yes"]').removeClass("yesno_enabled").addClass("yesno_disabled");
+                $('a[data-id="btnO'+i+'No"]').removeClass("yesno_disabled").addClass("yesno_enabled");
                 $("#omission_item_" + i).val("0");
             }
         }
         for(var i in self.YES_NO_FIELDS){
             var f = self.YES_NO_FIELDS[i];
             if(obj[f] == 1) {
-                $("#btn_"+f+"_yes").removeClass("yesno_disabled").addClass("yesno_enabled");
-                $("#btn_"+f+"_no").removeClass("yesno_enabled").addClass("yesno_disabled");
+                $(".btn_"+f+"_yes").removeClass("yesno_disabled").addClass("yesno_enabled");
+                $(".btn_"+f+"_no").removeClass("yesno_enabled").addClass("yesno_disabled");
                 $("#" + f).val("1");
             } else if(obj[f] == 0) {
-                $("#btn_"+f+"_yes").removeClass("yesno_enabled").addClass("yesno_disabled");
-                $("#btn_"+f+"_no").removeClass("yesno_disabled").addClass("yesno_enabled");
+                $(".btn_"+f+"_yes").removeClass("yesno_enabled").addClass("yesno_disabled");
+                $(".btn_"+f+"_no").removeClass("yesno_disabled").addClass("yesno_enabled");
                 $("#" + f).val("0");
             }
         }
@@ -7228,22 +7226,22 @@ var Inspections = function()
 
     this.bindYesNoButtons = function(){
         for(var i = 1; i <= self.TOTAL_OMISSIONS_ITEMS; i++) {
-            $("#btnO"+i+"Yes").bind(objApp.touchEvent, function (e) {
+            $('a[data-id="btnO'+i+'Yes"]').bind(objApp.touchEvent, function (e) {
                 if (self.finalised == 1)
                     return false;
-                var id = $(this).attr('id').replace('btnO', '').replace('Yes', '');
-                $(this).removeClass("yesno_disabled").addClass("yesno_enabled");
-                $("#btnO"+id+"No").removeClass("yesno_enabled").addClass("yesno_disabled");
+                var id = $(this).attr('data-id').replace('btnO', '').replace('Yes', '');
+                $('a[data-id="btnO'+id+'Yes"]').removeClass("yesno_disabled").addClass("yesno_enabled");
+                $('a[data-id="btnO'+id+'No"]').removeClass("yesno_enabled").addClass("yesno_disabled");
                 $("#omission_item_" + id).val("1");
                 objDBUtils.execute("UPDATE inspections SET omission_item_"+id+" = 1, dirty = 1 WHERE id = ?", [objApp.keys.inspection_id], function(){});
                 return false;
             });
-            $("#btnO"+i+"No").bind(objApp.touchEvent, function (e) {
+            $('a[data-id="btnO'+i+'No"]').bind(objApp.touchEvent, function (e) {
                 if (self.finalised == 1)
                     return false;
-                var id = $(this).attr('id').replace('btnO', '').replace('No', '');
-                $("#btnO"+id+"Yes").removeClass("yesno_enabled").addClass("yesno_disabled");
-                $(this).removeClass("yesno_disabled").addClass("yesno_enabled");
+                var id = $(this).attr('data-id').replace('btnO', '').replace('No', '');
+                $('a[data-id="btnO'+id+'Yes"]').removeClass("yesno_enabled").addClass("yesno_disabled");
+                $('a[data-id="btnO'+id+'No"]').removeClass("yesno_disabled").addClass("yesno_enabled");
                 $("#omission_item_" + id).val("0");
                 objDBUtils.execute("UPDATE inspections SET omission_item_"+id+" = 0, dirty = 1 WHERE id = ?", [objApp.keys.inspection_id], function(){});
                 return false;
@@ -7254,7 +7252,7 @@ var Inspections = function()
             $(".btn_"+f+"_yes").bind(objApp.touchEvent, function (e) {
                 if (self.finalised == 1)
                     return false;
-                var id = $(this).attr('id').replace('btn_', '').replace('_yes', '');
+                var id = $(this).attr('data-id').replace('btn_', '').replace('_yes', '');
                 $(".btn_"+id+"_yes").removeClass("yesno_disabled").addClass("yesno_enabled");
                 $(".btn_"+id+"_no").removeClass("yesno_enabled").addClass("yesno_disabled");
                 $("#" + id).val("1");
@@ -7264,7 +7262,7 @@ var Inspections = function()
             $(".btn_"+f+"_no").bind(objApp.touchEvent, function (e) {
                 if (self.finalised == 1)
                     return false;
-                var id = $(this).attr('id').replace('btn_', '').replace('_no', '');
+                var id = $(this).attr('data-id').replace('btn_', '').replace('_no', '');
                 $(".btn_"+id+"_yes").removeClass("yesno_enabled").addClass("yesno_disabled");
                 $(".btn_"+id+"_no").removeClass("yesno_disabled").addClass("yesno_enabled");
                 $("#" + id).val("0");
@@ -7285,8 +7283,7 @@ var Inspections = function()
     }
 
     this.showStage = function(report_type){
-        $('.builder_slab').hide();
-        $('.builder_frame').hide();
+        $('.builder_slab, .builder_frame, .builder_australasian, .builder_pci').hide();
         switch(report_type){
             case 'Builder: Enclosed inspections':
                 $('.stage_name').html("'Enclosed Stage'");
@@ -7304,13 +7301,23 @@ var Inspections = function()
                 break;
             case 'Builder: PCI/Final inspections':
                 $('.stage_name').html("'Practical Completion'");
-                $('.builder_pci').show();
+                if (self.currentBuilderName() == 'Australasian')
+                    $('.builder_australasian').show();
+                else
+                    $('.builder_pci').show();
                 break;
         }
     }
 
-    this.currentBuilderName = function(){
-        return $('#frmInspectionDetails #builder_id option[value="'+self.inspection.builder_id+'"]').html();
+    this.currentBuilderName = function(builder_id){
+        if (typeof builder_id == 'undefined'){
+            if (self.inspection)
+                builder_id = self.inspection.builder_id;
+            else
+                builder_id = $("#frmInspectionDetails #builder_id").val();
+        }
+
+        return $('#frmInspectionDetails #builder_id option[value="'+builder_id+'"]').html();
     }
 };
 
