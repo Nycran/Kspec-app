@@ -2012,6 +2012,7 @@ table.listing
 table ul.selector
 {
 	position: static !important;
+    padding: 5px 9px;
 }
 
 /* Sync */
@@ -2390,7 +2391,7 @@ a.yesno_disabled:hover {
     border-top: 1px solid #000;
 }
 
-#frmInspectionDetails table td{padding: 4px !important; font-size: 18px;}
+#frmInspectionDetails table td{padding: 2px !important; font-size: 18px;}
 #frmInspectionDetails table td input[type="text"],
 #frmInspectionDetails table td input[type="password"],
 #frmInspectionDetails table td input[type="email"], input[type="number"]{font-size: 18px;}

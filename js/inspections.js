@@ -786,17 +786,17 @@ var Inspections = function()
         
         if(self.need5Steps(objApp.keys.report_type)) {
             objApp.setSubExtraHeading("Step 2 of 5", true);
-        } /*else if(($("#inspection #report_type").val() == "Fix / Plaster Inspection") || (objApp.keys.report_type == "Fix / Plaster Inspection")) {    
+        } else if(self.need4Steps(objApp.keys.report_type)) {
             objApp.setSubExtraHeading("Step 2 of 4", true);
-        } */ else {
+        } else {
             objApp.setSubExtraHeading("Step 2 of 3", true);
         }
         
-		if(objApp.keys.report_type == 'Handovers' || 1) {
-			$('#inspectionStep2 #frmDefectDetails tr#action_wrapper').show();
+		if(self.hasReasonInReport(objApp.keys.report_type)) {
+			$('#inspectionStep2 #frmDefectDetails tr#reason_wrapper').show();
 		}
 		else {
-			$('#inspectionStep2 #frmDefectDetails tr#action_wrapper').hide();
+			$('#inspectionStep2 #frmDefectDetails tr#reason_wrapper').hide();
 		}
         
         // Show the inspection screen.
@@ -820,6 +820,7 @@ var Inspections = function()
 			objApp.keys.location = '';
 			objApp.keys.observation = '';
 			objApp.keys.action = '';
+            objApp.keys.reason = '';
             
             self.initDefectForm(null);
         }
@@ -876,14 +877,14 @@ var Inspections = function()
                 $('#inspectionStep3 > .bottomBtns > a#btnStep3Email').hide();
                 $('#inspectionStep3 > .bottomBtns > .btnContainer.right > a#btnStep3Next').html('Next');
                 $('#inspectionStep4 > .bottomBtns > .btnContainer.right > a#btnStep4Next').html('Exit');
-            }/* else if(inspection.report_type == "Fix / Plaster Inspection" && objApp.keys.reinspection_id != "") {
+            } else if(self.need4Steps(inspection.report_type) &&  objApp.keys.reinspection_id != "") {
                 objApp.setSubExtraHeading("Step 3 of 4", true);
                 $('#inspectionStep3 > .bottomBtns > a#btnStep3Email').hide();
                 $('#inspectionStep3 > .bottomBtns > .btnContainer.right > a#btnStep3Next').html('Next');
                 $('#inspectionStep4 > .bottomBtns > .btnContainer.right > a#btnStep4Next').html('Done');
                 $('#reinspection > .bottomBtns > .btnContainer.right > a#btnStep3Next').html('Next');
                 $('#reinspection > .bottomBtns > .btnContainer.right > a#btnStep4Next').html('Done');                
-            } */ else {
+            } else {
                 //objApp.setSubExtraHeading("Step 3 of 3", true);
                 objApp.setSubExtraHeading("", false);
                 $('#inspectionStep3 > .bottomBtns > a#btnStep3Email').show();
@@ -924,10 +925,8 @@ var Inspections = function()
     {
         self.setStep(4);
         $('.builder_need_4_steps').hide();
-        $('.builder_need_5_steps').hide();
         $('.coral_homes').hide();
         if (self.need5Steps(self.inspection.report_type)){
-            $('.builder_need_5_steps').show();
             if (self.currentBuilderName() == 'Coral Homes'){
                 $('.coral_homes').show();
             }
@@ -935,16 +934,15 @@ var Inspections = function()
         }else if(self.inspection.report_type == 'Builder: PCI/Final inspections'){
             var inspection_property = "Lot " + self.inspection.lot_no + ", " + self.inspection.address + ", " + self.inspection.suburb;
             objApp.setSubHeading("Inspection @ " + inspection_property);
-            self.showStage(self.inspection.report_type);
         }else if(self.need4Steps(self.inspection.report_type)){
             $('.builder_need_4_steps').show();
             var inspection_property = "Lot " + self.inspection.lot_no + ", " + self.inspection.address + ", " + self.inspection.suburb;
             objApp.setSubHeading("Inspection @ " + inspection_property);
-            self.showStage(self.inspection.report_type);
         }
+        self.showStage(self.inspection.report_type);
 
         //if((self.inspection.report_type == "Builder: PCI/Final inspections" && objApp.keys.reinspection_id != "") || self.inspection.report_type == "Fix / Plaster Inspection") {
-        if( self.need5Steps(self.inspection.report_type) && objApp.keys.reinspection_id != "") {
+        if( (self.need5Steps(self.inspection.report_type) || self.need4Steps(self.inspection.report_type)) && objApp.keys.reinspection_id != "") {
             objApp.setSubExtraHeading("Step 4 of 4", true);
             $('#inspectionStep4 > .bottomBtns > .btnContainer.right > a#btnStep4Next').html('Exit');
         } else if(self.need4Steps(self.inspection.report_type) && objApp.keys.reinspection_id == "") {
@@ -995,37 +993,11 @@ var Inspections = function()
         objApp.clearMain();
 
         if(self.inspection) {
-            if(!objApp.empty(self.inspection.brickwork)) {
-                $("#brickwork").val(self.inspection.brickwork);
-            }
-
-            if(!objApp.empty(self.inspection.paint_quality)) {
-                $("#paint_quality").val(self.inspection.paint_quality);
-            }
-
-            if(!objApp.empty(self.inspection.plaster_quality)) {
-                $("#plaster_quality").val(self.inspection.plaster_quality);
-            }
-
-            if(!objApp.empty(self.inspection.interior_quality)) {
-                $("#interior_quality").val(self.inspection.interior_quality);
-            }
-
             if(!objApp.empty(self.inspection.exterior_quality)) {
                 $("#exterior_quality").val(self.inspection.exterior_quality);
             }
-
-            var brickwork = parseInt($('#inspectionStep5 #brickwork').val());
-            var paintQuality = parseInt($('#inspectionStep5 #paint_quality').val());
-            var plasterQuality = parseInt($('#inspectionStep5 #plaster_quality').val());
-            var interiorQuality = parseInt($('#inspectionStep5 #interior_quality').val());
-            var exteriorQuality = parseInt($('#inspectionStep5 #exterior_quality').val());
-            var total = brickwork + paintQuality + plasterQuality + interiorQuality + exteriorQuality;
-            $('#inspectionStep5 #total').text(total + '/25');
         }
-
         $("#inspectionStep5").removeClass("hidden");
-
         self.setTableWidths2('tblRateListingHeader', 'tblRateListing', 2, 500);
     }
 
@@ -1356,6 +1328,7 @@ var Inspections = function()
     */
 	this.editInspection = function(inspection)
 	{
+	    console.log(inspection);
         // Set keys
         objApp.keys.inspection_id = inspection.id;
         objApp.keys.report_type = inspection.report_type;
@@ -1592,7 +1565,7 @@ var Inspections = function()
         self.objPopBuilders = $("#frmInspectionDetails #builder_id");
 
         self.objPopBuilders.bind('change', objApp.objInspection.handleBuilderChanged);
-        self.objPopBuilders.empty();
+        self.objPopBuilders.html('');
         self.objPopBuilders.append('<option value="">Builder</option>');
 
         var filters = [];
@@ -1688,7 +1661,7 @@ var Inspections = function()
 	*/
 	this.handleBuilderChanged = function()
 	{
-	    if (self.currentBuilderName() == 'Coral Homes'){
+	    if (self.currentBuilderName($("#frmInspectionDetails #builder_id").val()) == 'Coral Homes'){
 	        $('.coral_job_number').show();
         }else{
             $('.coral_job_number').hide();
@@ -2900,6 +2873,7 @@ var Inspections = function()
                 objApp.keys.inspection_item_id = "";
                 objApp.keys.observation = '';
                 objApp.keys.action = '';
+                objApp.keys.reason = '';
                 // When adding a new defect, hide the delete defect button
                 $("#btnDeleteDefect").css("visibility", "hidden");
 
@@ -2922,6 +2896,7 @@ var Inspections = function()
 
                 // Initialise defect form.
                 //self.initDefectForm(null, false);
+                $("#frmDefectDetails #reason").val('');
             });
 
 			return false;
@@ -3569,11 +3544,7 @@ var Inspections = function()
 			$("#frmDefectDetails #created_by").val(user_id);
             $("#frmDefectDetails #itemtype").val("0");
             $("#frmDefectDetails #numrepeats").val("0");
-
-			// if(!$("#photoWrapper").hasClass("hidden"))
-			// {
-				// $("#photoWrapper").addClass("hidden");
-			// }
+            $("#frmDefectDetails #reason").val("");
 
 			// Get the next inspectionitems sequence number for this audit
 			var sql = "SELECT MAX(seq_no) as seq_no " +
@@ -3601,6 +3572,7 @@ var Inspections = function()
             // Preselect location pop selector
             objApp.keys.action = inspectionItem.action;
             objApp.keys.location = inspectionItem.location;
+            objApp.keys.reason = inspectionItem.reason;
 
             //self.touchScroll(document.querySelector("#frmDefectDetails #notes"));
 			$("#frmDefectDetails #created_by").val(inspectionItem.created_by);
@@ -3670,6 +3642,8 @@ var Inspections = function()
 		});
 
         objDBUtils.orderBy = "";
+
+        $("#frmDefectDetails #reason").val(objApp.keys.reason);
 
 		// If the ipad has scrolled to show the notes field,
 		// make sure we scroll back down after the user has finished typing.
@@ -4925,6 +4899,7 @@ var Inspections = function()
 		var location =	self.objPopLocation.getText();
 		var action = self.objPopAction.getText();
 		var observation =  $("#frmDefectDetails #observation").val();
+        var reason =  $("#frmDefectDetails #reason").val();
 
    		if((location == "") || (location.toUpperCase() == "CHOOSE") || observation == "")
    		{
@@ -4942,24 +4917,21 @@ var Inspections = function()
 			$("#frmDefectDetails #location").val(location);
    		}
 
-   		if(objApp.keys.report_type == 'Handovers' || 1)
-		{
-			if((action == "") || (action.toUpperCase() == "CHOOSE"))
-			{
-				$("#inspectionStep2 textarea#observation").val('');
-                $("#inspectionStep2 ul#popAction li:first-child").text('Choose');
+        if((action == "") || (action.toUpperCase() == "CHOOSE"))
+        {
+            $("#inspectionStep2 textarea#observation").val('');
+            $("#inspectionStep2 ul#popAction li:first-child").text('Choose');
 
-                if((callback != undefined) && (callback != "")) {
-                    callback()
-                }
+            if((callback != undefined) && (callback != "")) {
+                callback()
+            }
 
-				return;
-			}
-			else
-			{
-				$("#frmDefectDetails #action").val(action);
-			}
-   		}
+            return;
+        }
+        else
+        {
+            $("#frmDefectDetails #action").val(action);
+        }
    		// Set the current inspection id into the form.
    		$("#frmDefectDetails #inspection_id").val(objApp.keys.inspection_id);
 
@@ -4973,9 +4945,9 @@ var Inspections = function()
 
         var sql = "SELECT * " +
             "FROM inspectionitems " +
-            "WHERE inspection_id = ? AND location = ? AND observation = ? AND action = ? AND deleted = 0";
+            "WHERE inspection_id = ? AND location = ? AND observation = ? AND action = ? AND reason = ? AND deleted = 0";
 
-        objDBUtils.loadRecordSQL(sql, [objApp.keys.inspection_id, location, observation, action], function(row)
+        objDBUtils.loadRecordSQL(sql, [objApp.keys.inspection_id, location, observation, action, reason], function(row)
         {
             if(row)
             {
@@ -5067,20 +5039,11 @@ var Inspections = function()
 	*/
 	this.checkAllSelected = function()
 	{
-		if(objApp.keys.report_type == 'Handovers' || 1)
-		{
-			// Are there selected values for ALL pop lists?
-			if((self.objPopLocation.getValue() != "")  && (self.objPopAction.getValue() != ""))
-			{
-				// Yes there are - create the defect item.
-				self.saveDefect();
-			}
-		}
-		else
-		{
-			if(self.objPopLocation.getValue() != "")
-				self.saveDefect();
-		}
+        if((self.objPopLocation.getValue() != "")  && (self.objPopAction.getValue() != ""))
+        {
+            // Yes there are - create the defect item.
+            self.saveDefect();
+        }
 	}
 
     this.checkSaveRectifiedInspectionitem = function(rectified_status)
@@ -5118,11 +5081,7 @@ var Inspections = function()
                     unblockElement('body');
 
                     // Update the table row with the modified text
-                    if(objApp.keys.report_type == 'Handovers' || 1) {
-                        $(self.reinspectionItemRow).find("td:eq(4)").text(rectified_status);
-                    } else {
-                        var rectifiedText = $(self.reinspectionItemRow).find("td:eq(3)").text(rectified_status);
-                    }
+                    $(self.reinspectionItemRow).find("td:eq(4)").text(rectified_status);
                 });
             });
 
@@ -5306,7 +5265,7 @@ var Inspections = function()
 			        objDBUtils.setKeyFromLastInsertID("inspection_id");
 			        // objDBUtils.setKeyFromLastInsertID("report_type");
 			    }
-                console.log(objApp.keys.inspection_id);
+
                 // Load the inspection object
                 objDBUtils.loadRecord("inspections", objApp.keys.inspection_id, function(inspection_id, inspection) {
                     if(!inspection) {
@@ -5431,20 +5390,14 @@ var Inspections = function()
 
 		var listDeleteMode = true;
 
-		if(objApp.keys.report_type == 'Handovers' || 1)
+		if(self.hasReasonInReport(objApp.keys.report_type))
 		{
-			$("#tblDefectListingHeader th").eq(4).show();
+			$("#tblDefectListingHeader th").eq(5).show();
 		}
 		else
 		{
-			$("#tblDefectListingHeader th").eq(4).hide();
+			$("#tblDefectListingHeader th").eq(5).hide();
 		}
-
-        // Remove the triangle from the table header cells
-		//$("#tblDefectListingHeader th .triangle").remove();
-
-        // Inject the triangle
-		//$("#tblDefectListingHeader th[class='" + self.itemSortBy + "']").append('<span class="triangle ' + self.itemSortDir + '"></span>');
 
 		// Unbind any more button events
 		$("#defectScrollWrapper").unbind();
@@ -5547,18 +5500,19 @@ var Inspections = function()
                     
                     html += '<td>' + row.location + '</td>';
 			        html += '<td>' + row.observation + '</td>';
+                    html += '<td>' + row.action + '</td>';
+                    if (row.action)
+                    {
+                        row.action = $.trim(row.action.replace(/"/g, ''));
+                        if (actions.hasOwnProperty(row.action))
+                            actions[row.action] += 1;
+                        else
+                            actions[row.action] = 1;
+                    }
 
-					if(objApp.keys.report_type == 'Handovers' || 1)
+					if(self.hasReasonInReport(objApp.keys.report_type))
 					{
-					    html += '<td>' + row.action + '</td>';
-                        if (row.action)
-                        {
-                            row.action = $.trim(row.action.replace(/"/g, ''));
-                            if (actions.hasOwnProperty(row.action))
-                                actions[row.action] += 1;
-                            else
-                                actions[row.action] = 1;
-                        }
+                        html += '<td>' + row.reason + '</td>';
 					}
 
 			        html += '</tr>';
@@ -5655,11 +5609,11 @@ var Inspections = function()
 				$("#defectScrollWrapper").html(html);
 
 
-				if(objApp.keys.report_type == 'Handovers' || 1) {
-					self.setTableWidths2('tblDefectListingHeader', 'tblDefectListing', 5);
+				if(self.hasReasonInReport(objApp.keys.report_type)) {
+					self.setTableWidths2('tblDefectListingHeader', 'tblDefectListing', 6);
                 }
 				else {
-					self.setTableWidths2('tblDefectListingHeader', 'tblDefectListing', 4);
+					self.setTableWidths2('tblDefectListingHeader', 'tblDefectListing', 5);
                 }
 
 				// if(objUtils.isMobileDevice())
@@ -5907,11 +5861,7 @@ var Inspections = function()
                 $("#reinspection").removeClass("hidden");
 
                 // Ensure a valid inspection id is set
-                if(objApp.keys.report_type == 'Handovers' || 1) {
-                    $("#tblReinspectionHeader th").eq(3).show();
-                } else {
-                    $("#tblReinspectionHeader th").eq(3).hide();
-                }
+                $("#tblReinspectionHeader th").eq(3).show();
 
                 // Initialise passed/failed indicators
                 if(reinspection.failed == 1) {
@@ -5923,7 +5873,7 @@ var Inspections = function()
                 }
 
                 //if((inspection.report_type == "Builder: PCI/Final inspections" && objApp.keys.reinspection_id != "") || (inspection.report_type == "Fix / Plaster Inspection")) {
-                if( self.need5Steps(inspection.report_type) && objApp.keys.reinspection_id != "") {
+                if( (self.need5Steps(inspection.report_type) || self.need4Steps(inspection.report_type)) && objApp.keys.reinspection_id != "") {
                     objApp.setSubExtraHeading("Step 3 of 4", true);
                     $('#inspectionStep3 > .bottomBtns > a#btnStep3Email').hide();
                     $('#inspectionStep3 > .bottomBtns > .btnContainer.right > a#btnStep3Next').html('Next');
@@ -5966,11 +5916,7 @@ var Inspections = function()
                         html += '<td>' + row.seq_no + '</td>';
                         html += '<td>' + row.location + '</td>';
                         html += '<td>' + row.observation + '</td>';
-
-                        if(objApp.keys.report_type == 'Handovers' || 1) {
-                            html += '<td>' + row.action + '</td>';
-                        }
-
+                        html += '<td>' + row.action + '</td>';
                         html += '<td>' + row.rectified + '</td>';
                         html += '</tr>';
                     }
@@ -5979,11 +5925,7 @@ var Inspections = function()
 
                     $("#reinspectionScrollWrapper").html(html);
 
-                    if(objApp.keys.report_type == 'Handovers' || 1){
-                        self.setTableWidths2('tblReinspectionHeader', 'tblReinspectionListing', 5);
-                    } else {
-                        self.setTableWidths2('tblReinspectionHeader', 'tblReinspectionListing', 4);
-                    }
+                    self.setTableWidths2('tblReinspectionHeader', 'tblReinspectionListing', 5);
 
                     self.handleFinalised();
 
@@ -6002,11 +5944,7 @@ var Inspections = function()
                         text += $(this).find("td:eq(1)").text() + ", ";
                         text += $(this).find("td:eq(2)").text();
 
-                        if(objApp.keys.report_type == 'Handovers' || 1) {
-                            var rectifiedText = $(this).find("td:eq(4)").text();
-                        } else {
-                            var rectifiedText = $(this).find("td:eq(3)").text();
-                        }
+                        var rectifiedText = $(this).find("td:eq(4)").text();
 
                         $('#reinspection select#rectified').val(rectifiedText);
                         $('#reinspection .infomation p').html(text);
@@ -7283,7 +7221,7 @@ var Inspections = function()
     }
 
     this.showStage = function(report_type){
-        $('.builder_slab, .builder_frame, .builder_australasian, .builder_pci').hide();
+        $('.builder_slab, .builder_frame, .builder_australasian, .builder_pci, .builder_quality').hide();
         switch(report_type){
             case 'Builder: Enclosed inspections':
                 $('.stage_name').html("'Enclosed Stage'");
@@ -7301,10 +7239,20 @@ var Inspections = function()
                 break;
             case 'Builder: PCI/Final inspections':
                 $('.stage_name').html("'Practical Completion'");
-                if (self.currentBuilderName() == 'Australasian')
+                if (self.currentBuilderName() == 'Australasian'){
+                    if(objUtils.isMobileDevice())
+                    {
+                        var scroller = new IScroll5('#installedItemsScrollWrapper2', { click: true, hScrollbar: false, vScrollbar: false, scrollbarClass: 'myScrollbarSm'});
+                    }
                     $('.builder_australasian').show();
-                else
+                }
+                else{
                     $('.builder_pci').show();
+                }
+                break;
+            case 'Builder: Quality inspections':
+                $('.stage_name').html("'Practical Completion'");
+                $('.builder_quality').show();
                 break;
         }
     }
@@ -7318,6 +7266,10 @@ var Inspections = function()
         }
 
         return $('#frmInspectionDetails #builder_id option[value="'+builder_id+'"]').html();
+    }
+
+    this.hasReasonInReport = function(report_type){
+        return report_type == 'Builder: Quality inspections' || (report_type == 'Builder: PCI/Final inspections' && self.currentBuilderName() == 'Australasian');
     }
 };
 

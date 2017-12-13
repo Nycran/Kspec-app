@@ -446,6 +446,10 @@
                             <td><label for="client_info">Persons in attendance</label></td>
                             <td><input type="text" name="persons_in_attendance" id="persons_in_attendance" value="" class="" /></td>
                         </tr>
+                        <tr class="coral_job_number" style="display: none;">
+                            <td><label for="client_info">Coral Job Number</label></td>
+                            <td><input type="text" name="job_number" id="job_number" value="" class="" /></td>
+                        </tr>
                     </table>
                 </fieldset>
                 <fieldset class="thefs">
@@ -490,9 +494,9 @@
                             <td><label for="client_info">K-Spec Reference</label></td>
                             <td><input type="text" name="reference" id="reference" value="" class="" /></td>
                         </tr>
-                        <tr class="coral_job_number" style="display: none;">
-                            <td><label for="client_info">Coral Job Number</label></td>
-                            <td><input type="text" name="job_number" id="job_number" value="" class="" /></td>
+                        <tr>
+                            <td><label for="rectified_by">Defects to be rectified by</label></td>
+                            <td><input type="text" name="rectified_by" id="rectified_by" value="" class="" /></td>
                         </tr>
                     </table>
                 </fieldset>
@@ -544,6 +548,21 @@
                                     <li title="">Choose</li>
                                 </ul>
                                 <input type="hidden" id="action" name="action" value="" />
+                            </td>
+                        </tr>
+                        <tr id="reason_wrapper">
+                            <td><label for="popAction">Reason</label></td>
+                            <td>
+                                <select name="reason" id="reason" style="width: 270px;color: #5c5756;font-size: 19px;">
+                                    <option value="">Choose</option>
+                                    <option value="AS">AS</option>
+                                    <option value="BCA">BCA</option>
+                                    <option value="D">D</option>
+                                    <option value="GBP">GBP</option>
+                                    <option value="INC">INC</option>
+                                    <option value="MR">MR</option>
+                                    <option value="SH">SH</option>
+                                </select>
                             </td>
                         </tr>
                         <tr>
@@ -598,6 +617,7 @@
                     <th class="location">Location</th>
                     <th class="observation">Observation</th>
                     <th class="action">Action</th>
+                    <th class="reason">Reason</th>
                 </tr>
                 </thead>
             </table>
@@ -727,7 +747,7 @@
                     </tbody>
                 </table>
             </div>
-            <form class="builder_need_5_steps builder_pci" action="#" id="frmInstalldItems" method="post" style="display: none;">
+            <form class="builder_quality builder_pci" action="#" id="frmInstalldItems" method="post" style="display: none;">
                 <input type="hidden" name="omission_item_1" id="omission_item_1" value="0"/>
                 <input type="hidden" name="omission_item_2" id="omission_item_2" value="0"/>
                 <input type="hidden" name="omission_item_3" id="omission_item_3" value="0"/>
@@ -776,7 +796,7 @@
                 <div id="installedItemsScrollWrapper" class="scrollWrapper">
                     <table class="listing">
                         <tbody>
-                        <tr class="builder_pci" style="display: none;">
+                        <tr class="stage_name_container">
                             <td style="width: 60%">Has the property reached <span class="stage_name">stage</span>?</td>
                             <td style="width: 20%"><a data-id="reached_stage" class="left yesno_disabled btn_reached_stage_yes" href="javascript:void(0);">Yes</a></td>
                             <td style="width: 20%"><a data-id="reached_stage" class="left yesno_enabled btn_reached_stage_no" href="javascript:void(0);">No</a></td>
@@ -897,7 +917,7 @@
                             <td><a data-id="btnO23No" class="left yesno_disabled" href="javascript:void(0);">No</a></td>
                         </tr>
                         <tr class="coral_homes" style="display: none;">
-                            <td>Building platform free draining and graded to gully pits?/td>
+                            <td>Building platform free draining and graded to gully pits?</td>
                             <td><a data-id="btnO24Yes" class="left yesno_enabled" href="javascript:void(0);">Yes</a></td>
                             <td><a data-id="btnO24No" class="left yesno_disabled" href="javascript:void(0);">No</a></td>
                         </tr>
@@ -969,7 +989,7 @@
                 <div id="installedItemsScrollWrapper2" class="scrollWrapper">
                     <table class="listing">
                         <tbody>
-                        <tr class="builder_pci" style="display: none;">
+                        <tr>
                             <td style="width: 60%">Has the property reached <span class="stage_name">stage</span>?</td>
                             <td style="width: 20%"><a data-id="reached_stage" class="left yesno_disabled btn_reached_stage_yes" href="javascript:void(0);">Yes</a></td>
                             <td style="width: 20%"><a data-id="reached_stage" class="left yesno_enabled btn_reached_stage_no" href="javascript:void(0);">No</a></td>
@@ -1077,7 +1097,10 @@
                     <a href="#" id="preview" class="preview"></a>
                     <span>Preview</span>
                 </div>
-
+                <div class="btnContainer left btnEditNotes" id="btnEditNotes">
+                    <a href="#" class="btnNotes "></a>
+                    <span>Notes</span>
+                </div>
                 <div class="btnContainer left " id="btnStep3Email">
                     <a href="#" id="preview" class="email sendEmailButton" data-reveal-id="emailReportWrapper"></a>
                     <span>Email</span>
@@ -1118,7 +1141,7 @@
                     <tr class="coral_homes">
                         <td>Is further work to be arranged by supervisor to rectify issues?</td>
                         <td>
-                            <a id="btn_arranged_by_supervisor_yes" class="left yesno_enabled btn_arranged_by_supervisor_yes" href="javascript:void(0);">Yes</a>
+                            <a data-id="btn_arranged_by_supervisor_yes" class="left yesno_enabled btn_arranged_by_supervisor_yes" href="javascript:void(0);">Yes</a>
                             <a style="margin-left: 10px;" id="btn_arranged_by_supervisor_no" class="left yesno_disabled btn_arranged_by_supervisor_no" href="javascript:void(0);">No</a>
                         </td>
                     </tr>
@@ -1138,7 +1161,10 @@
                     <a href="#" id="preview" class="preview"></a>
                     <span>Preview</span>
                 </div>
-
+                <div class="btnContainer left btnEditNotes" id="btnEditNotes">
+                    <a href="#" class="btnNotes "></a>
+                    <span>Notes</span>
+                </div>
                 <div class="btnContainer left " id="btnStep3Email">
                     <a href="#" id="preview" class="email sendEmailButton" data-reveal-id="emailReportWrapper"></a>
                     <span>Email</span>

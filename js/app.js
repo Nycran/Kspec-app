@@ -67,7 +67,8 @@ function App()
 		"location" : "",
 		"observation" : "",
 		"action" : "",
-		"detail" : ""
+		"detail" : "",
+        "reason" : ""
 	};
 
     this.contacts = new Array();

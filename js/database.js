@@ -1178,6 +1178,7 @@ function DBUtils()
                 "'type_of_building' VARCHAR, " +
                 "'reference' VARCHAR, " +
                 "'job_number' VARCHAR, " +
+                "'rectified_by' VARCHAR, " +
                 "'brickwork' INTEGER, " +
 				"'paint_quality' INTEGER, " +	
 				"'plaster_quality' INTEGER, " +	
