@@ -721,8 +721,12 @@ function App()
 			{
 				$(this).addClass("hidden");
 			}
-            if (objApp.objInspection.glDatePicker)
-                objApp.objInspection.glDatePicker.forcehide();
+			for(var i in objApp.objInspection.DATEPICKER_FIELDS){
+			    var f = objApp.objInspection.DATEPICKER_FIELDS[i];
+                if (typeof objApp.objInspection.glDatePicker[f] != 'undefined')
+                    objApp.objInspection.glDatePicker[f].forcehide();
+            }
+
 		});
         
         $("form.search").hide();

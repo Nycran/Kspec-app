@@ -1169,8 +1169,9 @@ function DBUtils()
 				"'id' VARCHAR PRIMARY KEY NOT NULL, " +
 				"'report_type' VARCHAR NOT NULL, " +
 				"'builder_id' VARCHAR NOT NULL, " +
-				"'weather' VARCHAR, " +	
-				"'lot_no' VARCHAR, " +	
+				"'weather' VARCHAR, " +
+                "'recent_weather' VARCHAR, " +
+                "'lot_no' VARCHAR, " +
 				"'address' VARCHAR, " +	
 				"'suburb' VARCHAR, " +	
 				"'postcode' VARCHAR, " +	
@@ -1184,7 +1185,8 @@ function DBUtils()
 				"'plaster_quality' INTEGER, " +	
 				"'interior_quality' INTEGER, " +	
 				"'exterior_quality' INTEGER, " +	
-				"'inspection_date' DATE NOT NULL, " + 			
+				"'inspection_date' DATE NOT NULL, " +
+                "'inspection_time' VARCHAR, " +
 				"'inspection_start' BIGINT(20) NOT NULL DEFAULT 0, " +
 				"'status' INTEGER NOT NULL DEFAULT 0 , " + 
 				"'num_defects' INTEGER NOT NULL DEFAULT 0, " +
@@ -1244,7 +1246,37 @@ function DBUtils()
                 "'omission_item_33' SMALLINT(6) DEFAULT 0, " +
                 "'omission_item_34' SMALLINT(6) DEFAULT 0, " +
                 "'created_by' INTEGER NOT NULL, " +
-				"'deleted' INTEGER NOT NULL DEFAULT 0 , " + 
+				"'deleted' INTEGER NOT NULL DEFAULT 0 , " +
+                "'agreement_no' VARCHAR, " +
+                "'agreement_date' DATE, " +
+                "'agreement_time' VARCHAR, " +
+                "'specific_condition' VARCHAR, " +
+                "'change_to_inspection' VARCHAR, " +
+                "'changed_agreement_date' DATE, " +
+                "'changed_agreement_time' VARCHAR, " +
+                "'building_furnished' SMALLINT(6) DEFAULT 0, " +
+                "'building_tenancy' VARCHAR, " +
+                "'building_tenancy_comment' VARCHAR, " +
+                "'areas_inspected' VARCHAR, " +
+                "'other_areas' VARCHAR, " +
+                "'areas_not_inspected' VARCHAR, " +
+                "'areas_not_fully_inspected' VARCHAR, " +
+                "'limitations' VARCHAR, " +
+                "'apparent_concealed_defects' VARCHAR, " +
+                "'additional_information' VARCHAR, " +
+                "'property_type' VARCHAR, " +
+                "'property_style' VARCHAR, " +
+                "'property_construction_type' VARCHAR, " +
+                "'property_interior' VARCHAR, " +
+                "'property_piers' VARCHAR, " +
+                "'property_piers_comment' VARCHAR, " +
+                "'property_flooring' VARCHAR, " +
+                "'property_verandahs' VARCHAR, " +
+                "'property_patio' VARCHAR, " +
+                "'property_other' VARCHAR, " +
+                "'property_roofing' VARCHAR, " +
+                "'property_roofing_covering' VARCHAR, " +
+                "'property_out_structure' VARCHAR, " +
 				"'dirty' INTEGER NOT NULL DEFAULT 1)";
 
 		this.db.transaction(function(transaction) 

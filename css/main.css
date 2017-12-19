@@ -90,7 +90,7 @@ body > div:focus {outline: none;}
 {
 	position: absolute;
 	z-index: 6;
-	right: 10px; top: 15px;
+	right: 10px; top: 10px;
 	color: #FFFFFF;
 	font-size: 11px;
 	font-family: 'PTSansItalic', sans-serif;
@@ -98,7 +98,7 @@ body > div:focus {outline: none;}
 
 #header
 {
-    height: 70px;
+    height: 50px;
     text-align: center;
     background: #72bf44;
     margin-bottom: 40px;
@@ -108,10 +108,10 @@ body > div:focus {outline: none;}
 #header h1{
     color: #ffffff;
     font-family: 'SourceSansPro-Bold', sans-serif;
-    font-size: 37px;
+    font-size: 35px;
     font-weight: normal;
     letter-spacing: 0.025em;
-    line-height: 70px;
+    line-height: 50px;
     text-transform: uppercase;
     padding: 0;
 }
@@ -512,7 +512,7 @@ body.inspection #header, body.reinspect #header{margin-bottom: 10px;}
     width: 220px !important;max-width: 100%;
 }
 .inspectionDetails.twocolumn input[type="text"]{width: 190px !important;max-width: 100%;}
-.inspectionDetails.twocolumn textarea{width: 200px;}
+.inspectionDetails.twocolumn textarea{width: 200px;font-size: 18px;font-family: Arial, Helvetica, sans-serif;}
 
 .inspectionDetails .bottomBtns a[class*='btn-bg'] {
     position: relative;
@@ -1444,7 +1444,7 @@ aside textarea
     
     .inspectionDetails .bottomBtns .btnContainer{
         width: 80px;
-        margin: 10px;
+        margin: 5px;
         height: 80px;
         position: relative;
     }
@@ -2391,9 +2391,59 @@ a.yesno_disabled:hover {
     border-top: 1px solid #000;
 }
 
-#frmInspectionDetails table td{padding: 2px !important; font-size: 18px;}
+#frmInspectionDetails table td{padding: 1px 2px 1px !important; font-size: 18px;}
 #frmInspectionDetails table td input[type="text"],
 #frmInspectionDetails table td input[type="password"],
 #frmInspectionDetails table td input[type="email"], input[type="number"]{font-size: 18px;}
 .twocolumn #frmInspectionDetails select{font-size: 18px;}
 #inspectionStep2 td{padding: 4px !important;}
+.xdsoft_datetimepicker .xdsoft_timepicker .xdsoft_time_box>div>div{font-size: 18px;}
+#inspection .select2-results__option{font-size: 18px;}
+
+.tabs {
+    position: relative;
+    height: 374px;
+    clear: both;
+    margin: 15px;
+    padding: 0;
+}
+.tabs .kspec-tab {
+    float: left;
+}
+.tabs .kspec-tab > label {
+    background: #eee;
+    padding: 10px;
+    border: 1px solid #ccc;
+    margin-left: -1px;
+    position: relative;
+    left: 1px;
+    font-size: 18px;
+}
+.tabs .kspec-tab > [type=radio] {
+    display: none;
+}
+.tabs .kspec-tab > .content {
+    position: absolute;
+    top: 36px;
+    left: 0;
+    background: white;
+    right: 0;
+    bottom: 0;
+    padding: 15px 0 0;
+    border: 1px solid #ccc;
+}
+.tabs .kspec-tab > [type=radio]:checked ~ label {
+    background: white;
+    border-bottom: 1px solid white;
+    z-index: 2;
+}
+.tabs .kspec-tab > [type=radio]:checked ~ label ~ .content {
+    z-index: 1;
+}
+
+.tabs .kspec-tab fieldset.thefs{padding: 0 5px;width: 48%;}
+.inspectionDetails.twocolumn .tabs .kspec-tab fieldset input[type="text"],
+.inspectionDetails.twocolumn .tabs .kspec-tab fieldset textarea{width: 220px !important;}
+.inspectionDetails.twocolumn .tabs .kspec-tab fieldset textarea{padding: 9px 15px;}
+.inspectionDetails.twocolumn .tabs .kspec-tab fieldset select,
+.inspectionDetails.twocolumn .tabs .kspec-tab fieldset .select2-container{width: 250px !important;}

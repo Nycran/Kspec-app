@@ -15,6 +15,7 @@
     <link rel="stylesheet" type="text/css" media="screen" href="css/toggleControl.css" />
     <link rel="stylesheet" type="text/css" media="screen" href="css/noteModal.css" />
     <link rel="stylesheet" type="text/css" media="screen" href="css/glDatePicker.flatwhite.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="css/jquery.datetimepicker.min.css" />
     <link rel="stylesheet" type="text/css" media="screen" href="css/jquery-ui.css" />
     <link rel="stylesheet" type="text/css" media="screen" href="css/select2.min.css" />
     <!-- Attach the Reveal CSS -->
@@ -141,6 +142,7 @@
     <script type="text/javascript" src="js/noteModal.js"></script>
     <script type="text/javascript" src="js/myaccount.js"></script>
     <script type="text/javascript" src="js/glDatePicker.js"></script>
+    <script type="text/javascript" src="js/jquery.datetimepicker.full.min.js"></script>
     <script type="text/javascript" src="js/maintenance.js"></script>
     <script type="text/javascript" src="js/jquery-ui.min.js"></script>
     <script type="text/javascript" src="js/safarimobile-multiline-select.js"></script>
@@ -261,7 +263,7 @@
                     <input type="submit" class="submit" value="Reset Password" />
                 </div>
                 <div id="passverification" class="hidden">
-                    <label for="verifypasscode">Please enter verification code below</label>
+                    <label for="verification_code">Please enter verification code below</label>
                     <input type="text" name="verification_code" id="verification_code" value="" />
                     <input type="hidden" name="thecode" id="thecode" value=""/>
                     <a id="resetmypass" class="button" href="#"  style="width: 160px; padding: 15px 20px">Reset My Password</a>
@@ -386,120 +388,357 @@
                 <fieldset class="thefs">
                     <table>
                         <tr>
-                            <td style="vertical-align:top"><label for="report_type">Report Type</label></td>
+                            <td><label for="report_type">Report Type</label></td>
                             <td>
-                                <select name="report_type2" id="report_type2" class="ignore">
-                                    <option value="Builder inspection">Builder Inspection</option>
-                                    <option value="Client inspection">Client Inspection</option>
+                                <select class="report_types step1_field" id="report_type" name="report_type" >
+                                    <option class="builder-child" value="">-- Select</option>
+                                    <optgroup label="Builder Inspections">
+                                        <option class="builder-child" value="Builder: Enclosed inspections">Builder: Enclosed</option>
+                                        <option class="builder-child" value="Builder: Fixing inspections">Builder: Fixing</option>
+                                        <option class="builder-child" value="Builder: Frame inspections">Builder: Frame</option>
+                                        <option class="builder-child" value="Builder: PCI/Final inspections">Builder: PCI/Final</option>
+                                        <option class="builder-child" value="Builder: Quality inspections">Builder: Quality </option>
+                                        <option class="builder-child" value="Builder: Slab inspections">Builder: Slab</option>
+                                    </optgroup>
+                                    <optgroup label="Client Inspections">
+                                        <option class="client-child" value="Client: Enclosed inspections">Client: Enclosed</option>
+                                        <option class="client-child" value="Client: Fixing inspections">Client: Fixing</option>
+                                        <option class="client-child" value="Client: Frame inspections">Client: Frame</option>
+                                        <option class="client-child" value="Client: PCI/Final inspections">Client: PCI/Final</option>
+                                        <option class="client-child" value="Client: Slab inspections">Client: Slab</option>
+                                    </optgroup>
                                 </select>
                             </td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td>
-                                <input type="hidden" value="" name="report_type" id="report_type" />
-                                <select class="report_type_options ignore" id="builder_report_type" name="builder_report_type" >
-                                    <option class="builder-child" value="">--Select</option>
-                                    <option class="builder-child" value="Builder: Enclosed inspections">Enclosed Inspections</option>
-                                    <option class="builder-child" value="Builder: Fixing inspections">Fixing Inspections</option>
-                                    <option class="builder-child" value="Builder: Frame inspections">Frame Inspections</option>
-                                    <option class="builder-child" value="Builder: PCI/Final inspections">PCI/Final inspections</option>
-                                    <option class="builder-child" value="Builder: Quality inspections">Quality Inspections</option>
-                                    <option class="builder-child" value="Builder: Slab inspections">Slab Inspection</option>
-                                </select>
-
-                                <select class="report_type_options ignore" id="client_report_type" name="client_report_type" style="display: none;">
-                                    <option class="client-child" value="">--Select</option>
-                                    <option class="client-child" value="Client: Enclosed inspections">Enclosed Inspection</option>
-                                    <option class="client-child" value="Client: Fixing inspections">Fixing Inspection</option>
-                                    <option class="client-child" value="Client: Frame inspections">Frame Inspection</option>
-                                    <option class="client-child" value="Client: PCI/Final inspections">PCI/Final Inspection</option>
-                                    <option class="client-child" value="Client: Slab inspections">Slab Inspection</option>
-                                </select>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><label for="builder_id">Select a Builder</label></td>
-                            <td>
-                                <select class="selector" id="builder_id" title="Select a Builder">
-                                    <option value="">Builder</option>
-                                </select>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><label for="client_info">Type of building</label></td>
-                            <td>
-                                <select class="selector" id="type_of_building" title="Select a Type of Building">
-                                    <option value="Residential">Residential</option>
-                                    <option value="Commercial">Commercial</option>
-                                </select>
-                        </tr>
-                        <tr>
-                            <td><label for="inspection_date">Inspection Date</label></td>
-                            <td><input type="text" name="inspection_date" id="inspection_date" readonly="readonly" value="" class="required" /></td>
-                        </tr>
-                        <tr>
-                            <td><label for="client_info">Client name/<br/>Investment group</label></td>
-                            <td><input type="text" name="client_info" id="client_info" value="" class="" /></td>
-                        </tr>
-                        <tr>
-                            <td><label for="client_info">Persons in attendance</label></td>
-                            <td><input type="text" name="persons_in_attendance" id="persons_in_attendance" value="" class="" /></td>
-                        </tr>
-                        <tr class="coral_job_number" style="display: none;">
-                            <td><label for="client_info">Coral Job Number</label></td>
-                            <td><input type="text" name="job_number" id="job_number" value="" class="" /></td>
                         </tr>
                     </table>
                 </fieldset>
                 <fieldset class="thefs">
                     <table>
                         <tr>
-                            <td><label for="lot_no">Lot No</label></td>
-                            <td><input type="text" name="lot_no" id="lot_no" value="" class="" tabindex="5" /></td>
-                        </tr>
-                        <tr>
-                            <td><label for="address">Address</label></td>
-                            <td><input type="text" name="address" id="address" value="" class="" tabindex="5" /></td>
-                        </tr>
-                        <tr>
-                            <td><label for="suburb">Suburb</label></td>
-                            <td><input type="text" name="suburb" id="suburb" value="" class="" tabindex="6" /></td>
-                        </tr>
-                        <!-- <tr>
-                        	<td><label for="postcode">Postcode</label></td>
-                        	<td><input type="text" name="postcode" id="postcode" value="" class="number" tabindex="7" minlength="4" maxlength="4" /></td>
-                        </tr> -->
-                        <tr>
-                            <td><label for="state">State</label></td>
+                            <td><label for="builder_id">Select a Builder</label></td>
                             <td>
-                                <select class="selector" id="state" title="Select a State" autocomplete="off">
-                                    <option value="">Choose</option>
-                                    <option value="VIC">VIC</option>
-                                    <option value="NSW">NSW</option>
-                                    <option value="ACT">ACT</option>
-                                    <option value="QLD">QLD</option>
-                                    <option value="NT">NT</option>
-                                    <option value="WA">WA</option>
-                                    <option value="SA">SA</option>
-                                    <option value="TAS">TAS</option>
+                                <select class="selector step1_field" id="builder_id" title="Select a Builder">
+                                    <option value="">-- Select</option>
                                 </select>
                             </td>
                         </tr>
-                        <tr>
-                            <td><label for="weather">Weather</label>  </td>
-                            <td><textarea id="weather" name="weather"></textarea></td>
-                        </tr>
-                        <tr>
-                            <td><label for="client_info">K-Spec Reference</label></td>
-                            <td><input type="text" name="reference" id="reference" value="" class="" /></td>
-                        </tr>
-                        <tr>
-                            <td><label for="rectified_by">Defects to be rectified by</label></td>
-                            <td><input type="text" name="rectified_by" id="rectified_by" value="" class="" /></td>
-                        </tr>
                     </table>
                 </fieldset>
+                <div style="clear: both;"></div>
+                <div class="tabs">
+                    <div class="kspec-tab">
+                        <input type="radio" id="tab-1" name="tab-group-1" checked>
+                        <label for="tab-1">Client Details</label>
+                        <div class="content">
+                            <fieldset class="thefs">
+                                <table>
+                                    <tr>
+                                        <td><label for="type_of_building">Type of building</label></td>
+                                        <td>
+                                            <select class="selector step1_field" id="type_of_building" title="Select a Type of Building">
+                                                <option value="Residential">Residential</option>
+                                                <option value="Commercial">Commercial</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="client_info">Client/Investment group</label></td>
+                                        <td><input class="step1_field" type="text" name="client_info" id="client_info" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="reference">K-Spec Reference</label></td>
+                                        <td><input class="step1_field" type="text" name="reference" id="reference" /></td>
+                                    </tr>
+                                    <tr class="coral_job_number" style="display: none;">
+                                        <td><label for="client_info">Coral Job Number</label></td>
+                                        <td><input class="step1_field" type="text" name="job_number" id="job_number" /></td>
+                                    </tr>
+                                </table>
+                            </fieldset>
+                            <fieldset class="thefs">
+                                <table>
+                                    <tr>
+                                        <td><label for="lot_no">Lot No</label></td>
+                                        <td><input class="step1_field" type="text" name="lot_no" id="lot_no" tabindex="5" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="address">Address</label></td>
+                                        <td><input class="step1_field" type="text" name="address" id="address" tabindex="5" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="suburb">Suburb</label></td>
+                                        <td><input class="step1_field" type="text" name="suburb" id="suburb" tabindex="6" /></td>
+                                    </tr>
+                                    <!-- <tr>
+                                        <td><label for="postcode">Postcode</label></td>
+                                        <td><input class="step1_field" type="text" name="postcode" id="postcode" value="" class="number" tabindex="7" minlength="4" maxlength="4" /></td>
+                                    </tr> -->
+                                    <tr>
+                                        <td><label for="state">State</label></td>
+                                        <td>
+                                            <select class="selector step1_field" id="state" title="Select a State" autocomplete="off">
+                                                <option value="">Choose</option>
+                                                <option value="VIC">VIC</option>
+                                                <option value="NSW">NSW</option>
+                                                <option value="ACT">ACT</option>
+                                                <option value="QLD">QLD</option>
+                                                <option value="NT">NT</option>
+                                                <option value="WA">WA</option>
+                                                <option value="SA">SA</option>
+                                                <option value="TAS">TAS</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </fieldset>
+                            <div style="clear: both;"></div>
+                        </div>
+                    </div>
+                    <div class="kspec-tab client_report" style="display: none;">
+                        <input type="radio" id="tab-2" name="tab-group-1">
+                        <label for="tab-2">Agreement</label>
+                        <div class="content">
+                            <fieldset class="thefs">
+                                <table>
+                                    <tr>
+                                        <td><label for="agreement_no">Agreement No</label></td>
+                                        <td><input class="step1_field" type="text" name="agreement_no" id="agreement_no"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="agreement_date">Agreement Date</label></td>
+                                        <td><input class="step1_field" type="text" name="agreement_date" id="agreement_date" readonly="readonly" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="agreement_time">Agreement Time</label></td>
+                                        <td><input class="step1_field" type="text" name="agreement_time" id="agreement_time" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="specific_condition">Specific conditions</label></td>
+                                        <td><textarea class="step1_field" name="specific_condition" id="specific_condition" ></textarea></td>
+                                    </tr>
+                                </table>
+                            </fieldset>
+                            <fieldset class="thefs">
+                                <table>
+                                    <tr>
+                                        <td><label for="change_to_inspection">Changes to the Inspection<br/>Agreement requested</label></td>
+                                        <td><input class="step1_field" type="text"  id="change_to_inspection" name="change_to_inspection" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="changed_agreement_date">Changed Agreement Date</label></td>
+                                        <td><input class="step1_field" type="text" name="changed_agreement_date" id="changed_agreement_date" readonly="readonly" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="changed_agreement_time">Changed Agreement Time</label></td>
+                                        <td><input class="step1_field" type="text" name="changed_agreement_time" id="changed_agreement_time" /></td>
+                                    </tr>
+                                </table>
+                            </fieldset>
+                            <div style="clear: both;"></div>
+                        </div>
+                    </div>
+                    <div class="kspec-tab">
+                        <input type="radio" id="tab-3" name="tab-group-1">
+                        <label for="tab-3">Inspection Details</label>
+                        <div class="content">
+                            <fieldset class="thefs">
+                                <table>
+                                    <tr>
+                                        <td><label for="inspection_date">Inspection Date</label></td>
+                                        <td><input class="step1_field" type="text" name="inspection_date" id="inspection_date" readonly="readonly" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="inspection_time">Inspection Time</label></td>
+                                        <td><input class="step1_field" type="text" name="inspection_time" id="inspection_time" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="client_info">Persons in attendance</label></td>
+                                        <td><input class="step1_field" type="text" name="persons_in_attendance" id="persons_in_attendance" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="rectified_by">Defects to be rectified by</label></td>
+                                        <td><input class="step1_field" type="text" name="rectified_by" id="rectified_by" /></td>
+                                    </tr>
+                                    <tr class="client_report" style="display: none;">
+                                        <td><label for="building_furnished">Building Furnished</label></td>
+                                        <td>
+                                            <select autocomplete="off" class="selector step1_field" id="building_furnished" name="building_furnished" title="Building Furnished">
+                                                <option value="1">Yes</option>
+                                                <option value="0" selected>No</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </fieldset>
+                            <fieldset class="thefs">
+                                <table>
+                                    <tr class="client_report" style="display: none;">
+                                        <td><label for="building_tenancy">Building Tenancy</label></td>
+                                        <td>
+                                            <select autocomplete="off" class="selector step1_field" id="building_tenancy" name="building_tenancy" title="Building Tenancy">
+                                                <option value="Unoccupied">Unoccupied</option>
+                                                <option value="Occupied">Occupied</option>
+                                                <option value="Refer to comments">Refer to comments</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr class="client_report" style="display: none;">
+                                        <td><label for="building_tenancy_comment">Building Tenancy Comment</label>  </td>
+                                        <td><textarea class="step1_field" id="building_tenancy_comment" name="building_tenancy_comment"></textarea></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="weather">Inspection Weather</label>  </td>
+                                        <td><textarea class="step1_field" id="weather" name="weather"></textarea></td>
+                                    </tr>
+                                    <tr class="client_report" style="display: none;">
+                                        <td><label for="recent_weather">Recent Weather</label>  </td>
+                                        <td><textarea class="step1_field" id="recent_weather" name="recent_weather"></textarea></td>
+                                    </tr>
+                                </table>
+                            </fieldset>
+                            <div style="clear: both;"></div>
+                        </div>
+                    </div>
+                    <div class="kspec-tab client_report" style="display: none;">
+                        <input type="radio" id="tab-4" name="tab-group-1">
+                        <label for="tab-4">Areas Inspected and Restrictions</label>
+                        <div class="content">
+                            <input class="step1_field" type="hidden" name="areas_inspected" id="areas_inspected"/>
+                            <fieldset class="thefs">
+                                <table>
+                                    <tr>
+                                        <td><label>Areas Inspected</label></td>
+                                        <td><input class="areas_inspected ignore" type="checkbox" id="areas_inspected_interior" value="The Building Interior" /> <label for="areas_inspected_interior">The Building Interior</label></td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td><input class="areas_inspected ignore" type="checkbox" id="areas_inspected_exterior" value="The Building Exterior" /> <label for="areas_inspected_exterior">The Building Exterior</label></td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td><input class="areas_inspected ignore" type="checkbox" id="areas_inspected_site" value="The Site" /> <label for="areas_inspected_site">The Site</label></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="other_areas">Other</label>  </td>
+                                        <td><textarea class="step1_field" id="other_areas" name="other_areas"></textarea></td>
+                                    </tr>
+                                </table>
+                            </fieldset>
+                            <fieldset class="thefs">
+                                <table>
+                                    <tr>
+                                        <td><label for="areas_not_inspected">Areas NOT Inspected<br/>Including Reason(s)</label>  </td>
+                                        <td><textarea class="step1_field" id="areas_not_inspected" name="areas_not_inspected"></textarea></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="areas_not_fully_inspected">Areas NOT Fully Inspected<br/>Including Reason(s)</label>  </td>
+                                        <td><textarea class="step1_field" id="areas_not_fully_inspected" name="areas_not_fully_inspected"></textarea></td>
+                                    </tr>
+                                </table>
+                            </fieldset>
+                            <div style="clear: both;"></div>
+                        </div>
+                    </div>
+                    <div class="kspec-tab client_report" style="display: none;">
+                        <input type="radio" id="tab-5" name="tab-group-1">
+                        <label for="tab-5">Limitations</label>
+                        <div class="content">
+                            <fieldset class="thefs">
+                                <table>
+                                    <tr>
+                                        <td><label>Limitations</label></td>
+                                        <td><textarea class="step1_field" id="limitations" name="limitations"></textarea></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="apparent_concealed_defects">Apparent concealed defects</label></td>
+                                        <td><textarea class="step1_field" id="apparent_concealed_defects" name="apparent_concealed_defects"></textarea></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="additional_information">Additional information</label>  </td>
+                                        <td><textarea class="step1_field" id="additional_information" name="additional_information"></textarea></td>
+                                    </tr>
+                                </table>
+                            </fieldset>
+                            <div style="clear: both;"></div>
+                        </div>
+                    </div>
+                    <div class="kspec-tab client_report" style="display: none;">
+                        <input type="radio" id="tab-6" name="tab-group-1">
+                        <label for="tab-6">Property Details</label>
+                        <div class="content">
+                            <fieldset class="thefs">
+                                <table>
+                                    <tr>
+                                        <td><label for="property_type">Type</label></td>
+                                        <td><input class="step1_field" type="text" name="property_type" id="property_type" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="property_style">Style</label></td>
+                                        <td><input class="step1_field" type="text" name="property_style" id="property_style" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="property_construction_type">Contruction Type</label></td>
+                                        <td><input class="step1_field" type="text" name="property_construction_type" id="property_construction_type" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="property_interior">Interior</label></td>
+                                        <td><input class="step1_field" type="text" name="property_interior" id="property_interior" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="property_piers">Piers</label></td>
+                                        <td>
+                                            <select autocomplete="off" class="selector step1_field" id="property_piers" name="property_piers" title="Piers">
+                                                <option value="Not applicable as slab on ground construction">Not applicable as slab on ground construction</option>
+                                                <option value="Concrete">Concrete</option>
+                                                <option value="Hardwood Stumps">Hardwood Stumps</option>
+                                                <option value="Treated Timber stumps">Treated Timber stumps</option>
+                                                <option value="Metal posts">Metal posts</option>
+                                                <option value="Brick/Concrete combination">Brick/Concrete combination</option>
+                                                <option value="Sandstone Blocks">Sandstone Blocks</option>
+                                                <option value="See comments">See comments</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="property_piers_comment">Piers Comment</label>  </td>
+                                        <td><input class="step1_field" type="text" id="property_piers_comment" name="property_piers_comment" /></td>
+                                    </tr>
+                                </table>
+                            </fieldset>
+                            <fieldset class="thefs">
+                                <table>
+                                    <tr>
+                                        <td><label for="property_flooring">Flooring</label></td>
+                                        <td><input class="step1_field" type="text" name="property_flooring" id="property_flooring" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2">
+                                            <label for="property_verandahs">Verandahs</label>&nbsp;&nbsp;<input class="step1_field" type="text" id="property_verandahs" name="property_verandahs" style="width: 76px !important;" />&nbsp;&nbsp;
+                                            <label for="property_patio">Patio</label>&nbsp;&nbsp;<input class="step1_field" type="text" id="property_patio" name="property_patio" style="width: 76px !important;"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="property_other">Other</label></td>
+                                        <td><input class="step1_field" type="text" name="property_other" id="property_other" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="property_roofing">Roofing</label>  </td>
+                                        <td><input class="step1_field" type="text"  id="property_roofing" name="property_roofing" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="property_roofing_covering">Roof covering</label>  </td>
+                                        <td><input class="step1_field" type="text" id="property_roofing_covering" name="property_roofing_covering" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="property_out_structure">Out Structure</label></td>
+                                        <td><input class="step1_field" type="text" name="property_out_structure" id="property_out_structure" /></td>
+                                    </tr>
+                                </table>
+                            </fieldset>
+                            <div style="clear: both;"></div>
+                        </div>
+                    </div>
+                </div>
 
                 <input type="hidden" id="inspection_start" name="inspection_start" value="" />
                 <input type="hidden" id="created_by" name="created_by" value="" />
@@ -1379,17 +1618,17 @@
                     <label for="name">Builder Name *</label>
                     <input type="text" name="name" id="name" value="" class="required" tabindex="1" />
                     <label for="contact">Contact Name</label>
-                    <input type="text" name="contact" id="contact" value="" class="" tabindex="2" />
+                    <input type="text" name="contact" id="contact" tabindex="2" />
                     <label for="phone">Phone</label>
-                    <input type="text" name="phone" id="phone" value="" class="" tabindex="3" />
+                    <input type="text" name="phone" id="phone" tabindex="3" />
                     <label for="email">E-mail</label>
                     <input type="text" name="email" id="email" value="" class="email" tabindex="4" />
                 </fieldset>
                 <fieldset class="thefs">
                     <label for="address">Address</label>
-                    <input type="text" name="address" id="address" value="" class="" tabindex="5" />
+                    <input type="text" name="address" id="address" tabindex="5" />
                     <label for="city">Suburb</label>
-                    <input type="text" name="city" id="city" value="" class="" tabindex="6" />
+                    <input type="text" name="city" id="city" tabindex="6" />
                     <label for="postcode">Postcode</label>
                     <input type="text" name="postcode" id="postcode" value="" class="number" tabindex="7" minlength="4" maxlength="4" />
                     <label for="state">State</label>
@@ -1467,7 +1706,7 @@
                 <legend>Email Report To</legend>
 
                 <ul id="list_email">
-                    <li><input type="checkbox" id="emailToOffice" value="1"  /> <label for="emailToMe">Office</label></li>
+                    <li><input type="checkbox" id="emailToOffice" value="1"  /> <label for="emailToOffice">Office</label></li>
                     <li><input type="checkbox" id="emailToBuilder" value="1" /> <label for="emailToBuilder">Builder</label></li>
                 </ul>
 

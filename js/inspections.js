@@ -38,7 +38,8 @@ var Inspections = function()
     this.numberOfIssues = 0;
     this.numberOfAcknowledgements = 0;
     this.historyPhotosHtml = '';
-    this.glDatePicker = null;
+    this.glDatePicker = {};
+    this.timePicker = {};
     this.is_change_order = false;
 	this.builder_id = "";
 	this.inAudit = false;
@@ -51,7 +52,9 @@ var Inspections = function()
     this.MAX_REPORT_PHOTOS = 12;
     this.TOTAL_OMISSIONS_ITEMS = 34;
     this.YES_NO_FIELDS = ['reached_stage', 'is_tidy', 'setback_front_correct', 'setback_sides_correct', 'strip_footing_approx_position_correct', 'pad_footing_approx_position_correct', 'approx_room_sizes_correct', 'arranged_by_supervisor'];
-	
+    this.DATEPICKER_FIELDS = ['agreement_date', 'changed_agreement_date', 'inspection_date'];
+    this.TIMEPICKER_FIELDS = ['agreement_time', 'changed_agreement_time', 'inspection_time'];
+
 	this.current_table = "inspectionitemphotos";
 	this.current_key = "inspection_id";
 	
@@ -723,7 +726,7 @@ var Inspections = function()
 
     this.checkIfNeedPhotos = function()
     {
-        if ($("#inspection #report_type2").val() == 'Client inspection'){
+        if ($("#inspection #report_type").val().indexOf('Client') != -1){
             /*
             $('a[id="btnCapturePhoto"]').show();
             if (!$('#btnStep1Next').is(':visible')){
@@ -1217,13 +1220,10 @@ var Inspections = function()
         objApp.keys.reinspection_id = "";
 
         $(".inspectionDetails #btnCapturePhoto .numImgCurr").text(self.numImgCurr);
-        $('#frmInspectionDetails #lot_no').val('');
-        $('#frmInspectionDetails #address').val('');
-        $('#frmInspectionDetails #suburb').val('');
-        $('#frmInspectionDetails #postcode').val('');
-        $('#frmInspectionDetails #weather').val('');
-        $('#frmInspectionDetails #client_info').val('');
-        $('#frmInspectionDetails #persons_in_attendance').val('');
+        $('#frmInspectionDetails .step1_field').val('');
+        $('#frmInspectionDetails #type_of_building').val('Residential');
+        $('#frmInspectionDetails #building_furnished').val(0);
+        $('#frmInspectionDetails #property_piers').val('Not applicable as slab on ground construction');
 
         // Hide the camera button until the inspection is created.
         $(".inspectionDetails #btnCapturePhoto").hide();
@@ -1249,12 +1249,11 @@ var Inspections = function()
 		// Set the new inspection button to be active
 		objApp.setNavActive("#navNewInspection");
 
-        $("#report_type2").trigger('change');
+        $("#report_type").trigger('change');
         if(!$("#inspection #btnDeleteInspection").hasClass("hidden"))
 		{
 			$("#inspection #btnDeleteInspection").addClass("hidden");
 		}
-        $("#inspection .report_type_options").val('');
 
         $("#inspection #inspection_no").val('');
 		// Set the inspection date and start time to the current date and time
@@ -1328,7 +1327,6 @@ var Inspections = function()
     */
 	this.editInspection = function(inspection)
 	{
-	    console.log(inspection);
         // Set keys
         objApp.keys.inspection_id = inspection.id;
         objApp.keys.report_type = inspection.report_type;
@@ -1395,35 +1393,12 @@ var Inspections = function()
 		$("#inspection #initials").val(inspection.initials);
         
         $("#inspection #report_type").val(inspection.report_type);
-        $("#inspection .report_type_options").hide();
-        if (inspection.report_type.indexOf('Builder:') > -1) 
-        {
-            $("#inspection #report_type2").val("Builder inspection");
-            $("#inspection #builder_report_type").show();
-            $("#inspection #builder_report_type").val(inspection.report_type);
-        }
-        else if (inspection.report_type.indexOf('Client:') > -1) 
-        {
-            $("#inspection #report_type2").val("Client inspection");
-            $("#inspection #client_report_type").show();
-            $("#inspection #client_report_type").val(inspection.report_type);
-        } 
-        else
-        {
-            $("#inspection #report_type2").val("Builder inspection");
-            $("#inspection #builder_report_type").show();
-            $("#inspection #builder_report_type").val(inspection.report_type);
-        }
         self.checkIfNeedPhotos();
-        
-        $("#inspection #weather").val(inspection.weather);
-        $("#inspection #lot_no").val(inspection.lot_no);
-        $("#inspection #address").val(inspection.address);
-        $("#inspection #suburb").val(inspection.suburb);
-        $("#inspection #postcode").val(inspection.postcode);
-		$("#inspection #notes").val(inspection.notes);
-        $("#inspection #client_info").val(inspection.client_info);
-        $("#inspection #persons_in_attendance").val(inspection.persons_in_attendance);
+
+        $("#inspection .step1_field").each(function(index, item){
+            var fieldname = $(this).attr('name');
+            $(this).val(inspection[fieldname]);
+        });
 
         if (inspection.failed)
         {
@@ -1566,7 +1541,7 @@ var Inspections = function()
 
         self.objPopBuilders.bind('change', objApp.objInspection.handleBuilderChanged);
         self.objPopBuilders.html('');
-        self.objPopBuilders.append('<option value="">Builder</option>');
+        self.objPopBuilders.append('<option value="">-- Select</option>');
 
         var filters = [];
         if (objApp.IS_STATE_FILTERED == 1)
@@ -1681,33 +1656,51 @@ var Inspections = function()
 	}
 
     this.createDatepicker = function(){
-        var objDate = objApp.userDateStrToDate($("#inspection #inspection_date").val());
-        if (self.glDatePicker){
-            $.extend(self.glDatePicker.options,
-            {
-                selectedDate: objDate,
-                firstDate: (new Date(objDate)._first())
-            });
-            self.glDatePicker.render();
-            // self.glDatePicker.show();
-        }else{
-            self.glDatePicker = $('#inspection #inspection_date').glDatePicker({
-                cssName: 'flatwhite',
-                selectedDate: objDate,
 
-                onClick: (function(el, cell, date, data) {
-                    el.val(objApp.formatUserDate(date));
-                    objApp.objInspection.checkSaveInspection();
-        		}),
-                onBeforeClick: (function(el, cell) {
-                    if ($("#finalised").val() == 1)
+        for(var i in self.DATEPICKER_FIELDS){
+            var field = self.DATEPICKER_FIELDS[i];
+            var objDate = objApp.userDateStrToDate($("#inspection #" + field).val());
+            if (typeof self.glDatePicker[field] != 'undefined'){
+                $.extend(self.glDatePicker[field].options,
                     {
-                        alert("Sorry, you may not change this value.");
-                        return false;
-                    }
-                    return true;
-        		})
-            }).glDatePicker(true);
+                        selectedDate: objDate,
+                        firstDate: (new Date(objDate)._first())
+                    });
+                self.glDatePicker[field].render();
+            }else{
+                self.glDatePicker[field] = $('#inspection #'+ field).glDatePicker({
+                    cssName: 'flatwhite',
+                    selectedDate: objDate,
+                    onClick: (function(el, cell, date, data) {
+                        el.val(objApp.formatUserDate(date));
+                        objApp.objInspection.checkSaveInspection();
+                    }),
+                    onBeforeClick: (function(el, cell) {
+                        if ($("#finalised").val() == 1)
+                        {
+                            alert("Sorry, you may not change this value.");
+                            return false;
+                        }
+                        return true;
+                    })
+                }).glDatePicker(true);
+            }
+        }
+
+
+        for(var i in self.TIMEPICKER_FIELDS){
+            var field = self.TIMEPICKER_FIELDS[i];
+            var time = $("#inspection #" + field).val();
+            if (typeof self.timePicker[field] != 'undefined'){
+                $("#inspection #" + field).val(time);
+                $("#inspection #" + field).datetimepicker('reset');
+            }else{
+                self.timePicker[field] = $('#inspection #'+ field).datetimepicker({
+                    datepicker: false,
+                    lazyInit: true,
+                    format:'H:i'
+                });
+            }
         }
     }
 
@@ -1759,7 +1752,6 @@ var Inspections = function()
         $("a.sendEmailButton").unbind();
         $("a.btnViewChart").unbind();
         $("#report_type").unbind();
-        $(".report_type_options").unbind();
         $('#frmDefectDetails #observation').unbind();
         $("#inspectionList #btnAddInspection").unbind();
         $("#btnSendReport,#btnSendReport2,#btnSendReport3").unbind();
@@ -2011,38 +2003,14 @@ var Inspections = function()
             }, "");
         });
         
-        $("#inspection #report_type2").change(function() 
+        $("#inspection #report_type").change(function()
         {
-            $("#inspection .report_type_options").hide();
-            
-            if($(this).val() == "Builder inspection")
-            {
-                $("#inspection #report_type2").val("Builder inspection");
-                $("#inspection #builder_report_type").show();
-                $("#inspection #builder_report_type").val('');
-                $("#inspection #builder_report_type").trigger('change');
-            }
-            else if($(this).val() == "Client inspection")
-            {
-                $("#inspection #report_type2").val("Client inspection");
-                $("#inspection #client_report_type").show();
-                $("#inspection #client_report_type").val('');
-                $("#inspection #client_report_type").trigger('change');
-            } 
-            else
-            {
-                $("#inspection #report_type2").val("Builder inspection");
-                $("#inspection #builder_report_type").show();
-                $("#inspection #builder_report_type").val('');
-                $("#inspection #builder_report_type").trigger('change');
-            }
             self.checkIfNeedPhotos();
-        });
-
-        $(".report_type_options").change(function() {
-                        
-            selected_report_type = $(this).val();
-            $("#inspection #report_type").val(selected_report_type);  
+            if ($("#inspection #report_type").val().indexOf('Client') != -1){
+                $("#inspection .client_report").show();
+            }else{
+                $("#inspection .client_report").hide();
+            }
         });
         
         $(".inspectionDetails #btnCapturePhoto").bind(objApp.touchEvent, function(e)
@@ -2348,16 +2316,11 @@ var Inspections = function()
                 return;
             }
 
-            if ($('#frmInspectionDetails #postcode').val() == "") {
-                alert("Please input a postcode");
-                return;
-            }
-
             if($('#frmInspectionDetails #state').val() == "") {
                 alert("Please select a state");
                 return;
             }
-
+            self.checkSaveInspection();
             self.showStep2();
 			return false;
 		});
@@ -2813,23 +2776,23 @@ var Inspections = function()
 
         $('#frmInspectionDetails #lot_no').change(function(){
             self.updateExtraSubHeader();
-            self.checkSaveInspection();
+            //self.checkSaveInspection();
            });
 
         $('#frmInspectionDetails #address').change(function(){
             self.updateExtraSubHeader();
-            self.checkSaveInspection();
+            //self.checkSaveInspection();
            });
         $('#frmInspectionDetails #suburb').change(function(){
             self.updateExtraSubHeader();
-            self.checkSaveInspection();
+            //self.checkSaveInspection();
            });
         // $('#frmInspectionDetails #postcode').change(function(){
             // self.updateExtraSubHeader();
             // self.checkSaveInspection();
            // });
         $('#frmInspectionDetails #weather').change(function(){
-            self.checkSaveInspection();
+            //self.checkSaveInspection();
         });
 
         $('.btnEditPrivateNotes').bind(objApp.touchEvent, function(e){
@@ -3099,6 +3062,19 @@ var Inspections = function()
                     alert( "Unknown error" );
                 })
             });
+        });
+
+        $('.areas_inspected').unbind('change');
+        $('.areas_inspected').change(function(){
+            var areas_inspected = '';
+            $('.areas_inspected').each(function(index, item){
+                if ($(this).is(':checked')){
+                    if (areas_inspected != '')
+                        areas_inspected += ', ';
+                    areas_inspected += $(this).val();
+                }
+            });
+            $('#areas_inspected').val(areas_inspected);
         });
 	}
 
@@ -5247,7 +5223,7 @@ var Inspections = function()
 		    result += objDate.getDate();
 
 		    // Save the visit_date back to the form
-		    $("#frmInspectionDetails #inspection_date").val(result);
+		    $("#frmInspectionDetails #inspection_date").val(objApp.isoDateStrToDate(result));
         }
 
 	    // Ready to save
@@ -6334,7 +6310,7 @@ var Inspections = function()
             $('#btnStep3Back').removeClass('hidden');
             $('#finished').removeClass('active');
             $('#keywords').removeClass('hidden');
-            if ($("#inspection #report_type2").val() != 'Client inspection')
+            if ($("#inspection #report_type").val() != 'Client inspection')
                 $("#btnReportPhotos").removeClass("hidden");
             $("div.btnReinspect").hide();
             $("#tblRateListing select.ratingSelect").removeAttr("readonly");
