@@ -5231,14 +5231,14 @@ var Inspections = function()
 		    $("#frmInspectionDetails #inspection_start").val(inspection_start);
 
 		    // Convert AU date format date back to ISO before saving
-		    var result = objDate.getFullYear() + "-";
+		    var result = objDate.getDate() + "/";
 		    if((objDate.getMonth() + 1) < 10) result += "0";
-		    result += (objDate.getMonth() + 1) + "-";
+		    result += (objDate.getMonth() + 1) + "/";
 		    if(objDate.getDate() < 10) result += "0";
-		    result += objDate.getDate();
+		    result += objDate.getFullYear();
 
 		    // Save the visit_date back to the form
-		    $("#frmInspectionDetails #inspection_date").val(objApp.isoDateStrToDate(result));
+		    $("#frmInspectionDetails #inspection_date").val(result);
         }
 
 	    // Ready to save
