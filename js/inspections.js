@@ -1273,6 +1273,8 @@ var Inspections = function()
 		// Visit Date
 		var objDate = new Date();
 		$("#inspection #inspection_date").val(objApp.formatUserDate(objDate));
+        $("#inspection #agreement_date").val(objApp.formatUserDate(objDate));
+        $("#inspection #changed_agreement_date").val(objApp.formatUserDate(objDate));
 
 		// Visit start
 		$("#inspection #start").val(objTimePicker.getTimeStr(objDate));
@@ -1389,9 +1391,12 @@ var Inspections = function()
 
         $("#inspection #inspection_no").val(inspection.id);
 
-		// Inspection Date
-		var objDate = objApp.isoDateStrToDate(inspection.inspection_date);
-		$("#inspection #inspection_date").val(objApp.formatUserDate(objDate));
+		// Inspection Dates
+        for(var i in self.DATEPICKER_FIELDS){
+            var f = self.DATEPICKER_FIELDS[i];
+            var objDate = objApp.isoDateStrToDate(inspection[f]);
+            $("#inspection #" + f).val(objApp.formatUserDate(objDate));
+        }
 
 		// Inspection start
 		$("#inspection #start").val(inspection.start);
@@ -5217,28 +5222,31 @@ var Inspections = function()
 
 
 		// Get the inspection date as a date object
-		var inspection_date = $("#frmInspectionDetails #inspection_date").val();
+        for(var i in self.DATEPICKER_FIELDS){
+            var f = self.DATEPICKER_FIELDS[i];
+            var date_insp = $("#frmInspectionDetails #" + f).val();
 
-        // If the inspection date is NOT in ISO format we need to convert it
-        if((inspection_date.length != 10) || (inspection_date.substring(4, 5) != "-"))
-        {
-		    var objDate = objApp.userDateStrToDate(inspection_date);
+            // If the inspection date is NOT in ISO format we need to convert it
+            if((date_insp.length != 10) || (date_insp.substring(4, 5) != "-"))
+            {
+                var objDate = objApp.userDateStrToDate(date_insp);
 
-		    // Get the date as a timestamp.
-		    var inspection_start = objDate.getTime();
+                // Get the date as a timestamp.
+                var inspection_start = objDate.getTime();
 
-		    // Set the timestamp into the hidden form var so it's saved later.
-		    $("#frmInspectionDetails #inspection_start").val(inspection_start);
+                // Set the timestamp into the hidden form var so it's saved later.
+                $("#frmInspectionDetails #inspection_start").val(inspection_start);
 
-		    // Convert AU date format date back to ISO before saving
-		    var result = objDate.getDate() + "/";
-		    if((objDate.getMonth() + 1) < 10) result += "0";
-		    result += (objDate.getMonth() + 1) + "/";
-		    if(objDate.getDate() < 10) result += "0";
-		    result += objDate.getFullYear();
+                // Convert AU date format date back to ISO before saving
+                var result = objDate.getFullYear() + "-";
+                if((objDate.getMonth() + 1) < 10) result += "0";
+                result += (objDate.getMonth() + 1) + "-";
+                if(objDate.getDate() < 10) result += "0";
+                result += objDate.getDate();
 
-		    // Save the visit_date back to the form
-		    $("#frmInspectionDetails #inspection_date").val(result);
+                // Save the visit_date back to the form
+                $("#frmInspectionDetails #" + f).val(result);
+            }
         }
 
 	    // Ready to save
