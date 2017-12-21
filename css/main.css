@@ -1245,7 +1245,7 @@ aside textarea
     
 #btnAddDefect, a.btnEditNotes, #btnStep3Email, #btnReportPhotos, #btnStep4Email, #btnSendReport, #btnSendReport2, #btnSendReport3 {
     margin-left: 10px;
-    top: 35px;
+    top: 30px;
 }
 
 #btnSendReinspectReport{

@@ -51,7 +51,7 @@ var Inspections = function()
     this.keySortArray = false;
     this.MAX_REPORT_PHOTOS = 12;
     this.TOTAL_OMISSIONS_ITEMS = 34;
-    this.YES_NO_FIELDS = ['reached_stage', 'is_tidy', 'setback_front_correct', 'setback_sides_correct', 'strip_footing_approx_position_correct', 'pad_footing_approx_position_correct', 'approx_room_sizes_correct', 'arranged_by_supervisor'];
+    this.YES_NO_FIELDS = ['reached_stage', 'is_tidy', 'setback_front_correct', 'setback_sides_correct', 'strip_footing_approx_position_correct', 'pad_footing_approx_position_correct', 'approx_room_sizes_correct', 'arranged_by_supervisor', 'has_plumbing', 'has_hot_water', 'has_gas', 'has_phone', 'has_smoke_detector'];
     this.DATEPICKER_FIELDS = ['agreement_date', 'changed_agreement_date', 'inspection_date'];
     this.TIMEPICKER_FIELDS = ['agreement_time', 'changed_agreement_time', 'inspection_time'];
 
@@ -929,7 +929,9 @@ var Inspections = function()
         self.setStep(4);
         $('.builder_need_4_steps').hide();
         $('.coral_homes').hide();
-        if (self.need5Steps(self.inspection.report_type)){
+        if (self.inspection.report_type.indexOf('Client') != -1){
+            objApp.setSubHeading("SERVICES");
+        }else if (self.need5Steps(self.inspection.report_type)){
             if (self.currentBuilderName() == 'Coral Homes'){
                 $('.coral_homes').show();
             }
@@ -942,7 +944,7 @@ var Inspections = function()
             var inspection_property = "Lot " + self.inspection.lot_no + ", " + self.inspection.address + ", " + self.inspection.suburb;
             objApp.setSubHeading("Inspection @ " + inspection_property);
         }
-        self.showStage(self.inspection.report_type);
+        self.showReportElements(self.inspection.report_type);
 
         //if((self.inspection.report_type == "Builder: PCI/Final inspections" && objApp.keys.reinspection_id != "") || self.inspection.report_type == "Fix / Plaster Inspection") {
         if( (self.need5Steps(self.inspection.report_type) || self.need4Steps(self.inspection.report_type)) && objApp.keys.reinspection_id != "") {
@@ -996,9 +998,20 @@ var Inspections = function()
         objApp.clearMain();
 
         if(self.inspection) {
+            $("#inspectionStep5 .step5_field").each(function(index, item){
+                var fieldname = $(this).attr('name');
+                var default_val = $(this).attr('data-default');
+                if(!objApp.empty(self.inspection[fieldname])) {
+                    $(this).val(self.inspection[fieldname]);
+                }else if(default_val){
+                    $(this).val(default_val);
+                }
+            });
+            /*
             if(!objApp.empty(self.inspection.exterior_quality)) {
                 $("#exterior_quality").val(self.inspection.exterior_quality);
             }
+            */
         }
         $("#inspectionStep5").removeClass("hidden");
         self.setTableWidths2('tblRateListingHeader', 'tblRateListing', 2, 500);
@@ -1393,6 +1406,7 @@ var Inspections = function()
 		$("#inspection #initials").val(inspection.initials);
         
         $("#inspection #report_type").val(inspection.report_type);
+        $("#inspection #report_type").trigger('change');
         self.checkIfNeedPhotos();
 
         $("#inspection .step1_field").each(function(index, item){
@@ -2006,9 +2020,11 @@ var Inspections = function()
         $("#inspection #report_type").change(function()
         {
             self.checkIfNeedPhotos();
-            if ($("#inspection #report_type").val().indexOf('Client') != -1){
+            if ($(this).val().indexOf('Client') != -1){
                 $("#inspection .client_report").show();
+                $("#inspection .builder_report").hide();
             }else{
+                $("#inspection .builder_report").show();
                 $("#inspection .client_report").hide();
             }
         });
@@ -2934,7 +2950,7 @@ var Inspections = function()
 		});
 
 
-        $("#exterior_quality").change(function(){
+        $("#inspectionStep5 .step5_field").change(function(){
             self.checkSaveRateInspection();
         });
 
@@ -7119,7 +7135,7 @@ var Inspections = function()
                 $('a[data-id="btnO'+i+'Yes"]').removeClass("yesno_disabled").addClass("yesno_enabled");
                 $('a[data-id="btnO'+i+'No"]').removeClass("yesno_enabled").addClass("yesno_disabled");
                 $("#omission_item_" + i).val("1");
-            } else if(obj['omission_item_' + i] == 0) {
+            } else if(obj['omission_item_' + i] == 0 || obj['omission_item_' + i] == null) {
                 $('a[data-id="btnO'+i+'Yes"]').removeClass("yesno_enabled").addClass("yesno_disabled");
                 $('a[data-id="btnO'+i+'No"]').removeClass("yesno_disabled").addClass("yesno_enabled");
                 $("#omission_item_" + i).val("0");
@@ -7131,7 +7147,7 @@ var Inspections = function()
                 $(".btn_"+f+"_yes").removeClass("yesno_disabled").addClass("yesno_enabled");
                 $(".btn_"+f+"_no").removeClass("yesno_enabled").addClass("yesno_disabled");
                 $("#" + f).val("1");
-            } else if(obj[f] == 0) {
+            } else if(obj[f] == 0 || obj[f] == null) {
                 $(".btn_"+f+"_yes").removeClass("yesno_enabled").addClass("yesno_disabled");
                 $(".btn_"+f+"_no").removeClass("yesno_disabled").addClass("yesno_enabled");
                 $("#" + f).val("0");
@@ -7196,43 +7212,48 @@ var Inspections = function()
     }
 
     this.need5Steps = function(report_type){
-        return report_type == 'Builder: Quality inspections';
+        return report_type == 'Builder: Quality inspections' || report_type.indexOf('Client') != -1;
     }
 
-    this.showStage = function(report_type){
-        $('.builder_slab, .builder_frame, .builder_australasian, .builder_pci, .builder_quality').hide();
-        switch(report_type){
-            case 'Builder: Enclosed inspections':
-                $('.stage_name').html("'Enclosed Stage'");
-                break;
-            case 'Builder: Fixing inspections':
-                $('.stage_name').html("''Fixing Stage'");
-                break;
-            case 'Builder: Frame inspections':
-                $('.stage_name').html("''Frame Stage'");
-                $('.builder_frame').show();
-                break;
-            case 'Builder: Slab inspections':
-                $('.stage_name').html("'Base/Slab Stage'");
-                $('.builder_slab').show();
-                break;
-            case 'Builder: PCI/Final inspections':
-                $('.stage_name').html("'Practical Completion'");
-                if (self.currentBuilderName() == 'Australasian'){
-                    if(objUtils.isMobileDevice())
-                    {
-                        var scroller = new IScroll5('#installedItemsScrollWrapper2', { click: true, hScrollbar: false, vScrollbar: false, scrollbarClass: 'myScrollbarSm'});
+    this.showReportElements = function(report_type){
+        $('.builder_slab, .builder_frame, .builder_australasian, .builder_pci, .builder_quality, .builder_report, .client_report').hide();
+        if (report_type.indexOf('Client') != -1){
+            $('.client_report').show();
+        }else{
+            $('.builder_report').show();
+            switch(report_type){
+                case 'Builder: Enclosed inspections':
+                    $('.stage_name').html("'Enclosed Stage'");
+                    break;
+                case 'Builder: Fixing inspections':
+                    $('.stage_name').html("''Fixing Stage'");
+                    break;
+                case 'Builder: Frame inspections':
+                    $('.stage_name').html("''Frame Stage'");
+                    $('.builder_frame').show();
+                    break;
+                case 'Builder: Slab inspections':
+                    $('.stage_name').html("'Base/Slab Stage'");
+                    $('.builder_slab').show();
+                    break;
+                case 'Builder: PCI/Final inspections':
+                    $('.stage_name').html("'Practical Completion'");
+                    if (self.currentBuilderName() == 'Australasian'){
+                        if(objUtils.isMobileDevice())
+                        {
+                            var scroller = new IScroll5('#installedItemsScrollWrapper2', { click: true, hScrollbar: false, vScrollbar: false, scrollbarClass: 'myScrollbarSm'});
+                        }
+                        $('.builder_australasian').show();
                     }
-                    $('.builder_australasian').show();
-                }
-                else{
-                    $('.builder_pci').show();
-                }
-                break;
-            case 'Builder: Quality inspections':
-                $('.stage_name').html("'Practical Completion'");
-                $('.builder_quality').show();
-                break;
+                    else{
+                        $('.builder_pci').show();
+                    }
+                    break;
+                case 'Builder: Quality inspections':
+                    $('.stage_name').html("'Practical Completion'");
+                    $('.builder_quality').show();
+                    break;
+            }
         }
     }
 

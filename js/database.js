@@ -1255,6 +1255,7 @@ function DBUtils()
                 "'changed_agreement_date' DATE, " +
                 "'changed_agreement_time' VARCHAR, " +
                 "'building_furnished' SMALLINT(6) DEFAULT 0, " +
+                "'building_furnished_comment' VARCHAR, " +
                 "'building_tenancy' VARCHAR, " +
                 "'building_tenancy_comment' VARCHAR, " +
                 "'areas_inspected' VARCHAR, " +
@@ -1264,6 +1265,7 @@ function DBUtils()
                 "'limitations' VARCHAR, " +
                 "'apparent_concealed_defects' VARCHAR, " +
                 "'additional_information' VARCHAR, " +
+                "'other_factors' VARCHAR, " +
                 "'property_type' VARCHAR, " +
                 "'property_style' VARCHAR, " +
                 "'property_construction_type' VARCHAR, " +
@@ -1277,6 +1279,14 @@ function DBUtils()
                 "'property_roofing' VARCHAR, " +
                 "'property_roofing_covering' VARCHAR, " +
                 "'property_out_structure' VARCHAR, " +
+                "'has_plumbing' SMALLINT(6) DEFAULT 0, " +
+                "'has_hot_water' SMALLINT(6) DEFAULT 0, " +
+                "'has_gas' SMALLINT(6) DEFAULT 0, " +
+                "'has_phone' SMALLINT(6) DEFAULT 0, " +
+                "'has_smoke_detector' SMALLINT(6) DEFAULT 0, " +
+                "'incidence_of_major_defects' VARCHAR NULL ," +
+                "'incidence_of_minor_defects' VARCHAR NULL ," +
+                "'overall_condition' VARCHAR NULL ," +
 				"'dirty' INTEGER NOT NULL DEFAULT 1)";
 
 		this.db.transaction(function(transaction) 
@@ -1387,7 +1397,12 @@ function DBUtils()
                 "'omission_item_33' SMALLINT(6) DEFAULT 0, " +
                 "'omission_item_34' SMALLINT(6) DEFAULT 0, " +
                 "'created_by' INTEGER NOT NULL DEFAULT 48, " + 
-                "'deleted' INTEGER NOT NULL DEFAULT 0, " + 
+                "'deleted' INTEGER NOT NULL DEFAULT 0, " +
+                "'has_plumbing' SMALLINT(6) DEFAULT 0, " +
+                "'has_hot_water' SMALLINT(6) DEFAULT 0, " +
+                "'has_gas' SMALLINT(6) DEFAULT 0, " +
+                "'has_phone' SMALLINT(6) DEFAULT 0, " +
+                "'has_smoke_detector' SMALLINT(6) DEFAULT 0, " +
                 "'dirty' INTEGER NOT NULL DEFAULT 1)";
 
 		this.db.transaction(function(transaction)
