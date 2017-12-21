@@ -959,27 +959,37 @@
                 <table class="listing" style="width: 100%;">
                     <tbody>
                     <tr style="border-top: 1px solid;">
-                        <td style="width: 60%">Plumbing</td>
+                        <td style="width: 60%">Has the property reached <span class="stage_name">stage</span>?</td>
+                        <td style="width: 20%"><a data-id="reached_stage" class="left yesno_disabled btn_reached_stage_yes" href="javascript:void(0);">Yes</a></td>
+                        <td style="width: 20%"><a data-id="reached_stage" class="left yesno_enabled btn_reached_stage_no" href="javascript:void(0);">No</a></td>
+                    </tr>
+                    <tr>
+                        <td style="width: 60%">Is the site clean and tidy?</td>
+                        <td style="width: 20%"><a data-id="is_tidy" class="left yesno_enabled btn_is_tidy_yes" href="javascript:void(0);">Yes</a></td>
+                        <td style="width: 20%"><a data-id="is_tidy" class="left yesno_disabled btn_is_tidy_no" href="javascript:void(0);">No</a></td>
+                    </tr>
+                    <tr>
+                        <td style="width: 60%">Plumbing service</td>
                         <td style="width: 20%"><a data-id="has_plumbing" class="left yesno_disabled btn_has_plumbing_yes" href="javascript:void(0);">Yes</a></td>
                         <td style="width: 20%"><a data-id="has_plumbing" class="left yesno_enabled btn_has_plumbing_no" href="javascript:void(0);">No</a></td>
                     </tr>
                     <tr>
-                        <td style="width: 60%">Hot water</td>
+                        <td style="width: 60%">Hot water service</td>
                         <td style="width: 20%"><a data-id="has_hot_water" class="left yesno_enabled btn_has_hot_water_yes" href="javascript:void(0);">Yes</a></td>
                         <td style="width: 20%"><a data-id="has_hot_water" class="left yesno_disabled btn_has_hot_water_no" href="javascript:void(0);">No</a></td>
                     </tr>
                     <tr>
-                        <td style="width: 60%">Gas</td>
+                        <td style="width: 60%">Gas service</td>
                         <td style="width: 20%"><a data-id="has_gas" class="left yesno_enabled btn_has_gas_yes" href="javascript:void(0);">Yes</a></td>
                         <td style="width: 20%"><a data-id="has_gas" class="left yesno_disabled btn_has_gas_no" href="javascript:void(0);">No</a></td>
                     </tr>
                     <tr>
-                        <td style="width: 60%">Phone</td>
+                        <td style="width: 60%">Phone service</td>
                         <td style="width: 20%"><a data-id="has_phone" class="left yesno_enabled btn_has_phone_yes" href="javascript:void(0);">Yes</a></td>
                         <td style="width: 20%"><a data-id="has_phone" class="left yesno_disabled btn_has_phone_no" href="javascript:void(0);">No</a></td>
                     </tr>
                     <tr>
-                        <td style="width: 60%">Smoke detector</td>
+                        <td style="width: 60%">Smoke detector service</td>
                         <td style="width: 20%"><a data-id="has_smoke_detector" class="left yesno_enabled btn_has_smoke_detector_yes" href="javascript:void(0);">Yes</a></td>
                         <td style="width: 20%"><a data-id="has_smoke_detector" class="left yesno_disabled btn_has_smoke_detector_no" href="javascript:void(0);">No</a></td>
                     </tr>
@@ -1034,7 +1044,7 @@
                     </tbody>
                 </table>
             </div>
-            <form class="builder_quality builder_pci builder_report" action="#" id="frmInstalldItems" method="post" style="display: none;">
+            <form class="builder_quality builder_pci" action="#" id="frmInstalldItems" method="post" style="display: none;">
                 <input type="hidden" name="omission_item_1" id="omission_item_1" value="0"/>
                 <input type="hidden" name="omission_item_2" id="omission_item_2" value="0"/>
                 <input type="hidden" name="omission_item_3" id="omission_item_3" value="0"/>
@@ -1263,7 +1273,7 @@
                 </div>
             </form>
 
-            <div class="builder_australasian builder_report" style="display: none;">
+            <div class="builder_australasian" style="display: none;">
                 <table class="listing">
                     <thead>
                     <tr>

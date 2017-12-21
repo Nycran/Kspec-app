@@ -929,19 +929,18 @@ var Inspections = function()
         self.setStep(4);
         $('.builder_need_4_steps').hide();
         $('.coral_homes').hide();
+        var inspection_property = "Lot " + self.inspection.lot_no + ", " + self.inspection.address + ", " + self.inspection.suburb;
         if (self.inspection.report_type.indexOf('Client') != -1){
-            objApp.setSubHeading("SERVICES");
+            objApp.setSubHeading("Inspection @ " + inspection_property);
         }else if (self.need5Steps(self.inspection.report_type)){
             if (self.currentBuilderName() == 'Coral Homes'){
                 $('.coral_homes').show();
             }
             objApp.setSubHeading("OMISSIONS (items installed at time of the inspection)");
         }else if(self.inspection.report_type == 'Builder: PCI/Final inspections'){
-            var inspection_property = "Lot " + self.inspection.lot_no + ", " + self.inspection.address + ", " + self.inspection.suburb;
             objApp.setSubHeading("Inspection @ " + inspection_property);
         }else if(self.need4Steps(self.inspection.report_type)){
             $('.builder_need_4_steps').show();
-            var inspection_property = "Lot " + self.inspection.lot_no + ", " + self.inspection.address + ", " + self.inspection.suburb;
             objApp.setSubHeading("Inspection @ " + inspection_property);
         }
         self.showReportElements(self.inspection.report_type);
@@ -7216,9 +7215,24 @@ var Inspections = function()
     }
 
     this.showReportElements = function(report_type){
+        console.log(report_type);
         $('.builder_slab, .builder_frame, .builder_australasian, .builder_pci, .builder_quality, .builder_report, .client_report').hide();
         if (report_type.indexOf('Client') != -1){
             $('.client_report').show();
+            switch(report_type){
+                case 'Client: Enclosed inspections':
+                    $('.stage_name').html("'Enclosed Stage'");
+                    break;
+                case 'Client: Fixing inspections':
+                    $('.stage_name').html("''Fixing Stage'");
+                    break;
+                case 'Client: Frame inspections':
+                    $('.stage_name').html("''Frame Stage'");
+                    break;
+                case 'Client: Slab inspections':
+                    $('.stage_name').html("'Base/Slab Stage'");
+                    break;
+            }
         }else{
             $('.builder_report').show();
             switch(report_type){
