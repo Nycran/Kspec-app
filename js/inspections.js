@@ -1395,7 +1395,7 @@ var Inspections = function()
 		// Inspection Dates
         for(var i in self.DATEPICKER_FIELDS){
             var f = self.DATEPICKER_FIELDS[i];
-            if (inspection[f] != null && inspection[f].length){
+            if (inspection[f] != null && inspection[f].length && inspection[f] != '0000-00-00'){
                 var objDate = objApp.isoDateStrToDate(inspection[f]);
                 $("#inspection #" + f).val(objApp.formatUserDate(objDate));
             }else{
@@ -2523,6 +2523,7 @@ var Inspections = function()
 		{
 			e.preventDefault();
             self.showStep1();
+            self.createDatepicker();
 			return false;
 		});
 
