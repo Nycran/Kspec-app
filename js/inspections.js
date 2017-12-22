@@ -1236,6 +1236,7 @@ var Inspections = function()
         $('#frmInspectionDetails #type_of_building').val('Residential');
         $('#frmInspectionDetails #building_furnished').val(0);
         $('#frmInspectionDetails #property_piers').val('Not applicable as slab on ground construction');
+        $('#frmInspectionDetails #building_tenancy').val('Unoccupied');
 
         // Hide the camera button until the inspection is created.
         $(".inspectionDetails #btnCapturePhoto").hide();
