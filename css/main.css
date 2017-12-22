@@ -2447,3 +2447,5 @@ a.yesno_disabled:hover {
 .inspectionDetails.twocolumn .tabs .kspec-tab fieldset textarea{padding: 9px 15px;}
 .inspectionDetails.twocolumn .tabs .kspec-tab fieldset select,
 .inspectionDetails.twocolumn .tabs .kspec-tab fieldset .select2-container{width: 250px !important;}
+
+.gldp-flatwhite .monyear, .gldp-flatwhite .monyear select{width: auto;}

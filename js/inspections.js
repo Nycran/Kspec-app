@@ -1256,7 +1256,7 @@ var Inspections = function()
 		// Set the main heading
         objApp.setHeading("K-Spec Inspections");
         objApp.setSubHeading("Create a New Inspection");
-        objApp.setSubExtraHeading("Step 1 of 3", true);
+        objApp.setSubExtraHeading("First Step", true);
 
 		// Set the new inspection button to be active
 		objApp.setNavActive("#navNewInspection");
