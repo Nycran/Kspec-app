@@ -1394,8 +1394,12 @@ var Inspections = function()
 		// Inspection Dates
         for(var i in self.DATEPICKER_FIELDS){
             var f = self.DATEPICKER_FIELDS[i];
-            var objDate = objApp.isoDateStrToDate(inspection[f]);
-            $("#inspection #" + f).val(objApp.formatUserDate(objDate));
+            if (inspection[f] != null && inspection[f].length){
+                var objDate = objApp.isoDateStrToDate(inspection[f]);
+                $("#inspection #" + f).val(objApp.formatUserDate(objDate));
+            }else{
+                $("#inspection #" + f).val('');
+            }
         }
 
 		// Inspection start
@@ -1677,7 +1681,11 @@ var Inspections = function()
 
         for(var i in self.DATEPICKER_FIELDS){
             var field = self.DATEPICKER_FIELDS[i];
-            var objDate = objApp.userDateStrToDate($("#inspection #" + field).val());
+            var date = $("#inspection #" + field).val();
+            if (date)
+                var objDate = objApp.userDateStrToDate(date);
+            else
+                var objDate = new Date();
             if (typeof self.glDatePicker[field] != 'undefined'){
                 $.extend(self.glDatePicker[field].options,
                     {
@@ -1688,6 +1696,7 @@ var Inspections = function()
             }else{
                 self.glDatePicker[field] = $('#inspection #'+ field).glDatePicker({
                     cssName: 'flatwhite',
+                    showAlways: false,
                     selectedDate: objDate,
                     onClick: (function(el, cell, date, data) {
                         el.val(objApp.formatUserDate(date));
@@ -1704,7 +1713,6 @@ var Inspections = function()
                 }).glDatePicker(true);
             }
         }
-
 
         for(var i in self.TIMEPICKER_FIELDS){
             var field = self.TIMEPICKER_FIELDS[i];
@@ -2031,6 +2039,41 @@ var Inspections = function()
                 $("#inspection .builder_report").show();
                 $("#inspection .client_report").hide();
             }
+
+            for(var i in self.DATEPICKER_FIELDS){
+                var field = self.DATEPICKER_FIELDS[i];
+                var date = $("#inspection #" + field).val();
+                if (date)
+                    var objDate = objApp.userDateStrToDate(date);
+                else
+                    var objDate = new Date();
+                if (typeof self.glDatePicker[field] != 'undefined'){
+                    $.extend(self.glDatePicker[field].options,
+                        {
+                            selectedDate: objDate,
+                            firstDate: (new Date(objDate)._first())
+                        });
+                    self.glDatePicker[field].render();
+                }else{
+                    self.glDatePicker[field] = $('#inspection #'+ field).glDatePicker({
+                        cssName: 'flatwhite',
+                        showAlways: false,
+                        selectedDate: objDate,
+                        onClick: (function(el, cell, date, data) {
+                            el.val(objApp.formatUserDate(date));
+                            objApp.objInspection.checkSaveInspection();
+                        }),
+                        onBeforeClick: (function(el, cell) {
+                            if ($("#finalised").val() == 1)
+                            {
+                                alert("Sorry, you may not change this value.");
+                                return false;
+                            }
+                            return true;
+                        })
+                    }).glDatePicker(true);
+                }
+            }
         });
         
         $(".inspectionDetails #btnCapturePhoto").bind(objApp.touchEvent, function(e)
@@ -2316,11 +2359,6 @@ var Inspections = function()
                 return;
             }
 
-            if ($('#frmInspectionDetails #weather').val() == "") {
-                alert("Please enter weather conditions");
-                return;
-            }
-
             if ($('#frmInspectionDetails #lot_no').val() == "") {
                 alert("Please input a lot_no");
                 return;
@@ -2338,6 +2376,11 @@ var Inspections = function()
 
             if($('#frmInspectionDetails #state').val() == "") {
                 alert("Please select a state");
+                return;
+            }
+            if ($('#frmInspectionDetails #weather').val() == "") {
+                $('#tab-3').prop('checked', true);
+                alert("Please enter weather conditions");
                 return;
             }
             self.checkSaveInspection();
@@ -5227,7 +5270,7 @@ var Inspections = function()
             var date_insp = $("#frmInspectionDetails #" + f).val();
 
             // If the inspection date is NOT in ISO format we need to convert it
-            if((date_insp.length != 10) || (date_insp.substring(4, 5) != "-"))
+            if(date_insp.length && (date_insp.length != 10 || date_insp.substring(4, 5) != "-"))
             {
                 var objDate = objApp.userDateStrToDate(date_insp);
 
