@@ -1273,8 +1273,8 @@ var Inspections = function()
 		// Visit Date
 		var objDate = new Date();
 		$("#inspection #inspection_date").val(objApp.formatUserDate(objDate));
-        $("#inspection #agreement_date").val(objApp.formatUserDate(objDate));
-        $("#inspection #changed_agreement_date").val(objApp.formatUserDate(objDate));
+        $("#inspection #agreement_date").val('');
+        $("#inspection #changed_agreement_date").val('');
 
 		// Visit start
 		$("#inspection #start").val(objTimePicker.getTimeStr(objDate));
@@ -1690,7 +1690,7 @@ var Inspections = function()
                 $.extend(self.glDatePicker[field].options,
                     {
                         selectedDate: objDate,
-                        firstDate: (new Date(objDate)._first())
+                        firstDate: objDate!=null?(new Date(objDate)._first()):null
                     });
                 self.glDatePicker[field].render();
             }else{
@@ -1713,7 +1713,6 @@ var Inspections = function()
                 }).glDatePicker(true);
             }
         }
-
         for(var i in self.TIMEPICKER_FIELDS){
             var field = self.TIMEPICKER_FIELDS[i];
             var time = $("#inspection #" + field).val();
@@ -2040,40 +2039,7 @@ var Inspections = function()
                 $("#inspection .client_report").hide();
             }
 
-            for(var i in self.DATEPICKER_FIELDS){
-                var field = self.DATEPICKER_FIELDS[i];
-                var date = $("#inspection #" + field).val();
-                if (date)
-                    var objDate = objApp.userDateStrToDate(date);
-                else
-                    var objDate = new Date();
-                if (typeof self.glDatePicker[field] != 'undefined'){
-                    $.extend(self.glDatePicker[field].options,
-                        {
-                            selectedDate: objDate,
-                            firstDate: (new Date(objDate)._first())
-                        });
-                    self.glDatePicker[field].render();
-                }else{
-                    self.glDatePicker[field] = $('#inspection #'+ field).glDatePicker({
-                        cssName: 'flatwhite',
-                        showAlways: false,
-                        selectedDate: objDate,
-                        onClick: (function(el, cell, date, data) {
-                            el.val(objApp.formatUserDate(date));
-                            objApp.objInspection.checkSaveInspection();
-                        }),
-                        onBeforeClick: (function(el, cell) {
-                            if ($("#finalised").val() == 1)
-                            {
-                                alert("Sorry, you may not change this value.");
-                                return false;
-                            }
-                            return true;
-                        })
-                    }).glDatePicker(true);
-                }
-            }
+            self.createDatepicker();
         });
         
         $(".inspectionDetails #btnCapturePhoto").bind(objApp.touchEvent, function(e)
