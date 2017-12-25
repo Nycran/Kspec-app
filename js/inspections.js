@@ -55,6 +55,10 @@ var Inspections = function()
     this.DATEPICKER_FIELDS = ['agreement_date', 'changed_agreement_date', 'inspection_date'];
     this.TIMEPICKER_FIELDS = ['agreement_time', 'changed_agreement_time', 'inspection_time'];
 
+    this.isClientReport = 0;
+    this.subSteps = ['general-details', 'ex-inspection-details', 'agreement-details', 'restrictions-details', 'limitations-details', 'property-details'];
+    this.currentSubStepIndex = 0;
+
 	this.current_table = "inspectionitemphotos";
 	this.current_key = "inspection_id";
 	
@@ -754,6 +758,8 @@ var Inspections = function()
         }
         
         $("#inspection").removeClass("hidden");
+        $('#general-details').show();
+        self.currentSubStepIndex = 0;
         
 		// Set the main heading
         if (self.isEditing)
@@ -1257,7 +1263,7 @@ var Inspections = function()
 		// Set the main heading
         objApp.setHeading("K-Spec Inspections");
         objApp.setSubHeading("Create a New Inspection");
-        objApp.setSubExtraHeading("First Step", true);
+        objApp.setSubExtraHeading("1st Step", true);
 
 		// Set the new inspection button to be active
 		objApp.setNavActive("#navNewInspection");
@@ -1415,13 +1421,31 @@ var Inspections = function()
 		$("#inspection #initials").val(inspection.initials);
         
         $("#inspection #report_type").val(inspection.report_type);
+
         $("#inspection #report_type").trigger('change');
+        /* Trigger change manually */
+        if (inspection.report_type.indexOf('Client') != -1){
+            self.isClientReport = 1;
+            $("#inspection .client_report").not('.kspec-tab').show();
+            $("#inspection .builder_report").hide();
+        }else{
+            self.isClientReport = 0;
+            $("#inspection .builder_report").show();
+            $("#inspection .client_report").not('.kspec-tab').hide();
+        }
         self.checkIfNeedPhotos();
 
         $("#inspection .step1_field").each(function(index, item){
             var fieldname = $(this).attr('name');
             $(this).val(inspection[fieldname]);
         });
+
+        var areas_inspected_arr = inspection.areas_inspected.split(', ');
+        if (areas_inspected_arr.length){
+            for(var i = 0; i < areas_inspected_arr.length; i++){
+                $('.areas_inspected[value="'+areas_inspected_arr[i]+'"]').prop('checked', true);
+            }
+        }
 
         if (inspection.failed)
         {
@@ -1777,7 +1801,6 @@ var Inspections = function()
         $("#frmEmailTo").unbind();
         $("a.sendEmailButton").unbind();
         $("a.btnViewChart").unbind();
-        $("#report_type").unbind();
         $('#frmDefectDetails #observation').unbind();
         $("#inspectionList #btnAddInspection").unbind();
         $("#btnSendReport,#btnSendReport2,#btnSendReport3").unbind();
@@ -2033,11 +2056,13 @@ var Inspections = function()
         {
             self.checkIfNeedPhotos();
             if ($(this).val().indexOf('Client') != -1){
-                $("#inspection .client_report").show();
+                self.isClientReport = 1;
+                $("#inspection .client_report").not('.kspec-tab').show();
                 $("#inspection .builder_report").hide();
             }else{
+                self.isClientReport = 0;
                 $("#inspection .builder_report").show();
-                $("#inspection .client_report").hide();
+                $("#inspection .client_report").not('.kspec-tab').hide();
             }
 
             self.createDatepicker();
@@ -2313,6 +2338,7 @@ var Inspections = function()
 
         self.createDatepicker();
 
+        $(".inspectionDetails #btnStep1Next").unbind(objApp.touchEvent);
         $(".inspectionDetails #btnStep1Next").bind(objApp.touchEvent, function(e) {
 			e.preventDefault();
 
@@ -2351,9 +2377,23 @@ var Inspections = function()
                 return;
             }
             self.checkSaveInspection();
-            self.showStep2();
+            if (self.isClientReport){
+                self.showNextSubStep();
+            }else{
+                self.showStep2();
+            }
 			return false;
 		});
+
+        $(".inspectionDetails #btnStep1Back").unbind(objApp.touchEvent);
+        $(".inspectionDetails #btnStep1Back").bind(objApp.touchEvent, function(e) {
+            e.preventDefault();
+            self.checkSaveInspection();
+            if (self.isClientReport){
+                self.showPreSubStep();
+            }
+            return false;
+        });
 
         /**
         * Handle the event when the user hits the NExt button on the stage 2 event tracking
@@ -7303,6 +7343,35 @@ var Inspections = function()
 
     this.hasReasonInReport = function(report_type){
         return report_type == 'Builder: Quality inspections' || (report_type == 'Builder: PCI/Final inspections' && self.currentBuilderName() == 'Australasian');
+    }
+
+    this.showNextSubStep = function(){
+        $('.kspec-tab').hide();
+        if (self.currentSubStepIndex >= self.subSteps.length - 1){
+            self.showStep2();
+        }else{
+            self.currentSubStepIndex++;
+            $("#" + self.subSteps[self.currentSubStepIndex]).show();
+        }
+        if(self.currentSubStepIndex > 0){
+            $('.btnStep1Back').show();
+        }else{
+            $('.btnStep1Back').hide();
+        }
+    }
+    this.showPreSubStep = function(){
+        $('.kspec-tab').hide();
+        if (self.currentSubStepIndex <= 0){
+            self.currentSubStepIndex = 0;
+            $("#" + self.subSteps[0]).show();
+        }
+        self.currentSubStepIndex--;
+        $("#" + self.subSteps[self.currentSubStepIndex]).show();
+        if(self.currentSubStepIndex > 0){
+            $('.btnStep1Back').show();
+        }else{
+            $('.btnStep1Back').hide();
+        }
     }
 };
 
