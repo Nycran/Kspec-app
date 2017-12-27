@@ -1004,7 +1004,7 @@
                     </tbody>
                 </table>
             </div>
-            <div class="builder_need_4_steps builder_report" style="display: none;">
+            <div class="builder_need_4_steps builder_report builder_pci_hide builder_quality_hide" style="display: none;">
                 <input type="hidden" name="reached_stage" id="reached_stage" value="0"/>
                 <input type="hidden" name="is_tidy" id="is_tidy" value="0"/>
                 <input type="hidden" name="setback_front_correct" id="setback_front_correct" value="0"/>
@@ -1444,9 +1444,9 @@
                     </tr>
                     <tr class="coral_homes builder_report">
                         <td>Is further work to be arranged by supervisor to rectify issues?</td>
-                        <td>
-                            <a data-id="btn_arranged_by_supervisor_yes" class="left yesno_enabled btn_arranged_by_supervisor_yes" href="javascript:void(0);">Yes</a>
-                            <a style="margin-left: 10px;" id="btn_arranged_by_supervisor_no" class="left yesno_disabled btn_arranged_by_supervisor_no" href="javascript:void(0);">No</a>
+                        <td colspan="2">
+                            <a data-id="arranged_by_supervisor" class="left yesno_enabled btn_arranged_by_supervisor_yes" href="javascript:void(0);">Yes</a>
+                            <a style="margin-left: 10px;" data-id="arranged_by_supervisor" class="left yesno_disabled btn_arranged_by_supervisor_no" href="javascript:void(0);">No</a>
                         </td>
                     </tr>
                     <tr class="client_report">

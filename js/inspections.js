@@ -1440,10 +1440,12 @@ var Inspections = function()
             $(this).val(inspection[fieldname]);
         });
 
-        var areas_inspected_arr = inspection.areas_inspected.split(', ');
-        if (areas_inspected_arr.length){
-            for(var i = 0; i < areas_inspected_arr.length; i++){
-                $('.areas_inspected[value="'+areas_inspected_arr[i]+'"]').prop('checked', true);
+        if(inspection.areas_inspected){
+            var areas_inspected_arr = inspection.areas_inspected.split(', ');
+            if (areas_inspected_arr.length){
+                for(var i = 0; i < areas_inspected_arr.length; i++){
+                    $('.areas_inspected[value="'+areas_inspected_arr[i]+'"]').prop('checked', true);
+                }
             }
         }
 
@@ -7274,7 +7276,6 @@ var Inspections = function()
     }
 
     this.showReportElements = function(report_type){
-        console.log(report_type);
         $('.builder_slab, .builder_frame, .builder_australasian, .builder_pci, .builder_quality, .builder_report, .client_report').hide();
         if (report_type.indexOf('Client') != -1){
             $('.client_report').show();
@@ -7310,6 +7311,7 @@ var Inspections = function()
                     $('.builder_slab').show();
                     break;
                 case 'Builder: PCI/Final inspections':
+                    $('.builder_pci_hide').hide();
                     $('.stage_name').html("'Practical Completion'");
                     if (self.currentBuilderName() == 'Australasian'){
                         if(objUtils.isMobileDevice())
@@ -7324,6 +7326,7 @@ var Inspections = function()
                     break;
                 case 'Builder: Quality inspections':
                     $('.stage_name').html("'Practical Completion'");
+                    $('.builder_quality_hide').hide();
                     $('.builder_quality').show();
                     break;
             }
