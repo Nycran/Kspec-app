@@ -1750,7 +1750,8 @@ var Inspections = function()
                 self.timePicker[field] = $('#inspection #'+ field).datetimepicker({
                     datepicker: false,
                     lazyInit: true,
-                    format:'H:i'
+                    format:'H:i',
+                    step: 15
                 });
             }
         }
