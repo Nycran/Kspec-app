@@ -1514,6 +1514,7 @@ var Inspections = function()
 		// Setup client and site popselectors
 		this.setupPopselectors();
 
+        $("#defectScrollWrapper").hide();
 		// Load the defect items for this inspection
 		self.loadInspectionItems();
 
@@ -5665,7 +5666,7 @@ var Inspections = function()
 				html += '</table>';
 
 				$("#defectScrollWrapper").html(html);
-
+                $("#defectScrollWrapper").show();
 
 				if(self.hasReasonInReport(objApp.keys.report_type)) {
 					self.setTableWidths2('tblDefectListingHeader', 'tblDefectListing', 6);
@@ -7350,7 +7351,7 @@ var Inspections = function()
     }
 
     this.hasReasonInReport = function(report_type){
-        return report_type == 'Builder: Quality inspections' || (report_type == 'Builder: PCI/Final inspections' && self.currentBuilderName() == 'Australasian');
+        return report_type == 'Builder: Quality inspections' || report_type == 'Builder: PCI/Final inspections' || report_type == 'Client: PCI/Final inspections';
     }
 
     this.showNextSubStep = function(){
