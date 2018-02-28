@@ -1410,7 +1410,8 @@ var Inspections = function()
             }else{
                 $("#inspection #" + f).val('');
             }
-            self.glDatePicker[f].render();
+            if (typeof self.glDatePicker[f] != 'undefined')
+                self.glDatePicker[f].render();
         }
 
 		// Inspection start
@@ -7360,8 +7361,10 @@ var Inspections = function()
             self.currentSubStepIndex++;
             $("#" + self.subSteps[self.currentSubStepIndex]).show();
             if (self.subSteps[self.currentSubStepIndex] == 'agreement-details'){
-                self.glDatePicker['agreement_date'].render();
-                self.glDatePicker['changed_agreement_date'].render();
+                if (typeof self.glDatePicker['agreement_date'] != 'undefined')
+                    self.glDatePicker['agreement_date'].render();
+                if (typeof self.glDatePicker['changed_agreement_date'] != 'undefined')
+                    self.glDatePicker['changed_agreement_date'].render();
             }
         }
         if(self.currentSubStepIndex > 0){
