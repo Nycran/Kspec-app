@@ -1244,6 +1244,9 @@ var Inspections = function()
         $('#frmInspectionDetails #property_piers').val('Not applicable as slab on ground construction');
         $('#frmInspectionDetails #building_tenancy').val('Unoccupied');
 
+        $('#general-details').show();
+        $('.client_report').hide();
+
         // Hide the camera button until the inspection is created.
         $(".inspectionDetails #btnCapturePhoto").hide();
 
@@ -1407,6 +1410,7 @@ var Inspections = function()
             }else{
                 $("#inspection #" + f).val('');
             }
+            self.glDatePicker[f].render();
         }
 
 		// Inspection start
@@ -1761,7 +1765,6 @@ var Inspections = function()
     {
         // Unbind any previously bound events.
 		$("#btnAddDefect").unbind();
-		$("#inspection #inspection_date").unbind();
 		$("#frmDefectDetails #observation").unbind();
 		//$("#inspection #start").unbind();
 		//$("#inspection #finish").unbind();
@@ -7356,6 +7359,10 @@ var Inspections = function()
         }else{
             self.currentSubStepIndex++;
             $("#" + self.subSteps[self.currentSubStepIndex]).show();
+            if (self.subSteps[self.currentSubStepIndex] == 'agreement-details'){
+                self.glDatePicker['agreement_date'].render();
+                self.glDatePicker['changed_agreement_date'].render();
+            }
         }
         if(self.currentSubStepIndex > 0){
             $('.btnStep1Back').show();
