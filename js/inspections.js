@@ -7318,14 +7318,14 @@ var Inspections = function()
                         $('.builder_australasian').show();
                         if(objUtils.isMobileDevice())
                         {
-                            var scroller = new IScroll5('#installedItemsScrollWrapper2', { click: true, hScrollbar: false, vScrollbar: false, scrollbarClass: 'myScrollbarSm'});
+                            var scroller = new IScroll('#installedItemsScrollWrapper2', { click: true, hScrollbar: false, vScrollbar: false, scrollbarClass: 'myScrollbarSm'});
                         }
                     }
                     else{
                         $('.builder_pci').show();
                         if(objUtils.isMobileDevice())
                         {
-                            self.scroller = new IScroll5('#installedItemsScrollWrapper', { click: true, hScrollbar: false, vScrollbar: false, scrollbarClass: 'myScrollbarSm'});
+                            self.scroller = new IScroll('#installedItemsScrollWrapper', { click: true, hScrollbar: false, vScrollbar: false, scrollbarClass: 'myScrollbarSm'});
                         }
                     }
                     break;
@@ -7335,7 +7335,7 @@ var Inspections = function()
                     $('.builder_quality').show();
                     if(objUtils.isMobileDevice())
                     {
-                        self.scroller = new IScroll5('#installedItemsScrollWrapper', { click: true, hScrollbar: false, vScrollbar: false, scrollbarClass: 'myScrollbarSm'});
+                        self.scroller = new IScroll('#installedItemsScrollWrapper', { click: true, hScrollbar: false, vScrollbar: false, scrollbarClass: 'myScrollbarSm'});
                     }
                     break;
             }
