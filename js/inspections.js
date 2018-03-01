@@ -979,10 +979,18 @@ var Inspections = function()
             self.setValueYesNoItems(self.inspection);
         } 
 
-
         $("#inspectionStep4").removeClass("hidden");
 
         self.setTableWidths2('tblRateListingHeader', 'tblRateListing', 2, 500);
+
+        if(objUtils.isMobileDevice())
+        {
+            if ($('.builder_australasian').is(':visible')){
+                self.scroller = new IScroll('#installedItemsScrollWrapper2', { click: true, hScrollbar: false, vScrollbar: false, scrollbarClass: 'myScrollbarSm'});
+            }else{
+                self.scroller = new IScroll('#installedItemsScrollWrapper', { click: true, hScrollbar: false, vScrollbar: false, scrollbarClass: 'myScrollbarSm'});
+            }
+        }
         
     }
 
@@ -2754,7 +2762,7 @@ var Inspections = function()
 
                             var downloadURL = objApp.apiURL + "reports/print_report/" + report_type + '/' + encodeURIComponent(objApp.keys.inspection_id) + '/' + encodeURIComponent(objApp.keys.reinspection_id) + "?token=" + token;
                             if(objApp.phonegapBuild) {
-                                downloadURL = "https://docs.google.com/viewer?url=" + encodeURIComponent(downloadURL) + '&embedded=true';
+                                downloadURL = "https://docs.google.com/viewer?url=" + downloadURL + '&embedded=true';
                                 var ref = window.open(downloadURL, '_blank', 'location=yes');
                             } else {
                                 $.download(downloadURL, [], "post");
@@ -7316,27 +7324,15 @@ var Inspections = function()
                     $('.stage_name').html("'Practical Completion'");
                     if (self.currentBuilderName() == 'Australasian'){
                         $('.builder_australasian').show();
-                        if(objUtils.isMobileDevice())
-                        {
-                            var scroller = new IScroll('#installedItemsScrollWrapper2', { click: true, hScrollbar: false, vScrollbar: false, scrollbarClass: 'myScrollbarSm'});
-                        }
                     }
                     else{
                         $('.builder_pci').show();
-                        if(objUtils.isMobileDevice())
-                        {
-                            self.scroller = new IScroll('#installedItemsScrollWrapper', { click: true, hScrollbar: false, vScrollbar: false, scrollbarClass: 'myScrollbarSm'});
-                        }
                     }
                     break;
                 case 'Builder: Quality inspections':
                     $('.stage_name').html("'Practical Completion'");
                     $('.builder_quality_hide').hide();
                     $('.builder_quality').show();
-                    if(objUtils.isMobileDevice())
-                    {
-                        self.scroller = new IScroll('#installedItemsScrollWrapper', { click: true, hScrollbar: false, vScrollbar: false, scrollbarClass: 'myScrollbarSm'});
-                    }
                     break;
             }
         }
