@@ -963,11 +963,6 @@ var Inspections = function()
             $('#inspectionStep4 > .bottomBtns > .btnContainer.right > a#btnStep4Next').html('Next');
         }
 
-        if(objUtils.isMobileDevice())
-        {
-            self.scroller = new IScroll5('#installedItemsScrollWrapper', { click: true, hScrollbar: false, vScrollbar: false, scrollbarClass: 'myScrollbarSm'});
-        }
-
         objApp.clearMain();
 
         if(objApp.keys.reinspection_id != "") {
@@ -7320,20 +7315,28 @@ var Inspections = function()
                     $('.builder_pci_hide').hide();
                     $('.stage_name').html("'Practical Completion'");
                     if (self.currentBuilderName() == 'Australasian'){
+                        $('.builder_australasian').show();
                         if(objUtils.isMobileDevice())
                         {
                             var scroller = new IScroll5('#installedItemsScrollWrapper2', { click: true, hScrollbar: false, vScrollbar: false, scrollbarClass: 'myScrollbarSm'});
                         }
-                        $('.builder_australasian').show();
                     }
                     else{
                         $('.builder_pci').show();
+                        if(objUtils.isMobileDevice())
+                        {
+                            self.scroller = new IScroll5('#installedItemsScrollWrapper', { click: true, hScrollbar: false, vScrollbar: false, scrollbarClass: 'myScrollbarSm'});
+                        }
                     }
                     break;
                 case 'Builder: Quality inspections':
                     $('.stage_name').html("'Practical Completion'");
                     $('.builder_quality_hide').hide();
                     $('.builder_quality').show();
+                    if(objUtils.isMobileDevice())
+                    {
+                        self.scroller = new IScroll5('#installedItemsScrollWrapper', { click: true, hScrollbar: false, vScrollbar: false, scrollbarClass: 'myScrollbarSm'});
+                    }
                     break;
             }
         }
