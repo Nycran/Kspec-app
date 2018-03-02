@@ -307,7 +307,6 @@ var Login = function()
 		blockElement("body");
 		if (typeof document.activeElement != 'undefined')
 			document.activeElement.blur();
-        alert(objApp.apiURL + "account/do_login");
 		$.post(objApp.apiURL + "account/do_login", params, function(data)
 		{
 	
