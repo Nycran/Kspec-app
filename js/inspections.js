@@ -2131,15 +2131,7 @@ var Inspections = function()
 				{
 					// Setup a new image object, using the photo data as the image source
 					objImage = new Image();
-
-                    if(!objApp.phonegapBuild)
-                    {
-					    objImage.src = 'data:image/jpeg;base64,' + photoData;
-                    }
-                    else
-                    {
-					    objImage.src = photoData;
-                    }
+                    objImage.src = 'data:image/jpeg;base64,' + photoData;
 
 					//notes = "";
 
@@ -2271,6 +2263,19 @@ var Inspections = function()
                 if(e.target.id=='addPhoto-btn'){
                     if(objApp.phonegapBuild)
                     {
+                        navigator.camera.getPicture(function(imageData)
+                            {
+                                editPhoto2(imageData);
+
+                            }, function(message)
+                            {
+                                alert("Image load failed because: " + message);
+                            },
+                            {
+                                quality: 50,
+                                destinationType: Camera.DestinationType.DATA_URL
+                            });
+                        /*
                         var use_image = 0;
                         // Invoke the camera API to allow the user to take a photo
                         var photo =function(){
@@ -2293,7 +2298,7 @@ var Inspections = function()
                             if (!use_image)
                                 alert('No captured image');
                         }
-
+                        */
                     }
                     else
                     {
@@ -2318,7 +2323,7 @@ var Inspections = function()
                             },
                             {
                                 quality: 50,
-                                destinationType: Camera.DestinationType.FILE_URI,
+                                destinationType: Camera.DestinationType.DATA_URL,
                                 sourceType : Camera.PictureSourceType.PHOTOLIBRARY,
                                 correctOrientation: true
                             });
