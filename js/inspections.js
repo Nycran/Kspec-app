@@ -52,11 +52,11 @@ var Inspections = function()
     this.MAX_REPORT_PHOTOS = 12;
     this.TOTAL_OMISSIONS_ITEMS = 34;
     this.YES_NO_FIELDS = ['reached_stage', 'is_tidy', 'setback_front_correct', 'setback_sides_correct', 'strip_footing_approx_position_correct', 'pad_footing_approx_position_correct', 'approx_room_sizes_correct', 'arranged_by_supervisor', 'has_plumbing', 'has_hot_water', 'has_gas', 'has_phone', 'has_smoke_detector'];
-    this.DATEPICKER_FIELDS = ['agreement_date', 'changed_agreement_date', 'inspection_date'];
-    this.TIMEPICKER_FIELDS = ['agreement_time', 'changed_agreement_time', 'inspection_time'];
+    this.DATEPICKER_FIELDS = ['inspection_date'];
+    this.TIMEPICKER_FIELDS = ['inspection_time'];
 
     this.isClientReport = 0;
-    this.subSteps = ['general-details', 'ex-inspection-details', 'agreement-details', 'restrictions-details', 'limitations-details', 'property-details'];
+    this.subSteps = ['general-details', 'ex-inspection-details', 'restrictions-details', 'limitations-details', 'property-details'];
     this.currentSubStepIndex = 0;
 
 	this.current_table = "inspectionitemphotos";
@@ -1710,7 +1710,7 @@ var Inspections = function()
 	this.handleStateChanged = function()
 	{
 		// Save the inspection if possible
-		self.checkSaveInspection();
+		self.checkSaveInspection(0);
 	}
 
     this.createDatepicker = function(){
@@ -1736,7 +1736,7 @@ var Inspections = function()
                     selectedDate: objDate,
                     onClick: (function(el, cell, date, data) {
                         el.val(objApp.formatUserDate(date));
-                        objApp.objInspection.checkSaveInspection();
+                        objApp.objInspection.checkSaveInspection(0);
                     }),
                     onBeforeClick: (function(el, cell) {
                         if ($("#finalised").val() == 1)
@@ -2392,7 +2392,7 @@ var Inspections = function()
                 alert("Please enter weather conditions");
                 return;
             }
-            self.checkSaveInspection();
+            self.checkSaveInspection(0);
             if (self.isClientReport){
                 self.showNextSubStep();
             }else{
@@ -2404,7 +2404,7 @@ var Inspections = function()
         $(".inspectionDetails #btnStep1Back").unbind(objApp.touchEvent);
         $(".inspectionDetails #btnStep1Back").bind(objApp.touchEvent, function(e) {
             e.preventDefault();
-            self.checkSaveInspection();
+            self.checkSaveInspection(0);
             if (self.isClientReport){
                 self.showPreSubStep();
             }
@@ -5257,8 +5257,10 @@ var Inspections = function()
 	* details form.  It checks if enough information has been provided and if so, adds/updates the
 	* inspection.
 	*/
-	this.checkSaveInspection = function()
+	this.checkSaveInspection = function(blockBody)
 	{
+        if (typeof blockBody == 'undefined')
+            blockBody = 1;
 	    // Validate the form
 	    if(!$("#frmInspectionDetails").validate().form())
 	    {
@@ -5319,7 +5321,8 @@ var Inspections = function()
 	    // Ready to save
 	    $("#frmInspectionDetails input").blur();
 
-	    blockElement("body");
+        if (blockBody)
+	        blockElement("body");
 
 	    // Invoke the autoSave method after a short delay.
 	    setTimeout(function()
@@ -7365,12 +7368,6 @@ var Inspections = function()
         }else{
             self.currentSubStepIndex++;
             $("#" + self.subSteps[self.currentSubStepIndex]).show();
-            if (self.subSteps[self.currentSubStepIndex] == 'agreement-details'){
-                if (typeof self.glDatePicker['agreement_date'] != 'undefined')
-                    self.glDatePicker['agreement_date'].render();
-                if (typeof self.glDatePicker['changed_agreement_date'] != 'undefined')
-                    self.glDatePicker['changed_agreement_date'].render();
-            }
         }
         if(self.currentSubStepIndex > 0){
             $('.btnStep1Back').show();
