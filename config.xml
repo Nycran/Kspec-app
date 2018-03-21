@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <widget xmlns = "http://www.w3.org/ns/widgets"
         xmlns:gap = "http://phonegap.com/ns/1.0"
-        id = "au.com.simb.Kspec"
+        id = "au.com.simb.Kspec2"
         version = "1.0">
-    <name>K-Spec</name>
+    <name>K-Spec No WKWebView</name>
 
     <description>
         Conduct onsite buidling inspections with K-Spec and produce beautiful reports that your clients will love.
