@@ -934,14 +934,11 @@ var Inspections = function()
     {
         self.setStep(4);
         $('.builder_need_4_steps').hide();
-        $('.coral_homes').hide();
+
         var inspection_property = "Lot " + self.inspection.lot_no + ", " + self.inspection.address + ", " + self.inspection.suburb;
         if (self.inspection.report_type.indexOf('Client') != -1){
             objApp.setSubHeading("Inspection @ " + inspection_property);
         }else if (self.need5Steps(self.inspection.report_type)){
-            if (self.currentBuilderName() == 'Coral Homes'){
-                $('.coral_homes').show();
-            }
             objApp.setSubHeading("OMISSIONS (items installed at time of the inspection)");
         }else if(self.inspection.report_type == 'Builder: PCI/Final inspections'){
             objApp.setSubHeading("Inspection @ " + inspection_property);
@@ -950,6 +947,11 @@ var Inspections = function()
             objApp.setSubHeading("Inspection @ " + inspection_property);
         }
         self.showReportElements(self.inspection.report_type);
+        if (self.currentBuilderName() == 'Coral Homes'){
+            $('.coral_homes').show();
+        }else{
+            $('.coral_homes').hide();
+        }
 
         //if((self.inspection.report_type == "Builder: PCI/Final inspections" && objApp.keys.reinspection_id != "") || self.inspection.report_type == "Fix / Plaster Inspection") {
         if( (self.need5Steps(self.inspection.report_type) || self.need4Steps(self.inspection.report_type)) && objApp.keys.reinspection_id != "") {
@@ -7293,7 +7295,7 @@ var Inspections = function()
     }
 
     this.showReportElements = function(report_type){
-        $('.builder_slab, .builder_frame, .builder_australasian, .builder_pci, .builder_quality, .builder_report, .client_report').hide();
+        $('.builder_slab, .builder_frame, .builder_australasian, .builder_pci, .client_pci, .builder_quality, .builder_report, .client_report').hide();
         if (report_type.indexOf('Client') != -1){
             $('.client_report').show();
             switch(report_type){
@@ -7308,6 +7310,9 @@ var Inspections = function()
                     break;
                 case 'Client: Slab inspections':
                     $('.stage_name').html("'Base/Slab Stage'");
+                    break;
+                case 'Client: PCI/Final inspections':
+                    $('.client_pci').show();
                     break;
             }
         }else{
@@ -7330,7 +7335,7 @@ var Inspections = function()
                 case 'Builder: PCI/Final inspections':
                     $('.builder_pci_hide').hide();
                     $('.stage_name').html("'Practical Completion'");
-                    if (self.currentBuilderName() == 'Australasian'){
+                    if (self.currentBuilderName() == 'Australasian Homes'){
                         $('.builder_australasian').show();
                     }
                     else{
