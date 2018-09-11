@@ -934,14 +934,11 @@ var Inspections = function()
     {
         self.setStep(4);
         $('.builder_need_4_steps').hide();
-        $('.coral_homes').hide();
+
         var inspection_property = "Lot " + self.inspection.lot_no + ", " + self.inspection.address + ", " + self.inspection.suburb;
         if (self.inspection.report_type.indexOf('Client') != -1){
             objApp.setSubHeading("Inspection @ " + inspection_property);
         }else if (self.need5Steps(self.inspection.report_type)){
-            if (self.currentBuilderName() == 'Coral Homes'){
-                $('.coral_homes').show();
-            }
             objApp.setSubHeading("OMISSIONS (items installed at time of the inspection)");
         }else if(self.inspection.report_type == 'Builder: PCI/Final inspections'){
             objApp.setSubHeading("Inspection @ " + inspection_property);
@@ -950,6 +947,11 @@ var Inspections = function()
             objApp.setSubHeading("Inspection @ " + inspection_property);
         }
         self.showReportElements(self.inspection.report_type);
+        if (self.currentBuilderName() == 'Coral Homes'){
+            $('.coral_homes').show();
+        }else{
+            $('.coral_homes').hide();
+        }
 
         //if((self.inspection.report_type == "Builder: PCI/Final inspections" && objApp.keys.reinspection_id != "") || self.inspection.report_type == "Fix / Plaster Inspection") {
         if( (self.need5Steps(self.inspection.report_type) || self.need4Steps(self.inspection.report_type)) && objApp.keys.reinspection_id != "") {
@@ -1781,6 +1783,7 @@ var Inspections = function()
         $(".inspectionDetails .passed, .inspectionDetails .failed").unbind();
         $(".inspectionDetails #keywords").unbind();
         $(".inspectionDetails #tblDefectListingHeader th").unbind();
+        $(".inspectionDetails .gotoStep4").unbind();
         $(".inspectionDetails .gotoStep3").unbind();
         $(".inspectionDetails .gotoStep2").unbind();
         $(".inspectionDetails .gotoStep1").unbind();
@@ -2550,19 +2553,21 @@ var Inspections = function()
                 self.showStep5();
             }
             else {
-                objApp.cleanup();
-
-                self.setReturnInspectionID("");
-
-                self.setupInspections();
-                objApp.context = "inspections";
-                objApp.setBodyClass('inspections');
+                /* Waiting for saving inspection */
+                setTimeout(function(){
+                    objApp.cleanup();
+                    self.setReturnInspectionID("");
+                    self.setupInspections();
+                    objApp.context = "inspections";
+                    objApp.setBodyClass('inspections');
+                }, 500);
             }
 
             return false;
         });
 
         // Handle the event when the user clicks on the next button from Step 4
+        $(".inspectionDetails #btnStep5Next").unbind(objApp.touchEvent);
         $(".inspectionDetails #btnStep5Next").bind(objApp.touchEvent, function(e) {
 			e.preventDefault();
 
@@ -3939,7 +3944,7 @@ var Inspections = function()
                                             delete_node = "";
                                         }
 
-				    					html += '<li>' + delete_node + '<a rel="' + row.id + '"><img width="90" height="60" src="data:image/jpeg;base64,' + evt.target.result + '" /></a><div class="imageNotes">' + row.notes + '</div></li>';
+				    					html += '<li>' + delete_node + '<a rel="' + row.id + '"><img width="90" height="60" src="data:image/jpeg;base64,' + (evt.target && evt.target.result?evt.target.result:row.photodata_tmb) + '" /></a><div class="imageNotes">' + row.notes + '</div></li>';
 						    			num_items++;
 
 										r++;
@@ -4573,8 +4578,6 @@ var Inspections = function()
                     
                     // inspection / reinspection id
                     var id = $(this).attr('data-id');
-                    objApp.keys.reinspection_id = id;
-                    self.setReturnReinspectionID(id);
 
                     // Close the reveal window
                     //$('#historyReinspection a.close-reveal-modal').click();
@@ -4584,6 +4587,9 @@ var Inspections = function()
 
                     // If it's a reinspection, show the reinspection screen, otherwise show the editInspection screen.
                     if($(this).hasClass("reinspection")) {
+                        objApp.keys.reinspection_id = id;
+                        self.setReturnReinspectionID(id);
+
                         // Load the reinspection record
                         objDBUtils.loadRecord("reinspections", id, function(param, reinspection) {
                             if(!reinspection) {
@@ -4598,6 +4604,9 @@ var Inspections = function()
                         }, "");
 
                     } else {
+                        objApp.keys.reinspection_id = '';
+                        self.setReturnReinspectionID('');
+
                         // Load the inspection record
                         objDBUtils.loadRecord("inspections", id, function(param, inspection) {
                             if(!inspection) {
@@ -5327,6 +5336,7 @@ var Inspections = function()
 	    // Invoke the autoSave method after a short delay.
 	    setTimeout(function()
 	    {
+	        console.log(objApp.keys.inspection_id);
 			objDBUtils.autoSave("inspections", objApp.keys.inspection_id, "frmInspectionDetails", function()
 			{
 			    // If the id was not set and we just did an update, get the id
@@ -6083,6 +6093,7 @@ var Inspections = function()
         }, "");
 
         // Update the photo icon with the correct number of photos.
+        $("#reinspection #btnCapturePhoto").show();
         this.refreshReinspectionPhotoCount(reinspection_id);
 
         $("#btnReinspectDelete").unbind();
@@ -7293,7 +7304,7 @@ var Inspections = function()
     }
 
     this.showReportElements = function(report_type){
-        $('.builder_slab, .builder_frame, .builder_australasian, .builder_pci, .builder_quality, .builder_report, .client_report').hide();
+        $('.builder_slab, .builder_frame, .builder_australasian, .builder_pci, .client_pci, .builder_quality, .builder_report, .client_report').hide();
         if (report_type.indexOf('Client') != -1){
             $('.client_report').show();
             switch(report_type){
@@ -7308,6 +7319,9 @@ var Inspections = function()
                     break;
                 case 'Client: Slab inspections':
                     $('.stage_name').html("'Base/Slab Stage'");
+                    break;
+                case 'Client: PCI/Final inspections':
+                    $('.client_pci').show();
                     break;
             }
         }else{
@@ -7330,7 +7344,7 @@ var Inspections = function()
                 case 'Builder: PCI/Final inspections':
                     $('.builder_pci_hide').hide();
                     $('.stage_name').html("'Practical Completion'");
-                    if (self.currentBuilderName() == 'Australasian'){
+                    if (self.currentBuilderName() == 'Australasian Homes'){
                         $('.builder_australasian').show();
                     }
                     else{
