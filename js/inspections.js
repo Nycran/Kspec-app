@@ -6085,6 +6085,7 @@ var Inspections = function()
         }, "");
 
         // Update the photo icon with the correct number of photos.
+        $("#reinspection #btnCapturePhoto").show();
         this.refreshReinspectionPhotoCount(reinspection_id);
 
         $("#btnReinspectDelete").unbind();
