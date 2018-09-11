@@ -2553,13 +2553,14 @@ var Inspections = function()
                 self.showStep5();
             }
             else {
-                objApp.cleanup();
-
-                self.setReturnInspectionID("");
-
-                self.setupInspections();
-                objApp.context = "inspections";
-                objApp.setBodyClass('inspections');
+                /* Waiting for saving inspection */
+                setTimeout(function(){
+                    objApp.cleanup();
+                    self.setReturnInspectionID("");
+                    self.setupInspections();
+                    objApp.context = "inspections";
+                    objApp.setBodyClass('inspections');
+                }, 500);
             }
 
             return false;
