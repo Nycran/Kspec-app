@@ -1783,6 +1783,7 @@ var Inspections = function()
         $(".inspectionDetails .passed, .inspectionDetails .failed").unbind();
         $(".inspectionDetails #keywords").unbind();
         $(".inspectionDetails #tblDefectListingHeader th").unbind();
+        $(".inspectionDetails .gotoStep4").unbind();
         $(".inspectionDetails .gotoStep3").unbind();
         $(".inspectionDetails .gotoStep2").unbind();
         $(".inspectionDetails .gotoStep1").unbind();
@@ -2565,6 +2566,7 @@ var Inspections = function()
         });
 
         // Handle the event when the user clicks on the next button from Step 4
+        $(".inspectionDetails #btnStep5Next").unbind(objApp.touchEvent);
         $(".inspectionDetails #btnStep5Next").bind(objApp.touchEvent, function(e) {
 			e.preventDefault();
 
