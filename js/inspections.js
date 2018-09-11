@@ -4577,8 +4577,6 @@ var Inspections = function()
                     
                     // inspection / reinspection id
                     var id = $(this).attr('data-id');
-                    objApp.keys.reinspection_id = id;
-                    self.setReturnReinspectionID(id);
 
                     // Close the reveal window
                     //$('#historyReinspection a.close-reveal-modal').click();
@@ -4588,6 +4586,9 @@ var Inspections = function()
 
                     // If it's a reinspection, show the reinspection screen, otherwise show the editInspection screen.
                     if($(this).hasClass("reinspection")) {
+                        objApp.keys.reinspection_id = id;
+                        self.setReturnReinspectionID(id);
+
                         // Load the reinspection record
                         objDBUtils.loadRecord("reinspections", id, function(param, reinspection) {
                             if(!reinspection) {
@@ -4602,6 +4603,9 @@ var Inspections = function()
                         }, "");
 
                     } else {
+                        objApp.keys.reinspection_id = '';
+                        self.setReturnReinspectionID('');
+
                         // Load the inspection record
                         objDBUtils.loadRecord("inspections", id, function(param, inspection) {
                             if(!inspection) {
