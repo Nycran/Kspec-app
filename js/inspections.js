@@ -5335,6 +5335,7 @@ var Inspections = function()
 	    // Invoke the autoSave method after a short delay.
 	    setTimeout(function()
 	    {
+	        console.log(objApp.keys.inspection_id);
 			objDBUtils.autoSave("inspections", objApp.keys.inspection_id, "frmInspectionDetails", function()
 			{
 			    // If the id was not set and we just did an update, get the id
