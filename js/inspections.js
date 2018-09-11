@@ -3943,7 +3943,7 @@ var Inspections = function()
                                             delete_node = "";
                                         }
 
-				    					html += '<li>' + delete_node + '<a rel="' + row.id + '"><img width="90" height="60" src="data:image/jpeg;base64,' + evt.target.result + '" /></a><div class="imageNotes">' + row.notes + '</div></li>';
+				    					html += '<li>' + delete_node + '<a rel="' + row.id + '"><img width="90" height="60" src="data:image/jpeg;base64,' + (evt.target && evt.target.result?evt.target.result:row.photodata_tmb) + '" /></a><div class="imageNotes">' + row.notes + '</div></li>';
 						    			num_items++;
 
 										r++;
