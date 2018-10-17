@@ -19,7 +19,8 @@ function App()
     //this.apiURL = "http://kspec.simb.com.au/api/";
     this.apiURL = "http://kspec.wearebuilding.net/api/";
 	this.phonegapBuild = true; 	// Set this to true when phonegap is the target
-	this.version = '1.0';				// Identifies the app version to the server
+	this.version = '2.0';				// Identifies the app version to the server
+    this.patch = '2';
 	this.versionStatus = "Production";
 	this.localMode = false;
 	this.context = "";

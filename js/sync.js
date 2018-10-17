@@ -236,6 +236,7 @@ function Sync()
         parameters['email'] = localStorage.getItem("email");
         parameters['password'] = localStorage.getItem("password");
         parameters['version'] = objApp.version;
+        parameters['patch'] = objApp.patch;
         parameters['data'] = objDBUtils.data;
         parameters['anticache'] = Math.floor(Math.random() * 999999);
         parameters['start_time'] = objApp.objSync.startTime;
@@ -540,6 +541,7 @@ function Sync()
         parameters['email'] = localStorage.getItem("email");
         parameters['password'] = localStorage.getItem("password");
         parameters['version'] = objApp.version;
+        parameters['patch'] = objApp.patch;
         parameters['data'] = $.base64('encode', self.validData(objDBUtils.data));
         parameters['anticache'] = Math.floor(Math.random() * 999999);
         parameters['start_time'] = objApp.objSync.startTime;

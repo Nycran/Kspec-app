@@ -2307,7 +2307,7 @@ a.yesno_enabled
     font-weight: normal;
     line-height: 1em;
     margin: 0 0 0px;
-    padding: 10px 60px;
+    padding: 10px 20px;
     text-align: center;
     text-decoration: none;
     text-shadow: #007b87 0px 1px 0;
@@ -2332,7 +2332,7 @@ a.yesno_disabled
     font-weight: normal;
     line-height: 1em;
     margin: 0 0 0px;
-    padding: 10px 60px;
+    padding: 10px 20px;
     text-align: center;
     text-decoration: none;
     text-shadow: #FFFFFF 0px 1px 0;
@@ -2451,3 +2451,5 @@ a.yesno_disabled:hover {
 .inspectionDetails.twocolumn .tabs .kspec-tab fieldset .select2-container{width: 250px !important;}
 
 .gldp-flatwhite .monyear, .gldp-flatwhite .monyear select{width: auto;}
+
+#frmInstalldItems input{padding: 8px 0; text-indent: 5px; font-size: 16px;}

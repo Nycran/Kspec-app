@@ -51,6 +51,7 @@ var Inspections = function()
     this.keySortArray = false;
     this.MAX_REPORT_PHOTOS = 12;
     this.TOTAL_OMISSIONS_ITEMS = 34;
+    this.TOTAL_OMISSIONS_NOTES = 34;
     this.YES_NO_FIELDS = ['reached_stage', 'is_tidy', 'setback_front_correct', 'setback_sides_correct', 'strip_footing_approx_position_correct', 'pad_footing_approx_position_correct', 'approx_room_sizes_correct', 'arranged_by_supervisor', 'has_plumbing', 'has_hot_water', 'has_gas', 'has_phone', 'has_smoke_detector'];
     this.DATEPICKER_FIELDS = ['inspection_date'];
     this.TIMEPICKER_FIELDS = ['inspection_time'];
@@ -549,13 +550,20 @@ var Inspections = function()
                     values.push(row['omission_item_' + i]);
                 for(var i in self.YES_NO_FIELDS)
                     values.push(row[self.YES_NO_FIELDS[i]]);
+                for(var i = 1; i <= self.TOTAL_OMISSIONS_NOTES; i++)
+                    values.push(row['omission_note_' + i]);
+
                 sql = "INSERT INTO reinspections(id, inspection_id, reinspection_date, failed, most_recent, notes ";
+
                 for(var i = 1; i <= self.TOTAL_OMISSIONS_ITEMS; i++)
                     sql += ', omission_item_' + i;
                 for(var i in self.YES_NO_FIELDS)
                     sql += ', ' + self.YES_NO_FIELDS[i];
+                for(var i = 1; i <= self.TOTAL_OMISSIONS_NOTES; i++)
+                    sql += ', omission_note_' + i;
+
                 sql += ') VALUES(?,?,?,?,?,?';
-                for(var i = 1; i <= self.TOTAL_OMISSIONS_ITEMS + self.YES_NO_FIELDS.length; i++)
+                for(var i = 1; i <= self.TOTAL_OMISSIONS_ITEMS + self.YES_NO_FIELDS.length + self.TOTAL_OMISSIONS_NOTES.length; i++)
                     sql += ',?';
                 sql += ')';
 
@@ -2515,6 +2523,10 @@ var Inspections = function()
                     sql += self.YES_NO_FIELDS[i] + '= ?,';
                     values.push($("#" + self.YES_NO_FIELDS[i]).val());
                 }
+                for(var i = 1; i <= self.TOTAL_OMISSIONS_NOTES; i++) {
+                    sql += 'omission_note_' + i + '= ?,';
+                    values.push($('input[name="omission_note_'+i+'"]:visible').val());
+                }
                 sql += ' dirty = 1 WHERE id = ?';
                 values.push(objApp.keys.reinspection_id);
 
@@ -2538,6 +2550,10 @@ var Inspections = function()
                 for(var i in self.YES_NO_FIELDS){
                     sql += self.YES_NO_FIELDS[i] + '= ?,';
                     values.push($("#" + self.YES_NO_FIELDS[i]).val());
+                }
+                for(var i = 1; i <= self.TOTAL_OMISSIONS_NOTES; i++) {
+                    sql += 'omission_note_' + i + '= ?,';
+                    values.push($('input[name="omission_note_'+i+'"]:visible').val());
                 }
                 sql += ' dirty = 1 WHERE id = ?';
                 values.push(objApp.keys.reinspection_id);
@@ -2923,6 +2939,7 @@ var Inspections = function()
 			e.preventDefault();
 
 			self.saveDefect(function(){
+			    console.log('callback');
                 $("#inspectionStep2 textarea#observation").val('');
                 $("#inspectionStep2 ul#popAction li:first-child").text('Choose');
                 // Clear all defect related keys
@@ -4968,6 +4985,7 @@ var Inspections = function()
 	*/
 	this.saveDefect = function(callback)
 	{
+        console.log('saveDefect');
         // Make sure we have valid values for all defect pop lists
 		var location =	self.objPopLocation.getText();
 		var action = self.objPopAction.getText();
@@ -5019,7 +5037,7 @@ var Inspections = function()
         var sql = "SELECT * " +
             "FROM inspectionitems " +
             "WHERE inspection_id = ? AND location = ? AND observation = ? AND action = ? AND reason = ? AND deleted = 0";
-
+        console.log(sql);
         objDBUtils.loadRecordSQL(sql, [objApp.keys.inspection_id, location, observation, action, reason], function(row)
         {
             if(row)
@@ -5045,6 +5063,8 @@ var Inspections = function()
                 objDBUtils.autoSave("inspectionitems", objApp.getKey("inspection_item_id"), "frmDefectDetails", function(new_id)
                 {
                     unblockElement('body');
+
+                    console.log('inspectionitems autosave');
 
                     // If the id was not set and we just did an update, get the id
                     if(objApp.getKey("inspection_item_id") == "")
@@ -5114,6 +5134,7 @@ var Inspections = function()
 	{
         if((self.objPopLocation.getValue() != "")  && (self.objPopAction.getValue() != ""))
         {
+            console.log('checkAllSelected');
             // Yes there are - create the defect item.
             self.saveDefect();
         }
@@ -7241,6 +7262,10 @@ var Inspections = function()
                 $("#" + f).val("0");
             }
         }
+        console.log(obj);
+        for(var i = 1; i <= self.TOTAL_OMISSIONS_NOTES; i++) {
+            $('input[name="omission_note_'+i+'"]').val(obj['omission_note_'+i]);
+        }
     }
 
     this.bindYesNoButtons = function(){
@@ -7289,6 +7314,21 @@ var Inspections = function()
                 if(objApp.keys.reinspection_id == "")
                     objDBUtils.execute("UPDATE inspections SET "+id+" = 0, dirty = 1 WHERE id = ?", [objApp.keys.inspection_id], function(){});
                 return false;
+            });
+        }
+
+        for(var i = 1; i <= self.TOTAL_OMISSIONS_NOTES; i++) {
+            $('input[name="omission_note_'+i+'"]').unbind('change');
+            if (self.finalised == 1){
+                $('input[name="omission_note_'+i+'"]').prop('disabled', true);
+                continue;
+            }
+            $('input[name="omission_note_'+i+'"]').prop('disabled', '');
+            $('input[name="omission_note_'+i+'"]').bind('change', function (e) {
+                var field = $(this).attr('name');
+                var val = $(this).val();
+                if(objApp.keys.reinspection_id == "")
+                    objDBUtils.execute("UPDATE inspections SET "+field+" = '"+val+"', dirty = 1 WHERE id = ?", [objApp.keys.inspection_id], function(){});
             });
         }
     }
@@ -7404,4 +7444,3 @@ var Inspections = function()
         }
     }
 };
-
